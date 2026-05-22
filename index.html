@@ -2456,6 +2456,7 @@ function renderLeadModal(l){
     <button class="modal-tab ${modalTab==='dados'?'active':''}" onclick="setModalTab('dados',${l.id})">📋 Dados</button>
     <button class="modal-tab ${modalTab==='tarefas'?'active':''}" onclick="setModalTab('tarefas',${l.id})">✅ Tarefas (${tasks.filter(t=>!t.done).length})</button>
     <button class="modal-tab ${modalTab==='timeline'?'active':''}" onclick="setModalTab('timeline',${l.id})">📍 Timeline</button>
+    <button class="modal-tab ${modalTab==='credito'?'active':''}" onclick="setModalTab('credito',${l.id})">🏦 Crédito</button>
     <button class="modal-tab ${modalTab==='financiamento'?'active':''}" onclick="setModalTab('financiamento',${l.id})">💰 Financiamento</button>
     <button class="modal-tab ${modalTab==='documentos'?'active':''}" onclick="setModalTab('documentos',${l.id})">📎 Documentos</button>`;
 
@@ -2551,7 +2552,121 @@ function renderLeadModal(l){
       </div>`;
   }
 
-  if(modalTab==='financiamento'){
+  if(modalTab==='credito'){
+    const cr=l.analise_credito||{};
+    const veiPreco=veiculo?.preco||0;
+    const crStatus=cr.status||'pendente';
+    const statusMap={
+      pendente:{label:'Pendente',color:'var(--text-3)',bg:'var(--surface-3)'},
+      em_analise:{label:'Em análise',color:'var(--amber)',bg:'var(--amber-bg)'},
+      aprovado:{label:'Aprovado',color:'var(--accent)',bg:'var(--accent-subtle)'},
+      reprovado:{label:'Reprovado',color:'var(--red)',bg:'var(--red-bg)'}
+    };
+    const st=statusMap[crStatus]||statusMap.pendente;
+    bodyHTML=`
+      <!-- STATUS BADGE -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:12px 16px;background:var(--surface-2);border-radius:var(--r-lg);border:1px solid var(--border)">
+        <div>
+          <div style="font-size:var(--text-xs);color:var(--text-4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:700">Status do Crédito</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:var(--text-md);font-weight:800;color:${st.color}">${st.label}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${['pendente','em_analise','aprovado','reprovado'].map(s=>`
+            <button onclick="setCreditoStatus('${s}',${l.id})" style="padding:5px 12px;border-radius:20px;border:1.5px solid ${s===crStatus?statusMap[s].color:'var(--border)'};background:${s===crStatus?statusMap[s].bg:'transparent'};color:${s===crStatus?statusMap[s].color:'var(--text-3)'};font-size:var(--text-xs);font-weight:700;cursor:pointer;transition:var(--t-fast)">${statusMap[s].label}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- RESULTADO DA ANÁLISE -->
+      <div class="fin-section">
+        <div class="fin-section-title">Resultado da Análise</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Financeira</label>
+            <select id="cr_financeira">
+              <option value="">— Selecione —</option>
+              ${['BV Financeira','Daycoval','Omni','Sicoob','Fundo de Investimento','Outro'].map(f=>`<option value="${f}" ${(cr.financeira||'')==f?'selected':''}>${f}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Valor Aprovado (R$)</label>
+            <input id="cr_valor_aprovado" type="text" value="${cr.valor_aprovado||''}" placeholder="Ex: 200.000,00" oninput="calcularCreditoAuto()" style="font-weight:700;font-size:var(--text-lg)">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Prazo (meses)</label>
+            <input id="cr_prazo" type="number" value="${cr.prazo||''}" placeholder="Ex: 60" min="1" max="120" oninput="calcularCreditoAuto()">
+          </div>
+          <div class="form-row">
+            <label>Valor da Parcela (R$)</label>
+            <input id="cr_parcela" type="text" value="${cr.parcela||''}" placeholder="Ex: 7.467,00" oninput="calcularCreditoAuto()">
+          </div>
+        </div>
+        <!-- TAXA AUTO-CALCULADA -->
+        <div id="cr_taxa_box" style="padding:14px 16px;background:var(--surface-2);border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:14px;display:${cr.taxa_am?'block':'none'}">
+          <div style="font-size:var(--text-xs);color:var(--text-4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:700">Taxa de Juros Calculada</div>
+          <div style="display:flex;align-items:center;gap:16px">
+            <div>
+              <span id="cr_taxa_am_display" style="font-size:var(--text-2xl);font-weight:800;color:var(--accent)">${cr.taxa_am||'—'}</span>
+              <span style="font-size:var(--text-sm);color:var(--text-3);margin-left:4px">% a.m.</span>
+            </div>
+            <div style="width:1px;height:32px;background:var(--border)"></div>
+            <div>
+              <span id="cr_taxa_aa_display" style="font-size:var(--text-lg);font-weight:700;color:var(--text-2)">${cr.taxa_aa||'—'}</span>
+              <span style="font-size:var(--text-sm);color:var(--text-3);margin-left:4px">% a.a.</span>
+            </div>
+            <div style="width:1px;height:32px;background:var(--border)"></div>
+            <div>
+              <div style="font-size:var(--text-xs);color:var(--text-4)">Total Pago</div>
+              <span id="cr_total_display" style="font-size:var(--text-md);font-weight:700;color:var(--text-2)">${cr.total_pago||'—'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULAÇÃO DE ENTRADA -->
+      <div class="fin-section">
+        <div class="fin-section-title">Simulação de Entrada</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Valor do Veículo (R$)</label>
+            <input id="cr_valor_veiculo" type="text" value="${cr.valor_veiculo||(veiPreco?veiPreco.toLocaleString('pt-BR',{minimumFractionDigits:2}):'')}" placeholder="${veiPreco?'R$ '+veiPreco.toLocaleString('pt-BR',{minimumFractionDigits:2}):'Ex: 320.000,00'}" oninput="calcularEntradaAuto()">
+          </div>
+          <div class="form-row">
+            <label>Entrada Necessária (R$)</label>
+            <input id="cr_entrada" type="text" value="${cr.entrada||''}" readonly style="background:var(--surface-3);font-weight:700;color:var(--accent)">
+          </div>
+        </div>
+        <div id="cr_entrada_info" style="display:${cr.pct_entrada?'block':'none'};padding:10px 14px;background:var(--accent-subtle);border-radius:var(--r-md);border:1px solid rgba(0,230,118,.2);margin-bottom:8px">
+          <span style="font-size:var(--text-sm);color:var(--accent);font-weight:600">
+            Entrada de <strong id="cr_pct_display">${cr.pct_entrada||'—'}</strong>% sobre o valor do veículo
+          </span>
+        </div>
+      </div>
+
+      <!-- DECISÃO DO CLIENTE -->
+      <div class="fin-section">
+        <div class="fin-section-title">Decisão do Cliente</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          ${[
+            {v:'seguiu',l:'✅ Seguiu negociação',c:'var(--accent)'},
+            {v:'declinou_parcela',l:'❌ Declinou — Parcela alta',c:'var(--red)'},
+            {v:'declinou_entrada',l:'❌ Declinou — Entrada alta',c:'var(--red)'},
+            {v:'aguardando',l:'⏳ Aguardando decisão',c:'var(--amber)'},
+          ].map(d=>`
+            <button onclick="setCreditoDecisao('${d.v}',${l.id})" style="padding:8px 14px;border-radius:var(--r-md);border:1.5px solid ${(cr.decisao||'')==d.v?d.c:'var(--border)'};background:${(cr.decisao||'')==d.v?'rgba(0,0,0,.15)':'transparent'};color:${(cr.decisao||'')==d.v?d.c:'var(--text-3)'};font-size:var(--text-sm);font-weight:600;cursor:pointer;transition:var(--t-fast)">${d.l}</button>
+          `).join('')}
+        </div>
+        <div class="form-row">
+          <label>Observações</label>
+          <textarea id="cr_obs" placeholder="Ex: Cliente aceitou reduzir prazo para 48x, aguardando reanálise...">${cr.obs||''}</textarea>
+        </div>
+      </div>
+    `;
+  }
     const isEnviado = !!l.etapa_fin;
     bodyHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
@@ -2665,6 +2780,7 @@ function renderLeadModal(l){
     footerHTML += `<button class="btn btn-primary" onclick="updateLead(${l.id})">Salvar</button>`;
   }
   if(modalTab==='tarefas') footerHTML += `<button class="btn btn-primary" onclick="addTask(${l.id})">+ Salvar tarefa</button>`;
+  if(modalTab==='credito') footerHTML += `<button class="btn btn-primary" onclick="salvarAnaliseCredito(${l.id})">Salvar Análise</button>`;
   if(modalTab==='financiamento') footerHTML += `<button class="btn" style="border-color:#6366f1;color:#6366f1;font-weight:700" onclick="gerarPDFFicha(${l.id})">📄 Gerar PDF</button><button class="btn btn-primary" onclick="salvarFichaFin(${l.id})">💾 Salvar ficha</button>`;
 
   openModal(`
@@ -3568,6 +3684,108 @@ function loadSettings(){
 // Configurações carregadas no login (por perfil)
 // loadSettings() é chamado dentro de login()
 if(typeof lucide!=='undefined')lucide.createIcons();
+
+// ── ANÁLISE DE CRÉDITO ──
+function parseMoeda(v){
+  if(!v)return 0;
+  return parseFloat(String(v).replace(/\./g,'').replace(',','.'))||0;
+}
+function fmtMoeda(v){
+  if(!v||isNaN(v))return '';
+  return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function calcTaxaMensal(pv,pmt,n){
+  if(!pv||!pmt||!n)return null;
+  let i=0.03;
+  for(let iter=0;iter<200;iter++){
+    const ei=Math.pow(1+i,n);
+    const fi=pv*i*ei/(ei-1)-pmt;
+    const dfi=pv*(ei*(1+i*n)-ei)/Math.pow(ei-1,2);
+    if(Math.abs(dfi)<1e-12)break;
+    const i2=i-fi/dfi;
+    if(Math.abs(i2-i)<1e-8){i=i2;break;}
+    i=i2;if(i<0)i=0.001;
+  }
+  return i*100;
+}
+function calcularCreditoAuto(){
+  const pv=parseMoeda(document.getElementById('cr_valor_aprovado')?.value);
+  const pmt=parseMoeda(document.getElementById('cr_parcela')?.value);
+  const n=parseInt(document.getElementById('cr_prazo')?.value)||0;
+  const box=document.getElementById('cr_taxa_box');
+  if(!box)return;
+  if(pv>0&&pmt>0&&n>0){
+    const taxa=calcTaxaMensal(pv,pmt,n);
+    if(taxa&&taxa>0&&taxa<50){
+      document.getElementById('cr_taxa_am_display').textContent=taxa.toFixed(2);
+      document.getElementById('cr_taxa_aa_display').textContent=(((1+taxa/100)**12-1)*100).toFixed(2);
+      document.getElementById('cr_total_display').textContent='R$ '+fmtMoeda(pmt*n);
+      box.style.display='block';
+    }
+  } else {box.style.display='none';}
+  calcularEntradaAuto();
+}
+function calcularEntradaAuto(){
+  const vei=parseMoeda(document.getElementById('cr_valor_veiculo')?.value);
+  const apr=parseMoeda(document.getElementById('cr_valor_aprovado')?.value);
+  const entEl=document.getElementById('cr_entrada');
+  const infoEl=document.getElementById('cr_entrada_info');
+  const pctEl=document.getElementById('cr_pct_display');
+  if(!entEl)return;
+  if(vei>0&&apr>0){
+    const entrada=Math.max(0,vei-apr);
+    entEl.value=fmtMoeda(entrada);
+    if(infoEl)infoEl.style.display='block';
+    if(pctEl)pctEl.textContent=((entrada/vei)*100).toFixed(1);
+  } else {entEl.value='';if(infoEl)infoEl.style.display='none';}
+}
+function setCreditoStatus(status,leadId){
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  if(!l.analise_credito)l.analise_credito={};
+  l.analise_credito.status=status;
+  renderLeadModal(l);
+}
+function setCreditoDecisao(decisao,leadId){
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  if(!l.analise_credito)l.analise_credito={};
+  l.analise_credito.decisao=decisao;
+  renderLeadModal(l);
+}
+async function salvarAnaliseCredito(leadId){
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  const pv=parseMoeda(document.getElementById('cr_valor_aprovado')?.value);
+  const pmt=parseMoeda(document.getElementById('cr_parcela')?.value);
+  const n=parseInt(document.getElementById('cr_prazo')?.value)||0;
+  const taxa=calcTaxaMensal(pv,pmt,n);
+  const analise={
+    status:l.analise_credito?.status||'pendente',
+    decisao:l.analise_credito?.decisao||'',
+    financeira:document.getElementById('cr_financeira')?.value||'',
+    valor_aprovado:document.getElementById('cr_valor_aprovado')?.value||'',
+    prazo:n,
+    parcela:document.getElementById('cr_parcela')?.value||'',
+    taxa_am:taxa?taxa.toFixed(2):'',
+    taxa_aa:taxa?(((1+taxa/100)**12-1)*100).toFixed(2):'',
+    total_pago:pmt&&n?fmtMoeda(pmt*n):'',
+    valor_veiculo:document.getElementById('cr_valor_veiculo')?.value||'',
+    entrada:document.getElementById('cr_entrada')?.value||'',
+    pct_entrada:document.getElementById('cr_pct_display')?.textContent||'',
+    obs:document.getElementById('cr_obs')?.value||'',
+    atualizado:new Date().toISOString()
+  };
+  const hist=[...(l.historico||[])];
+  const dtxt={seguiu:'Seguiu negociação',declinou_parcela:'Declinou — Parcela alta',declinou_entrada:'Declinou — Entrada alta',aguardando:'Aguardando decisão'};
+  hist.push({msg:`Crédito: ${analise.financeira||''}${analise.valor_aprovado?' | R$ '+analise.valor_aprovado:''}${analise.taxa_am?' | '+analise.taxa_am+'% a.m.':''}${analise.decisao?' | '+dtxt[analise.decisao]:''}`,data:new Date().toISOString(),tipo:'blue'});
+  const res=await fetch(`${SB_URL}/rest/v1/leads?id=eq.${leadId}`,{
+    method:'PATCH',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({analise_credito:analise,historico:hist})
+  });
+  if(!res.ok){alert('Erro: '+(await res.text()));return;}
+  l.analise_credito=analise;l.historico=hist;
+  alert('Análise de crédito salva com sucesso!');
+  renderLeadModal(l);
+}
 
 function toggleFilterDropdown(tipo){
   const dd=document.getElementById('filterDropdown'+tipo);

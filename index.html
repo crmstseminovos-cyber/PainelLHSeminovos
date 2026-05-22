@@ -1692,8 +1692,8 @@ function cardHTML(l){
     onclick="if(!isDragging)openLead(${l.id})">
     ${sla?'<div class="sla-dot" title="Sem contato ha +24h"></div>':''}
     <div class="card-top"><div class="card-nome">${l.nome}</div>${tempBadge(tc)}</div>
-    ${score>0?`<div class="card-score-mini cscore-${sClass}">${score}</div>`:''}
-    <div class="card-interesse">${l.interesse&&l.interesse!=='0'&&l.interesse!==0?l.interesse:'—'}</div>
+    <div class="card-score-mini cscore-${sClass}" title="Score: ${score}">${score}</div>
+    <div class="card-interesse">${l.interesse||'—'}</div>
     <div class="card-tags">${origemTag(l.origem)}${l.telefone?'<span class="tag tag-wpp">📱</span>':''}</div>
     ${l.vendedor?`<div class="card-vendedor">→ ${l.vendedor}</div>`:''}
     ${ultiCont?`<div class="card-prox">🕐 ${ultiCont}</div>`:''}

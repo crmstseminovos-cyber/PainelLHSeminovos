@@ -769,7 +769,55 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
 .sugest-body{display:none!important;margin-bottom:10px}
 .sugest-body.open{display:flex!important;flex-wrap:wrap;gap:5px}
 
-/* Toast notifications */
+/* ── TASK PRIORITY CARDS ── */
+.card-task-alert{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:var(--r-md);
+  font-size:var(--text-xs);font-weight:700;
+  margin-top:6px;margin-bottom:2px;
+}
+.card-task-alert.late{
+  background:rgba(248,113,113,.12);
+  border:1px solid var(--red-border);
+  color:var(--red);
+}
+.card-task-alert.today{
+  background:rgba(0,230,118,.1);
+  border:1px solid rgba(0,230,118,.25);
+  color:var(--accent);
+}
+.card-task-alert.future{
+  background:var(--blue-bg);
+  border:1px solid var(--blue-border);
+  color:var(--blue);
+}
+.card-task-alert-dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;
+}
+.card-task-alert.late .card-task-alert-dot{background:var(--red);animation:pulse 1.2s infinite}
+.card-task-alert.today .card-task-alert-dot{background:var(--accent)}
+.card-task-alert.future .card-task-alert-dot{background:var(--blue)}
+
+/* Card states based on task */
+.lead-card.task-late{
+  border-left:3px solid var(--red)!important;
+  background:rgba(248,113,113,.05)!important;
+}
+.lead-card.task-today{
+  border-left:3px solid var(--accent)!important;
+}
+
+/* Task counter topbar badge */
+.task-alert-badge{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 12px;border-radius:20px;
+  background:var(--surface-2);border:1px solid var(--border);
+  cursor:pointer;transition:var(--t-fast);
+}
+.task-alert-badge:hover{border-color:var(--border-2);background:var(--surface-3)}
+.tab-late{font-size:var(--text-xs);font-weight:700;color:var(--red)}
+.tab-today{font-size:var(--text-xs);font-weight:700;color:var(--accent)}
+.tab-sep{color:var(--text-4);font-size:var(--text-xs)}
 #toast-container{
   position:fixed;bottom:24px;right:24px;
   z-index:99999;display:flex;flex-direction:column;gap:8px;
@@ -1082,6 +1130,11 @@ tr:last-child td{border-bottom:none}
       <button class="view-btn" onclick="gerenteView('financiamento',this)">Financ.</button>
     </div>
     <div class="topbar-right">
+      <div id="taskAlertBadge" class="task-alert-badge hidden" onclick="filtrarTarefasUrgentes()">
+        <span class="tab-late" id="badgeLate"></span>
+        <span class="tab-sep" id="badgeSep"></span>
+        <span class="tab-today" id="badgeToday"></span>
+      </div>
       <div class="clock-txt" id="clock"></div>
       <button class="btn-logout" onclick="logout()">↩ Sair</button>
     </div>
@@ -1636,7 +1689,7 @@ async function loadAll(){
   console.log('loadAll: total leads=',allLeads.length,'com vendedor=',allLeads.filter(l=>l.vendedor).length);
   const info=PERFIS[perfil];navTo(info.nav[0].page,null);
   document.querySelector('.nav-item')?.classList.add('active');
-  renderDayTasks();renderCalendar();renderPlacar();
+  renderDayTasks();renderCalendar();renderPlacar();updateTaskBadge();
 }
 
 function renderPlacar(){
@@ -1726,28 +1779,66 @@ function fmtUltimoContato(l){
   return new Date(d).toLocaleDateString('pt-BR');
 }
 
+// Calcula prioridade de tarefa para ordenação e exibição
+function getTaskPriority(l){
+  const tasks=(l.tasks||[]).filter(t=>!t.done&&t.due);
+  if(!tasks.length) return {level:3, task:null}; // sem tarefa
+  const todayStr=new Date().toISOString().split('T')[0];
+  const lateTasks=tasks.filter(t=>isTaskLate(t));
+  if(lateTasks.length){
+    const t=lateTasks.sort((a,b)=>a.due>b.due?1:-1)[0];
+    return {level:0, task:t, type:'late'};
+  }
+  const todayTasks=tasks.filter(t=>t.due===todayStr);
+  if(todayTasks.length){
+    const t=todayTasks.sort((a,b)=>(a.time||'99:99')>(b.time||'99:99')?1:-1)[0];
+    return {level:1, task:t, type:'today'};
+  }
+  const futTasks=tasks.sort((a,b)=>a.due>b.due?1:-1);
+  return {level:2, task:futTasks[0], type:'future'};
+}
+
+function fmtTaskAlert(tp){
+  if(!tp.task) return '';
+  const t=tp.task;
+  const todayStr=new Date().toISOString().split('T')[0];
+  const fmtDate2=d=>new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  const timeStr=t.time?' às '+t.time:'';
+  if(tp.type==='late'){
+    const daysLate=Math.floor((new Date()-new Date(t.due+'T00:00:00'))/86400000);
+    const lateText=daysLate===0?'hoje'+timeStr:daysLate===1?'ontem':daysLate+'d atrás';
+    return `<div class="card-task-alert late"><div class="card-task-alert-dot"></div>Atrasada · ${lateText} · ${t.title}</div>`;
+  }
+  if(tp.type==='today'){
+    return `<div class="card-task-alert today"><div class="card-task-alert-dot"></div>Hoje${timeStr} · ${t.title}</div>`;
+  }
+  if(tp.type==='future'){
+    return `<div class="card-task-alert future"><div class="card-task-alert-dot"></div>${fmtDate2(t.due)}${timeStr} · ${t.title}</div>`;
+  }
+  return '';
+}
+
 function cardHTML(l){
-  const tasks=l.tasks||[];const pend=tasks.filter(t=>!t.done).length;const late=tasks.filter(t=>!t.done&&t.due&&new Date(t.due)<new Date()).length;
+  const tasks=l.tasks||[];const pend=tasks.filter(t=>!t.done).length;
   const sc=l.ultimo_contato?Math.floor((Date.now()-new Date(l.ultimo_contato))/36e5):999;
   const sla=sc>=24&&!['qualificado','sem_interesse','fechado','perdido'].includes(l.etapa);
   const timer=timerInfo(l.atualizado_em||l.criado_em);const tc=l.temperatura||'cold';
   const score=calcScore(l);const sClass=scoreClass(score);
-  const ultiCont=fmtUltimoContato(l);
-  const proxAcao=l.prox_acao||'';
-  return`<div class="lead-card ${tc} ${sla?'sla-alert':''}"
+  const tp=getTaskPriority(l);
+  const taskClass=tp.type==='late'?'task-late':tp.type==='today'?'task-today':'';
+  const taskAlertHtml=fmtTaskAlert(tp);
+  return`<div class="lead-card ${tc} ${sla?'sla-alert':''} ${taskClass}"
     draggable="true"
     ondragstart="onCardDragStart(event,${l.id})"
     ondragend="onCardDragEnd(event)"
     onclick="if(!isDragging)openLead(${l.id})">
-    ${sla?'<div class="sla-dot" title="Sem contato ha +24h"></div>':''}
+    ${sla&&tp.type!=='late'?'<div class="sla-dot" title="Sem contato ha +24h"></div>':''}
     <div class="card-top"><div class="card-nome">${l.nome}</div>${tempBadge(tc)}</div>
     ${score>0?`<div class="card-score-mini cscore-${sClass}">${score}</div>`:''}
     <div class="card-interesse">${l.interesse&&l.interesse!=='0'&&l.interesse!==0?l.interesse:'—'}</div>
-    <div class="card-tags">${origemTag(l.origem)}${l.telefone?'<span class="tag tag-wpp">📱</span>':''}</div>
+    <div class="card-tags">${origemTag(l.origem)}</div>
     ${l.vendedor?`<div class="card-vendedor">→ ${l.vendedor}</div>`:''}
-    ${ultiCont?`<div class="card-prox">🕐 ${ultiCont}</div>`:''}
-    ${proxAcao?`<div class="card-prox" style="color:var(--blue)">▶ ${proxAcao}</div>`:''}
-    <div class="card-footer"><div class="card-date">${fmtDate(l.criado_em)}</div>${pend>0?`<div class="card-tasks ${late>0?'overdue':''}">✓ ${pend} tarefa${pend>1?'s':''}</div>`:''}</div>
+    ${taskAlertHtml}
     ${timer?`<div class="card-timer ${timer.cls}">⏱ ${timer.txt} nesta etapa</div>`:''}
     ${l.telefone?`<a class="card-wpp-btn" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg>WhatsApp</a>`:''}
   </div>`;
@@ -1835,6 +1926,8 @@ function renderKanban(id,cols,leads){
     const colTerm=(colSearchState[colKey]||'').toLowerCase();
     const allCards=leadsFiltered.filter(l=>l.etapa===col.id);
     const cards=colTerm?allCards.filter(l=>matchSearch(l,colTerm)):allCards;
+    // Ordenar: atrasadas → hoje → futuras → sem tarefa
+    const sorted=[...cards].sort((a,b)=>getTaskPriority(a).level-getTaskPriority(b).level);
     return`<div class="k-col">
       <div class="k-col-head"><div class="k-title"><div class="k-dot" style="background:${col.cor}"></div>${col.label}</div><span class="k-count">${cards.length}${colTerm&&allCards.length!==cards.length?'/'+allCards.length:''}</span></div>
       <input class="col-search" placeholder="Buscar nesta coluna..." value="${colSearchState[colKey]||''}" oninput="onColSearch(event,'${id}','${col.id}')">
@@ -1842,7 +1935,7 @@ function renderKanban(id,cols,leads){
         ondragover="onColDragOver(event)"
         ondragleave="onColDragLeave(event)"
         ondrop="onColDrop(event,'${col.id}')">
-        ${cards.length?cards.map(cardHTML).join(''):'<div class="empty-col">'+(colTerm?'Nenhum resultado':'Nenhum lead')+'</div>'}
+        ${sorted.length?sorted.map(cardHTML).join(''):'<div class="empty-col">'+(colTerm?'Nenhum resultado':'Nenhum lead')+'</div>'}
       </div>
       <button class="k-add-btn" onclick="openNovoLead('${col.id}')">+ Adicionar</button>
     </div>`;}).join('');
@@ -3100,7 +3193,47 @@ async function addTask(leadId){
   const l2=allLeads.find(x=>x.id===leadId);if(l2){modalTab='tarefas';renderLeadModal(l2);}
 }
 
-// ── TOAST NOTIFICATIONS ──
+// ── BADGE DE TAREFAS NO TOPO ──
+function updateTaskBadge(){
+  const badge=document.getElementById('taskAlertBadge');
+  const badgeLate=document.getElementById('badgeLate');
+  const badgeToday=document.getElementById('badgeToday');
+  const badgeSep=document.getElementById('badgeSep');
+  if(!badge)return;
+  const todayStr=new Date().toISOString().split('T')[0];
+  const myLeads=allLeads.filter(l=>!l.na_base_clientes);
+  let late=0,today=0;
+  myLeads.forEach(l=>{
+    (l.tasks||[]).filter(t=>!t.done&&t.due).forEach(t=>{
+      if(isTaskLate(t))late++;
+      else if(t.due===todayStr)today++;
+    });
+  });
+  if(late===0&&today===0){badge.classList.add('hidden');return;}
+  badge.classList.remove('hidden');
+  badgeLate.textContent=late>0?'⚠ '+late+' atrasada'+(late>1?'s':''):'';
+  badgeLate.style.display=late>0?'inline':'none';
+  badgeSep.textContent=late>0&&today>0?' · ':'';
+  badgeToday.textContent=today>0?'● '+today+' hoje':'';
+  badgeToday.style.display=today>0?'inline':'none';
+}
+
+function filtrarTarefasUrgentes(){
+  // Mudar para aba tarefas da sidebar e filtrar atrasadas
+  const toolPane=document.querySelector('.tool-panel#tool-tarefas');
+  if(toolPane){
+    document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
+    document.querySelector('.ttab')?.classList.add('active');
+    document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+    toolPane.classList.add('active');
+  }
+  // Selecionar filtro "Atrasadas"
+  const atrasadasBtn=document.querySelector('.tkf[data-filter="atrasadas"]');
+  if(atrasadasBtn){atrasadasBtn.click();}
+  showToast('Mostrando tarefas urgentes','info',2000);
+}
+
+
 function showToast(msg, type='success', duration=3000){
   const container=document.getElementById('toast-container');
   if(!container)return;

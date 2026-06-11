@@ -2652,6 +2652,12 @@ function renderLeadModal(l){
         <div class="temp-opt cold ${l.temperatura==='cold'?'sel':''}" onclick="selTemp(this,'cold')">🔵 Frio</div>
       </div><input type="hidden" id="el_temp" value="${l.temperatura||'cold'}"></div>
       <div class="form-row"><label>Último contato</label><input type="date" id="el_ultimo" value="${l.ultimo_contato||''}"></div>
+      ${(l.etapa_vend==='vendido_concluido'||l.etapa==='vendido_concluido')?`
+      <div class="form-row" style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-md);padding:12px">
+        <label style="color:var(--accent)">🚛 Data de entrega do veículo</label>
+        <input type="date" id="el_data_entrega" value="${l.data_entrega_veiculo||''}" max="${new Date().toISOString().split('T')[0]}">
+        <div style="font-size:var(--text-xs);color:var(--text-3);margin-top:4px">Necessária para calcular os 90 dias de garantia</div>
+      </div>`:''}
       <div class="form-row"><label>Veículo de interesse</label><select id="el_veiculo"><option value="">—</option>${allCam.filter(c=>c.status==='Disponível').map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||''}</option>`).join('')}</select></div>
       <div class="form-row"><label>Observações</label><textarea id="el_obs">${l.observacoes||''}</textarea></div>`;
   }
@@ -3207,6 +3213,7 @@ async function updateLead(id){
     veiculo_id:document.getElementById('el_veiculo').value||null,
     observacoes:document.getElementById('el_obs').value,
     prox_acao:document.getElementById('el_prox_acao')?.value||null,
+    data_entrega_veiculo:document.getElementById('el_data_entrega')?.value||l.data_entrega_veiculo||null,
     historico:hist
   };
   const{error}=await sb.from('leads').update(obj).eq('id',id);

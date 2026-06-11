@@ -1091,115 +1091,6 @@ tr:last-child td{border-bottom:none}
 .seg-ctrl{display:flex;background:var(--surface-3);border-radius:var(--r-md);padding:2px;border:1px solid var(--border);gap:2px}
 .seg-btn{padding:5px 11px;border-radius:7px;border:none;background:transparent;font-size:var(--text-sm);font-weight:600;cursor:pointer;color:var(--text-3);transition:var(--t-fast)}
 .seg-btn.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-xs);border:1px solid var(--border)}
-
-/* ══════════════════════════════════════
-   CONSULTOR INTELIGENTE ST — MÓDULO
-══════════════════════════════════════ */
-#page-consultor{padding:0}
-.ci-wrap{max-width:860px;margin:0 auto;padding:28px 24px 48px}
-.ci-header{text-align:center;margin-bottom:32px;padding-top:8px}
-.ci-header h1{font-size:var(--text-2xl);font-weight:800;color:var(--text);letter-spacing:-.5px;margin-bottom:4px}
-.ci-header h1 span{color:var(--accent)}
-.ci-header p{font-size:var(--text-sm);color:var(--text-3)}
-
-/* Busca de cliente */
-.ci-search-bar{display:flex;gap:10px;margin-bottom:24px;align-items:center}
-.ci-search-bar input{flex:1;padding:10px 14px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface-2);color:var(--text);font-size:var(--text-md);font-family:var(--font-main)}
-.ci-search-bar input:focus{outline:none;border-color:var(--accent)}
-.ci-search-results{position:relative;margin-bottom:20px}
-.ci-results-list{background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-md)}
-.ci-result-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;transition:var(--t-fast);border-bottom:1px solid var(--border);gap:10px}
-.ci-result-item:last-child{border-bottom:none}
-.ci-result-item:hover{background:var(--surface-hover)}
-.ci-result-name{font-size:var(--text-md);font-weight:600;color:var(--text)}
-.ci-result-sub{font-size:var(--text-sm);color:var(--text-3);margin-top:1px}
-.ci-result-use{font-size:var(--text-sm);color:var(--accent);font-weight:600;white-space:nowrap}
-.ci-no-results{padding:14px;text-align:center;color:var(--text-3);font-size:var(--text-sm)}
-.ci-selected-badge{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-md);margin-bottom:20px}
-.ci-selected-badge span{font-size:var(--text-sm);color:var(--accent);font-weight:600;flex:1}
-.ci-selected-badge button{background:transparent;border:none;color:var(--text-3);cursor:pointer;font-size:var(--text-md);padding:2px 6px;border-radius:4px;transition:var(--t-fast)}
-.ci-selected-badge button:hover{color:var(--red)}
-
-/* Progress bar */
-.ci-progress-wrap{height:3px;background:var(--surface-3);border-radius:2px;margin-bottom:28px;overflow:hidden}
-.ci-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-dark),var(--accent));border-radius:2px;transition:width .4s ease}
-
-/* Stepper */
-.ci-stepper{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;flex-wrap:wrap;row-gap:10px}
-.ci-step{display:flex;align-items:center;gap:0;cursor:pointer}
-.ci-step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-2);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:var(--text-3);transition:var(--t-base);background:transparent;flex-shrink:0}
-.ci-step.active .ci-step-circle{border-color:var(--accent);background:var(--accent);color:#000;box-shadow:0 0 14px rgba(0,230,118,.35)}
-.ci-step.done .ci-step-circle{border-color:var(--accent-dark);background:rgba(0,230,118,.12);color:var(--accent)}
-.ci-step-label{font-size:var(--text-xs);font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-3);margin-left:7px;white-space:nowrap;transition:color .2s}
-.ci-step.active .ci-step-label{color:var(--accent)}
-.ci-step.done .ci-step-label{color:var(--accent-dark)}
-.ci-connector{width:36px;height:2px;background:var(--border-2);flex-shrink:0;margin:0 3px;transition:background .3s}
-.ci-connector.done{background:rgba(0,230,118,.35)}
-
-/* Painel de etapa */
-.ci-panel{display:none}.ci-panel.active{display:block}
-.ci-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;margin-bottom:16px}
-.ci-card-title{font-size:var(--text-xs);font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px;display:flex;align-items:center;gap:9px}
-.ci-card-title::before{content:'';display:block;width:3px;height:14px;background:var(--accent);border-radius:2px}
-.ci-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.ci-full{grid-column:1/-1}
-.ci-field{display:flex;flex-direction:column;gap:5px}
-.ci-field label{font-size:var(--text-xs);font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
-.ci-field input,.ci-field select{background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--r-md);padding:9px 12px;font-size:var(--text-md);color:var(--text);font-family:var(--font-main);transition:var(--t-fast);width:100%}
-.ci-field input:focus,.ci-field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,230,118,.1)}
-.ci-field input::placeholder{color:var(--text-4)}
-.ci-field select option{background:var(--surface-2);color:var(--text)}
-.ci-divider{height:1px;background:var(--border);margin:16px 0;grid-column:1/-1}
-
-/* Radio toggle pills */
-.ci-radio-group{display:flex;flex-wrap:wrap;gap:7px}
-.ci-radio-group input[type="radio"]{display:none}
-.ci-radio-group label{font-size:var(--text-sm);font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border-2);color:var(--text-3);cursor:pointer;transition:var(--t-fast);background:var(--surface-2);white-space:nowrap}
-.ci-radio-group input[type="radio"]:checked+label{border-color:var(--accent);color:var(--accent);background:rgba(0,230,118,.1)}
-.ci-radio-group label:hover{border-color:var(--border-3);color:var(--text-2)}
-
-/* Prioridade cards */
-.ci-priority-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px}
-.ci-pri input[type="radio"]{display:none}
-.ci-pri label{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 10px;border-radius:var(--r-lg);border:1px solid var(--border-2);background:var(--surface-2);cursor:pointer;transition:var(--t-base);text-align:center;font-size:var(--text-sm);font-weight:500;color:var(--text-3)}
-.ci-pri label .pi{font-size:20px;line-height:1}
-.ci-pri input[type="radio"]:checked+label{border-color:var(--accent);background:rgba(0,230,118,.08);color:var(--accent);box-shadow:0 0 14px rgba(0,230,118,.15)}
-.ci-pri label:hover{border-color:var(--border-3);color:var(--text-2)}
-
-/* Nav buttons */
-.ci-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
-.ci-btn-prev{padding:10px 22px;border-radius:var(--r-md);border:1px solid var(--border-2);background:transparent;color:var(--text-3);font-size:var(--text-sm);font-weight:600;cursor:pointer;transition:var(--t-fast);font-family:var(--font-main)}
-.ci-btn-prev:hover{border-color:var(--text-3);color:var(--text)}
-.ci-btn-next{padding:10px 24px;border-radius:var(--r-md);border:none;background:var(--accent);color:#000;font-size:var(--text-sm);font-weight:700;cursor:pointer;transition:var(--t-fast);font-family:var(--font-main)}
-.ci-btn-next:hover{background:var(--accent-dim);transform:translateY(-1px)}
-.ci-btn-generate{width:100%;padding:13px;border-radius:var(--r-md);border:none;background:var(--accent);color:#000;font-size:var(--text-md);font-weight:800;cursor:pointer;font-family:var(--font-heading);letter-spacing:.5px;transition:var(--t-base);margin-top:20px;display:flex;align-items:center;justify-content:center;gap:9px}
-.ci-btn-generate:hover{background:var(--accent-dim);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,230,118,.4)}
-
-/* Resultado */
-.ci-result{display:none;margin-top:4px}
-.ci-result.show{display:block}
-.ci-result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.ci-result-title{font-size:var(--text-lg);font-weight:800;color:var(--text);display:flex;align-items:center;gap:9px}
-.ci-result-title::before{content:'';width:3px;height:18px;background:var(--accent);border-radius:2px;display:block}
-.ci-prompt-box{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:18px;font-size:var(--text-sm);line-height:1.75;color:var(--text-2);white-space:pre-wrap;word-break:break-word;max-height:480px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--accent-dark) transparent}
-.ci-prompt-box::-webkit-scrollbar{width:4px}
-.ci-prompt-box::-webkit-scrollbar-thumb{background:var(--accent-dark);border-radius:4px}
-.ci-copy-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.ci-btn-copy{padding:9px 20px;border-radius:var(--r-md);border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:var(--text-sm);font-weight:700;cursor:pointer;transition:var(--t-fast);font-family:var(--font-main);display:flex;align-items:center;gap:7px}
-.ci-btn-copy:hover{background:rgba(0,230,118,.1)}
-.ci-btn-copy.copied{background:rgba(0,230,118,.15)}
-.ci-copy-ok{font-size:var(--text-sm);color:var(--accent);font-weight:600;opacity:0;transition:opacity .3s;display:flex;align-items:center;gap:5px}
-.ci-copy-ok.show{opacity:1}
-.ci-btn-reset{padding:9px 18px;border-radius:var(--r-md);border:1px solid var(--border-2);background:transparent;color:var(--text-3);font-size:var(--text-sm);font-weight:600;cursor:pointer;transition:var(--t-fast);font-family:var(--font-main)}
-.ci-btn-reset:hover{border-color:var(--text-3);color:var(--text)}
-@media(max-width:600px){
-  .ci-wrap{padding:16px 12px 40px}
-  .ci-connector{width:18px}
-  .ci-step-label{display:none}
-  .ci-fields{grid-template-columns:1fr}
-  .ci-nav{flex-direction:column-reverse}
-  .ci-btn-prev,.ci-btn-next{width:100%;justify-content:center}
-}
 </style>
 </head>
 <body>
@@ -1653,6 +1544,12 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
       </div>
+      <div id="page-estoque" class="page">
+        <div class="table-wrap">
+          <div class="table-top">
+            <h3>🚛 Estoque de Veículos</h3>
+            <button class="btn btn-primary btn-sm" onclick="openCaminhaoModal(0)">+ Novo Veículo</button>
+          </div>
           <div class="table-filters">
             <select id="filtroStatus" onchange="renderEstoque()"><option value="">Todos</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option><option>Vendido</option></select>
             <input id="buscaCam" placeholder="Buscar modelo ou placa..." oninput="renderEstoque()">
@@ -1683,252 +1580,6 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div id="page-adm-relatorios" class="page"><div class="page-title">📈 Relatórios</div><div class="metrics" id="admMetrics"></div></div>
-
-      <!-- ════════════════════════════════════════
-           CONSULTOR INTELIGENTE ST — PAGE
-      ════════════════════════════════════════ -->
-      <div id="page-consultor" class="page">
-        <div class="ci-wrap">
-          <div class="ci-header">
-            <h1>Consultor <span>Inteligente</span> ST</h1>
-            <p>Preencha o perfil do cliente e gere um prompt especializado para o ChatGPT</p>
-          </div>
-
-          <!-- Busca de clientes cadastrados -->
-          <div class="ci-card" style="margin-bottom:20px">
-            <div class="ci-card-title">Buscar Cliente Cadastrado</div>
-            <div class="ci-search-bar">
-              <input type="text" id="ciSearchInput" placeholder="Digite o nome ou telefone do cliente..." oninput="ciSearchLeads()" autocomplete="off">
-              <button class="ci-btn-next" onclick="ciLimparCliente()" style="white-space:nowrap;padding:9px 16px;font-size:var(--text-sm)">✕ Limpar</button>
-            </div>
-            <div id="ciResultsBox" style="display:none"></div>
-            <div id="ciSelectedBadge" style="display:none" class="ci-selected-badge">
-              <span id="ciSelectedName"></span>
-              <button onclick="ciLimparCliente()">✕</button>
-            </div>
-          </div>
-
-          <!-- Barra de progresso -->
-          <div class="ci-progress-wrap">
-            <div class="ci-progress-fill" id="ciProgress" style="width:25%"></div>
-          </div>
-
-          <!-- Stepper -->
-          <div class="ci-stepper" id="ciStepper">
-            <div class="ci-step active" data-step="1" onclick="ciGoTo(1)">
-              <div class="ci-step-circle">1</div>
-              <span class="ci-step-label">Operação</span>
-            </div>
-            <div class="ci-connector" id="ciConn1"></div>
-            <div class="ci-step" data-step="2" onclick="ciGoTo(2)">
-              <div class="ci-step-circle">2</div>
-              <span class="ci-step-label">Orçamento</span>
-            </div>
-            <div class="ci-connector" id="ciConn2"></div>
-            <div class="ci-step" data-step="3" onclick="ciGoTo(3)">
-              <div class="ci-step-circle">3</div>
-              <span class="ci-step-label">Requisitos</span>
-            </div>
-            <div class="ci-connector" id="ciConn3"></div>
-            <div class="ci-step" data-step="4" onclick="ciGoTo(4)">
-              <div class="ci-step-circle">4</div>
-              <span class="ci-step-label">Prioridade</span>
-            </div>
-          </div>
-
-          <!-- ETAPA 1 — Perfil da Operação -->
-          <div class="ci-panel active" id="ci-step-1">
-            <div class="ci-card">
-              <div class="ci-card-title">Perfil da Operação</div>
-              <div class="ci-fields">
-                <div class="ci-field ci-full">
-                  <label>Nome do Cliente</label>
-                  <input type="text" id="ci_nome" placeholder="Ex: João Silva / Transportadora XYZ">
-                </div>
-                <div class="ci-field">
-                  <label>Tipo de Operação</label>
-                  <select id="ci_operacao">
-                    <option value="">Selecione...</option>
-                    <option>Ecommerce</option><option>Rodoviário</option><option>Distribuição</option>
-                    <option>Construção</option><option>Frigorífico</option><option>Agro</option><option>Outros</option>
-                  </select>
-                </div>
-                <div class="ci-field">
-                  <label>Tipo de Veículo Buscado</label>
-                  <select id="ci_tipo_veiculo">
-                    <option value="">Selecione...</option>
-                    <option>Cavalo Mecânico</option><option>Truck</option><option>Toco</option>
-                    <option>Chassi</option><option>Carreta</option>
-                  </select>
-                </div>
-                <div class="ci-field">
-                  <label>Região onde vai trabalhar</label>
-                  <input type="text" id="ci_reg_trabalho" placeholder="Ex: Sul do Brasil / São Paulo">
-                </div>
-                <div class="ci-field">
-                  <label>Região onde aceita comprar</label>
-                  <input type="text" id="ci_reg_compra" placeholder="Ex: Todo o Brasil / SP e MG">
-                </div>
-              </div>
-            </div>
-            <div class="ci-nav">
-              <span></span>
-              <button class="ci-btn-next" onclick="ciNext()">Próximo →</button>
-            </div>
-          </div>
-
-          <!-- ETAPA 2 — Orçamento -->
-          <div class="ci-panel" id="ci-step-2">
-            <div class="ci-card">
-              <div class="ci-card-title">Orçamento</div>
-              <div class="ci-fields">
-                <div class="ci-field">
-                  <label>Valor Máximo (R$)</label>
-                  <input type="text" id="ci_valor_max" placeholder="Ex: 180.000">
-                </div>
-                <div class="ci-field">
-                  <label>Entrada Disponível (R$)</label>
-                  <input type="text" id="ci_entrada" placeholder="Ex: 50.000">
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Vai Financiar?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_financiar" id="ci_fin_sim" value="Sim"><label for="ci_fin_sim">Sim</label>
-                    <input type="radio" name="ci_financiar" id="ci_fin_nao" value="Não"><label for="ci_fin_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Tem Veículo na Troca?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_troca" id="ci_troca_sim" value="Sim" onchange="ciToggleTroca()"><label for="ci_troca_sim">Sim</label>
-                    <input type="radio" name="ci_troca" id="ci_troca_nao" value="Não" onchange="ciToggleTroca()"><label for="ci_troca_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full" id="ci_troca_val_group" style="display:none">
-                  <label>Valor Aproximado da Troca (R$)</label>
-                  <input type="text" id="ci_valor_troca" placeholder="Ex: 80.000">
-                </div>
-              </div>
-            </div>
-            <div class="ci-nav">
-              <button class="ci-btn-prev" onclick="ciPrev()">← Anterior</button>
-              <button class="ci-btn-next" onclick="ciNext()">Próximo →</button>
-            </div>
-          </div>
-
-          <!-- ETAPA 3 — Requisitos -->
-          <div class="ci-panel" id="ci-step-3">
-            <div class="ci-card">
-              <div class="ci-card-title">Requisitos do Veículo</div>
-              <div class="ci-fields">
-                <div class="ci-field ci-full">
-                  <label>Configuração</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_config" id="ci_cfg_4x2" value="4x2"><label for="ci_cfg_4x2">4x2</label>
-                    <input type="radio" name="ci_config" id="ci_cfg_6x2" value="6x2"><label for="ci_cfg_6x2">6x2</label>
-                    <input type="radio" name="ci_config" id="ci_cfg_6x4" value="6x4"><label for="ci_cfg_6x4">6x4</label>
-                    <input type="radio" name="ci_config" id="ci_cfg_outro" value="Outro"><label for="ci_cfg_outro">Outro</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Cabine</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_cabine" id="ci_cab_simples" value="Simples"><label for="ci_cab_simples">Simples</label>
-                    <input type="radio" name="ci_cabine" id="ci_cab_leito" value="Leito"><label for="ci_cab_leito">Leito</label>
-                    <input type="radio" name="ci_cabine" id="ci_cab_teto" value="Teto Alto"><label for="ci_cab_teto">Teto Alto</label>
-                  </div>
-                </div>
-                <div class="ci-field">
-                  <label>Ano Mínimo</label>
-                  <input type="text" id="ci_ano_min" placeholder="Ex: 2018">
-                </div>
-                <div class="ci-field">
-                  <label>KM Máximo</label>
-                  <input type="text" id="ci_km_max" placeholder="Ex: 500.000">
-                </div>
-                <div class="ci-divider"></div>
-                <div class="ci-field ci-full">
-                  <label>Ar-condicionado Obrigatório?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_ar" id="ci_ar_sim" value="Sim"><label for="ci_ar_sim">Sim</label>
-                    <input type="radio" name="ci_ar" id="ci_ar_nao" value="Não"><label for="ci_ar_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Garantia Obrigatória?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_garantia" id="ci_gar_sim" value="Sim"><label for="ci_gar_sim">Sim</label>
-                    <input type="radio" name="ci_garantia" id="ci_gar_nao" value="Não"><label for="ci_gar_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Pneus Precisam Estar Bons?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_pneus" id="ci_pn_sim" value="Sim"><label for="ci_pn_sim">Sim</label>
-                    <input type="radio" name="ci_pneus" id="ci_pn_nao" value="Não"><label for="ci_pn_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Aceita Detalhe Estético?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_estetico" id="ci_est_sim" value="Sim"><label for="ci_est_sim">Sim</label>
-                    <input type="radio" name="ci_estetico" id="ci_est_nao" value="Não"><label for="ci_est_nao">Não</label>
-                  </div>
-                </div>
-                <div class="ci-field ci-full">
-                  <label>Aceita Registro de Sinistro?</label>
-                  <div class="ci-radio-group">
-                    <input type="radio" name="ci_sinistro" id="ci_sin_sim" value="Sim"><label for="ci_sin_sim">Sim</label>
-                    <input type="radio" name="ci_sinistro" id="ci_sin_nao" value="Não"><label for="ci_sin_nao">Não</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="ci-nav">
-              <button class="ci-btn-prev" onclick="ciPrev()">← Anterior</button>
-              <button class="ci-btn-next" onclick="ciNext()">Próximo →</button>
-            </div>
-          </div>
-
-          <!-- ETAPA 4 — Prioridade -->
-          <div class="ci-panel" id="ci-step-4">
-            <div class="ci-card">
-              <div class="ci-card-title">Prioridade Principal do Cliente</div>
-              <div class="ci-priority-grid">
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_preco" value="Menor preço"><label for="ci_pri_preco"><span class="pi">💰</span>Menor Preço</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_parcela" value="Menor parcela"><label for="ci_pri_parcela"><span class="pi">📉</span>Menor Parcela</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_ano" value="Ano mais novo"><label for="ci_pri_ano"><span class="pi">📅</span>Ano Mais Novo</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_km" value="Menor quilometragem"><label for="ci_pri_km"><span class="pi">🛣️</span>Menor KM</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_gar" value="Garantia"><label for="ci_pri_gar"><span class="pi">🛡️</span>Garantia</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_eco" value="Economia / Consumo"><label for="ci_pri_eco"><span class="pi">⛽</span>Economia</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_pot" value="Potência / Desempenho"><label for="ci_pri_pot"><span class="pi">⚡</span>Potência</label></div>
-                <div class="ci-pri"><input type="radio" name="ci_prioridade" id="ci_pri_cvb" value="Melhor custo-benefício geral"><label for="ci_pri_cvb"><span class="pi">🏆</span>Custo-Benefício</label></div>
-              </div>
-              <button class="ci-btn-generate" onclick="ciGerar()">⚡ Gerar Prompt de Busca</button>
-            </div>
-            <div class="ci-nav">
-              <button class="ci-btn-prev" onclick="ciPrev()">← Anterior</button>
-              <span></span>
-            </div>
-          </div>
-
-          <!-- RESULTADO -->
-          <div class="ci-card ci-result" id="ciResult">
-            <div class="ci-result-header">
-              <div class="ci-result-title">Prompt Gerado</div>
-              <span style="font-size:var(--text-xs);color:var(--text-3)">Copie e cole no ChatGPT</span>
-            </div>
-            <div class="ci-prompt-box" id="ciPromptBox"></div>
-            <div class="ci-copy-row">
-              <button class="ci-btn-copy" id="ciBtnCopy" onclick="ciCopiar()">📋 Copiar Prompt</button>
-              <span class="ci-copy-ok" id="ciCopyOk">✓ Prompt copiado com sucesso!</span>
-              <button class="ci-btn-reset" onclick="ciReset()">↺ Nova Consulta</button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <!-- FIM CONSULTOR INTELIGENTE -->
     </div>
   </div>
 </div>
@@ -1940,12 +1591,12 @@ const SB_URL='https://ptxygvoqfoacgwcvaztp.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0eHlndm9xZm9hY2d3Y3ZhenRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NjI3MjQsImV4cCI6MjA5NDQzODcyNH0.spsUClG49F6uCAOAu2PAEWlV_N6xD8ha5z_EAz1v7Ms';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const PERFIS={
-  sdr:{name:'SDR',role:'Qualificação de Leads',avatar:'SD',color:'#3b82f6',nav:[{label:'Leads',page:'page-sdr'},{label:'Financiamento',page:'page-financiamento'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Luis Henrique',page:'page-vend-luis'},{label:'Claudinei',page:'page-vend-claudinei'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]},
-  luis:{name:'Luis Henrique',role:'Vendedor',avatar:'LH',color:'#00c853',nav:[{label:'Meus Leads',page:'page-vendedor'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]},
-  claudinei:{name:'Claudinei',role:'Vendedor',avatar:'CL',color:'#8b5cf6',nav:[{label:'Meus Leads',page:'page-vendedor'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]},
-  financiamento:{name:'Financiamento',role:'Análise e Aprovação',avatar:'FI',color:'#14b8a6',nav:[{label:'Financiamento',page:'page-financiamento'},{label:'Base Clientes',page:'page-base-clientes'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]},
-  gerente:{name:'Gerente',role:'Visão Geral',avatar:'GR',color:'#f59e0b',nav:[{label:'Dashboard',page:'page-gerente'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]},
-  adm:{name:'ADM',role:'Administrador',avatar:'AD',color:'#0a1628',nav:[{label:'Colunas',page:'page-adm-colunas'},{label:'Relatórios',page:'page-adm-relatorios'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'⚡ Consultor IA',page:'page-consultor'},{label:'Configurações',page:'page-settings'}]}
+  sdr:{name:'SDR',role:'Qualificação de Leads',avatar:'SD',color:'#3b82f6',nav:[{label:'Leads',page:'page-sdr'},{label:'Financiamento',page:'page-financiamento'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Luis Henrique',page:'page-vend-luis'},{label:'Claudinei',page:'page-vend-claudinei'},{label:'Configurações',page:'page-settings'}]},
+  luis:{name:'Luis Henrique',role:'Vendedor',avatar:'LH',color:'#00c853',nav:[{label:'Meus Leads',page:'page-vendedor'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'Configurações',page:'page-settings'}]},
+  claudinei:{name:'Claudinei',role:'Vendedor',avatar:'CL',color:'#8b5cf6',nav:[{label:'Meus Leads',page:'page-vendedor'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'Configurações',page:'page-settings'}]},
+  financiamento:{name:'Financiamento',role:'Análise e Aprovação',avatar:'FI',color:'#14b8a6',nav:[{label:'Financiamento',page:'page-financiamento'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Configurações',page:'page-settings'}]},
+  gerente:{name:'Gerente',role:'Visão Geral',avatar:'GR',color:'#f59e0b',nav:[{label:'Dashboard',page:'page-gerente'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'Configurações',page:'page-settings'}]},
+  adm:{name:'ADM',role:'Administrador',avatar:'AD',color:'#0a1628',nav:[{label:'Colunas',page:'page-adm-colunas'},{label:'Relatórios',page:'page-adm-relatorios'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'Configurações',page:'page-settings'}]}
 };
 const COLS_DEF={
   sdr:[{id:'novo',label:'Novo',cor:'#3b82f6'},{id:'importado',label:'📥 Importado',cor:'#f97316'},{id:'tentando',label:'Tentando contato',cor:'#f59e0b'},{id:'reagendado',label:'♻️ Reagendado',cor:'#8b5cf6'},{id:'qualificado',label:'Qualificado',cor:'#00c853'},{id:'sem_interesse',label:'❌ Sem interesse',cor:'#ef4444'}],
@@ -2076,68 +1727,10 @@ function fmtDate(d){return d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digi
 function fmtBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR')}
 
 let dragLeadId=null,gerenteViewAtual='geral';
-function cardHTML(l){
-  const tasks=l.tasks||[];
-  const nextTask=tasks.filter(t=>!t.done&&t.due).sort((a,b)=>a.due>b.due?1:-1)[0];
-  const late=tasks.filter(t=>!t.done&&t.due&&new Date(t.due)<new Date()).length;
-  const sc=l.ultimo_contato?Math.floor((Date.now()-new Date(l.ultimo_contato))/36e5):999;
-  const sla=sc>=24&&!['qualificado','sem_interesse','fechado','perdido'].includes(l.etapa);
-  const timer=timerInfo(l.atualizado_em||l.criado_em);const tc=l.temperatura||'cold';
-  const score=calcScore(l);const sClass=scoreClass(score);
-  // Próximo follow-up formatado
-  const proxFmt=nextTask?new Date(nextTask.due+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
-  return`<div class="lead-card ${tc} ${sla?'sla-alert':''}"
-    draggable="true"
-    ondragstart="onCardDragStart(event,${l.id})"
-    ondragend="onCardDragEnd(event)"
-    onclick="if(!isDragging)openLead(${l.id})">
-    ${sla?'<div class="sla-dot" title="Sem contato há +24h"></div>':''}
-    <div class="card-top"><div class="card-nome">${l.nome}</div>${tempBadge(tc)}</div>
-    ${l.interesse?`<div class="card-interesse">${l.interesse}</div>`:''}
-    ${proxFmt?`<div class="card-followup ${late>0?'overdue':''}">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      ${proxFmt}${late>0?' · '+late+' atrasada'+(late>1?'s':''):''}
-    </div>`:''}
-    ${l.prox_acao?`<div class="card-prox">${l.prox_acao}</div>`:''}
-    ${timer?`<div class="card-timer ${timer.cls}">${timer.txt}</div>`:''}
-    ${l.telefone?`<a class="card-wpp-btn" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg>WhatsApp</a>`:''}
-  </div>`;
-}
-function calcScore(l){
-  let s=0;
-  if(l.temperatura==='hot')s+=30;
-  else if(l.temperatura==='warm')s+=15;
-  if(l.ultimo_contato){const h=(Date.now()-new Date(l.ultimo_contato))/36e5;if(h<2)s+=25;else if(h<24)s+=15;else if(h<72)s+=5;}
-  if((l.documentos||[]).length>0)s+=20;
-  if(l.ficha_fin)s+=15;
-  if((l.tasks||[]).some(t=>t.title&&(t.title.toLowerCase().includes('visita')||t.title.toLowerCase().includes('simulação')||t.title.toLowerCase().includes('proposta'))))s+=10;
-  if(l.vendedor)s+=5;
-  return Math.min(s,100);
-}
-function scoreClass(s){return s>=70?'strong':s>=40?'medium':'weak';}
-function scoreLabel(s){return s>=70?'Forte':s>=40?'Médio':'Fraco';}
 
-function abrirWhatsApp(tel,nome,interesse,e){
-  if(e){e.stopPropagation();e.preventDefault();}
-  const num=(tel||'').replace(/\D/g,'');
-  if(!num){showToast('Lead sem telefone cadastrado','warning');return;}
-  const fullNum=num.startsWith('55')?num:'55'+num;
-  const msg=encodeURIComponent(`Olá ${nome||''}! Tudo bem? Sou da ST Seminovos e gostaria de conversar sobre ${interesse||'um veículo do seu interesse'}. Posso te ajudar?`);
-  window.open(`https://wa.me/${fullNum}?text=${msg}`,'_blank');
-}
-
-function fmtUltimoContato(l){
-  const d=l.ultimo_contato;if(!d)return null;
-  const h=Math.floor((Date.now()-new Date(d))/36e5);
-  if(h<1)return'Agora mesmo';if(h<24)return`${h}h atrás`;
-  const days=Math.floor(h/24);if(days<7)return`${days}d atrás`;
-  return new Date(d).toLocaleDateString('pt-BR');
-}
-
-// Calcula prioridade de tarefa para ordenação e exibição
 function getTaskPriority(l){
   const tasks=(l.tasks||[]).filter(t=>!t.done&&t.due);
-  if(!tasks.length) return {level:3, task:null}; // sem tarefa
+  if(!tasks.length) return {level:3, task:null};
   const todayStr=new Date().toISOString().split('T')[0];
   const lateTasks=tasks.filter(t=>isTaskLate(t));
   if(lateTasks.length){
@@ -2156,7 +1749,6 @@ function getTaskPriority(l){
 function fmtTaskAlert(tp){
   if(!tp.task) return '';
   const t=tp.task;
-  const todayStr=new Date().toISOString().split('T')[0];
   const fmtDate2=d=>new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
   const timeStr=t.time?' às '+t.time:'';
   if(tp.type==='late'){
@@ -2508,7 +2100,7 @@ function renderDayTasks(){
       <div class="dtask-chk ${t.done?'done':''}" onclick="event.stopPropagation();toggleDayTask('${t.src}',${t.leadId||0},${t.taskIdx})">${t.done?'✓':''}</div>
       <div class="dtask-info" onclick="abrirTaskModal('${t.src}',${t.leadId||0},${t.taskIdx})">
         <div class="dtask-name ${t.done?'done':''}">${t.title}</div>
-        <div class="dtask-sub ${ov?'late':''}">${t.resp||''}${ds?' · '+ds+ts:''}${ov?' · Atrasada':''}</div>
+        <div class="dtask-sub ${ov?'late':''}">${t.resp||''}${ds?' · '+ds+(t.time?' às '+t.time:''):''}${ov?' · Atrasada':''}</div>
         ${t.leadNome?`<div class="dtask-lead" onclick="event.stopPropagation();abrirLeadDaTarefa(${t.leadId})" style="cursor:pointer">📌 ${t.leadNome} <span style="color:var(--teal);font-size:10px">→ abrir</span></div>`:''}
       </div>
     </div>`;}).join('');
@@ -3574,25 +3166,23 @@ function updateTaskBadge(){
 }
 
 function filtrarTarefasUrgentes(){
-  // Abrir painel se fechado
-  const toolPanels=document.getElementById('toolPanels');
-  if(toolPanels&&toolPanels.style.display==='none'){toggleTools();}
-  // Mudar para aba Tarefas
-  const toolPane=document.querySelector('.tool-panel#tool-tarefas');
-  if(toolPane){
-    document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
-    const tarefasTab=document.querySelector('.ttab[onclick*="tarefas"]');
-    if(tarefasTab)tarefasTab.classList.add('active');
-    document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
-    toolPane.classList.add('active');
-  }
-  // Selecionar filtro Atrasadas pelo data-filter
-  const atrasadasBtn=document.querySelector('.tkf[data-filter="atrasadas"]');
-  if(atrasadasBtn){
-    atrasadasBtn.click();
-  } else {
-    document.querySelectorAll('.tkf').forEach(b=>{if(b.textContent.trim()==='Atrasadas')b.click();});
-  }
+  // 1. Garantir que o painel de ferramentas está aberto
+  if(!toolsOpen){toggleTools();}
+
+  // 2. Ativar a aba Tarefas diretamente
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  const tarefasTab=document.querySelector('.ttab[onclick*="tarefas"]');
+  if(tarefasTab)tarefasTab.classList.add('active');
+  const toolPane=document.getElementById('tool-tarefas');
+  if(toolPane)toolPane.classList.add('active');
+
+  // 3. Aplicar filtro Atrasadas diretamente (sem depender de querySelector)
+  tkFilter='atrasadas';
+  document.querySelectorAll('.tkf').forEach(t=>{
+    t.classList.toggle('active', t.getAttribute('data-filter')==='atrasadas'||t.textContent.trim()==='Atrasadas');
+  });
+  renderDayTasks();
   showToast('Mostrando tarefas urgentes','info',2000);
 }
 
@@ -4378,223 +3968,6 @@ function toggleFilterDropdown(tipo){
   // Fechar todos
   document.querySelectorAll('.filter-dropdown').forEach(d=>d.classList.remove('open'));
   if(!isOpen)dd.classList.add('open');
-}
-
-// ══════════════════════════════════════
-// CONSULTOR INTELIGENTE ST — LÓGICA
-// ══════════════════════════════════════
-let ciStep=1;
-const ciTotalSteps=4;
-
-function ciGetR(name){const el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:'Não informado';}
-function ciGetV(id){const el=document.getElementById(id);return el?(el.value.trim()||'Não informado'):'Não informado';}
-
-function ciUpdateStepper(){
-  for(let i=1;i<=ciTotalSteps;i++){
-    const item=document.querySelector('#page-consultor .ci-step[data-step="'+i+'"]');
-    if(!item)continue;
-    const circle=item.querySelector('.ci-step-circle');
-    item.classList.remove('active','done');
-    if(i<ciStep){item.classList.add('done');circle.innerHTML='✓';}
-    else if(i===ciStep){item.classList.add('active');circle.textContent=i;}
-    else{circle.textContent=i;}
-    if(i<ciTotalSteps){
-      const conn=document.getElementById('ciConn'+i);
-      if(conn)conn.classList.toggle('done',i<ciStep);
-    }
-  }
-  const pct=(ciStep/ciTotalSteps)*100;
-  const bar=document.getElementById('ciProgress');
-  if(bar)bar.style.width=pct+'%';
-}
-
-function ciShowStep(n){
-  document.querySelectorAll('#page-consultor .ci-panel').forEach(p=>p.classList.remove('active'));
-  const panel=document.getElementById('ci-step-'+n);
-  if(panel)panel.classList.add('active');
-  ciUpdateStepper();
-}
-
-function ciNext(){if(ciStep<ciTotalSteps){ciStep++;ciShowStep(ciStep);}}
-function ciPrev(){if(ciStep>1){ciStep--;ciShowStep(ciStep);}}
-function ciGoTo(n){if(n<=ciStep){ciStep=n;ciShowStep(ciStep);}}
-
-function ciToggleTroca(){
-  const val=ciGetR('ci_troca');
-  const g=document.getElementById('ci_troca_val_group');
-  if(g)g.style.display=val==='Sim'?'block':'none';
-}
-
-// ── BUSCA DE CLIENTES ──
-let ciSearchTimer=null;
-function ciSearchLeads(){
-  clearTimeout(ciSearchTimer);
-  const term=(document.getElementById('ciSearchInput')?.value||'').trim().toLowerCase();
-  const box=document.getElementById('ciResultsBox');
-  if(!box)return;
-  if(term.length<2){box.style.display='none';box.innerHTML='';return;}
-  ciSearchTimer=setTimeout(()=>{
-    const matches=allLeads.filter(l=>{
-      const nome=(l.nome||'').toLowerCase();
-      const tel=(l.telefone||'').toLowerCase();
-      return nome.includes(term)||tel.includes(term);
-    }).slice(0,8);
-    if(!matches.length){
-      box.innerHTML='<div class="ci-results-list"><div class="ci-no-results">Nenhum cliente encontrado</div></div>';
-    } else {
-      box.innerHTML='<div class="ci-results-list">'+matches.map(l=>`
-        <div class="ci-result-item" onclick="ciUsarCliente(${l.id})">
-          <div>
-            <div class="ci-result-name">${l.nome||'—'}</div>
-            <div class="ci-result-sub">${l.telefone||''}${l.interesse?' · '+l.interesse:''}</div>
-          </div>
-          <span class="ci-result-use">Usar →</span>
-        </div>`).join('')+'</div>';
-    }
-    box.style.display='block';
-  },250);
-}
-
-function ciUsarCliente(id){
-  const l=allLeads.find(x=>x.id===id);
-  if(!l)return;
-  // Preencher nome
-  const nomeEl=document.getElementById('ci_nome');
-  if(nomeEl)nomeEl.value=l.nome||'';
-  // Preencher interesse no tipo de veículo se possível
-  const interesse=(l.interesse||'').toLowerCase();
-  const veicEl=document.getElementById('ci_tipo_veiculo');
-  if(veicEl&&interesse){
-    const opts=Array.from(veicEl.options);
-    const match=opts.find(o=>interesse.includes(o.value.toLowerCase()));
-    if(match)veicEl.value=match.value;
-  }
-  // Fechar resultados
-  const box=document.getElementById('ciResultsBox');
-  if(box){box.style.display='none';box.innerHTML='';}
-  const input=document.getElementById('ciSearchInput');
-  if(input)input.value='';
-  // Mostrar badge
-  const badge=document.getElementById('ciSelectedBadge');
-  const name=document.getElementById('ciSelectedName');
-  if(badge&&name){
-    name.textContent='✓ Cliente: '+l.nome+(l.telefone?' · '+l.telefone:'');
-    badge.style.display='flex';
-  }
-  showToast('Cliente "'+l.nome+'" carregado no consultor','success',2500);
-}
-
-function ciLimparCliente(){
-  const input=document.getElementById('ciSearchInput');
-  if(input)input.value='';
-  const box=document.getElementById('ciResultsBox');
-  if(box){box.style.display='none';box.innerHTML='';}
-  const badge=document.getElementById('ciSelectedBadge');
-  if(badge)badge.style.display='none';
-}
-
-// ── GERAR PROMPT ──
-function ciGerar(){
-  const nome=ciGetV('ci_nome');
-  const operacao=ciGetV('ci_operacao');
-  const tipoVei=ciGetV('ci_tipo_veiculo');
-  const regTrab=ciGetV('ci_reg_trabalho');
-  const regCompra=ciGetV('ci_reg_compra');
-  const valorMax=ciGetV('ci_valor_max');
-  const entrada=ciGetV('ci_entrada');
-  const financiar=ciGetR('ci_financiar');
-  const temTroca=ciGetR('ci_troca');
-  const valorTroca=temTroca==='Sim'?ciGetV('ci_valor_troca'):'N/A';
-  const config=ciGetR('ci_config');
-  const anoMin=ciGetV('ci_ano_min');
-  const kmMax=ciGetV('ci_km_max');
-  const cabine=ciGetR('ci_cabine');
-  const ar=ciGetR('ci_ar');
-  const garantia=ciGetR('ci_garantia');
-  const pneus=ciGetR('ci_pneus');
-  const estetico=ciGetR('ci_estetico');
-  const sinistro=ciGetR('ci_sinistro');
-  const prioridade=ciGetR('ci_prioridade');
-
-  const prompt=`Atue como especialista em compra e venda de caminhões seminovos no Brasil.
-
-Preciso encontrar as melhores opções de caminhão para um cliente com o seguinte perfil:
-
-Cliente: ${nome}
-Operação: ${operacao}
-Tipo de veículo buscado: ${tipoVei}
-Região de uso: ${regTrab}
-Região onde aceita comprar: ${regCompra}
-
-Orçamento máximo: R$ ${valorMax}
-Entrada disponível: R$ ${entrada}
-Financiamento: ${financiar}
-Veículo na troca: ${temTroca}
-Valor aproximado da troca: R$ ${valorTroca}
-
-Requisitos obrigatórios:
-Configuração: ${config}
-Ano mínimo: ${anoMin}
-KM máximo: ${kmMax}
-Cabine: ${cabine}
-Ar-condicionado obrigatório: ${ar}
-Garantia obrigatória: ${garantia}
-Pneus bons: ${pneus}
-Aceita detalhe estético: ${estetico}
-Aceita sinistro: ${sinistro}
-
-Prioridade principal do cliente: ${prioridade}
-
-Faça uma análise consultiva e me retorne:
-1. Quais modelos de caminhão mais se encaixam nesse perfil.
-2. Faixa de preço realista de mercado.
-3. Quais modelos eu devo evitar.
-4. Estratégia de negociação.
-5. Argumento comercial para apresentar ao cliente.
-6. Sugestão de mensagem WhatsApp para abordar o cliente.
-7. Se o orçamento está coerente ou se precisa ajustar expectativa.
-
-Use uma linguagem prática, comercial e voltada para venda.`;
-
-  const box=document.getElementById('ciPromptBox');
-  if(box)box.textContent=prompt;
-  const result=document.getElementById('ciResult');
-  if(result){
-    result.classList.add('show');
-    setTimeout(()=>result.scrollIntoView({behavior:'smooth',block:'start'}),100);
-  }
-}
-
-function ciCopiar(){
-  const texto=document.getElementById('ciPromptBox')?.textContent||'';
-  const btn=document.getElementById('ciBtnCopy');
-  const ok=document.getElementById('ciCopyOk');
-  const doCopy=()=>{
-    if(btn){btn.classList.add('copied');btn.innerHTML='✓ Copiado!';}
-    if(ok)ok.classList.add('show');
-    setTimeout(()=>{
-      if(btn){btn.classList.remove('copied');btn.innerHTML='📋 Copiar Prompt';}
-      if(ok)ok.classList.remove('show');
-    },3000);
-    showToast('Prompt copiado com sucesso!','success',2500);
-  };
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(texto).then(doCopy).catch(()=>{
-      const ta=document.createElement('textarea');ta.value=texto;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();
-    });
-  } else {
-    const ta=document.createElement('textarea');ta.value=texto;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);doCopy();
-  }
-}
-
-function ciReset(){
-  document.querySelectorAll('#page-consultor input[type="text"]').forEach(i=>i.value='');
-  document.querySelectorAll('#page-consultor select').forEach(s=>s.selectedIndex=0);
-  document.querySelectorAll('#page-consultor input[type="radio"]').forEach(r=>r.checked=false);
-  const troca=document.getElementById('ci_troca_val_group');if(troca)troca.style.display='none';
-  const result=document.getElementById('ciResult');if(result)result.classList.remove('show');
-  ciLimparCliente();
-  ciStep=1;ciShowStep(1);
 }
 // Fechar dropdown ao clicar fora
 document.addEventListener('click',function(e){

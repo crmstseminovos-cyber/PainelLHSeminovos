@@ -1007,6 +1007,30 @@ tr:last-child td{border-bottom:none}
 .followup-banner.warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
 .followup-banner.ok{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.2)}
 
+
+/* ── GARANTIA CARD ── */
+.garantia-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:var(--text-xs);font-weight:700;margin-top:5px}
+.garantia-ok{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.garantia-warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.garantia-enc{background:var(--surface-3);color:var(--text-4);border:1px solid var(--border)}
+.garantia-pend{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+/* ── MODAL CONFIGURAR COLUNAS ── */
+.cfg-col-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);margin-bottom:6px;transition:var(--t-fast)}
+.cfg-col-item:hover{border-color:var(--border-2)}
+.cfg-col-drag{cursor:grab;color:var(--text-4);font-size:16px;flex-shrink:0}
+.cfg-col-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;cursor:pointer}
+.cfg-col-input{flex:1;border:none;background:transparent;font-size:var(--text-sm);color:var(--text);font-family:var(--font-main);outline:none;padding:2px 4px;border-radius:4px}
+.cfg-col-input:focus{background:var(--surface-3)}
+.cfg-col-actions{display:flex;gap:5px;flex-shrink:0}
+.cfg-col-btn{padding:3px 8px;border-radius:var(--r-sm);border:1px solid var(--border);background:transparent;font-size:var(--text-xs);cursor:pointer;color:var(--text-3);transition:var(--t-fast);font-weight:600}
+.cfg-col-btn:hover{border-color:var(--red-border);color:var(--red)}
+.cfg-col-btn.up:hover,.cfg-col-btn.down:hover{border-color:var(--blue-border);color:var(--blue)}
+/* ── CAMPOS FICHA EDITÁVEL ── */
+.fin-field-editor{border:1px dashed var(--border-2);border-radius:var(--r-md);padding:10px;margin-bottom:8px;background:var(--surface-2)}
+.fin-field-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.fin-field-label-input{flex:1;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-size:var(--text-sm);background:var(--surface-3);color:var(--text)}
+.fin-field-del{padding:4px 8px;border-radius:var(--r-sm);border:1px solid var(--red-border);background:transparent;color:var(--red);font-size:var(--text-xs);cursor:pointer;font-weight:700}
+
 /* ANIMATIONS */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -1280,6 +1304,7 @@ tr:last-child td{border-bottom:none}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</button>
     <button class="btn btn-sm" onclick="openImportModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importar</button>
+    <button class="btn btn-sm" onclick="abrirCfgColunas('sdr')">⚙️ Configurar colunas</button>
     <button class="btn btn-primary btn-sm" onclick="openNovoLead()">+ Novo lead</button>
   </div>
 </div><div class="kanban-wrap" id="kanbanSDR"></div></div>
@@ -1335,8 +1360,10 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="page-title">
   <span id="vendTitle">Meus Leads</span>
-  <div class="btn-group">
+  <div class="btn-group" style="display:flex;gap:8px">
+    <button class="btn btn-sm" onclick="abrirCfgColunas('vendedor')">⚙️ Configurar colunas</button>
     <button class="btn btn-sm" onclick="exportLeads()">Exportar</button>
+    <button class="btn btn-primary btn-sm" onclick="openNovoLead()">+ Novo lead</button>
   </div>
 </div><div class="kanban-wrap" id="kanbanVend"></div></div>
       <div id="page-financiamento" class="page">
@@ -1600,7 +1627,7 @@ const PERFIS={
 };
 const COLS_DEF={
   sdr:[{id:'novo',label:'Novo',cor:'#3b82f6'},{id:'importado',label:'📥 Importado',cor:'#f97316'},{id:'tentando',label:'Tentando contato',cor:'#f59e0b'},{id:'reagendado',label:'♻️ Reagendado',cor:'#8b5cf6'},{id:'qualificado',label:'Qualificado',cor:'#00c853'},{id:'sem_interesse',label:'❌ Sem interesse',cor:'#ef4444'}],
-  vendedor:[{id:'recebido',label:'📋 Recebido',cor:'#3b82f6'},{id:'negociacao',label:'💬 Em negociação',cor:'#f59e0b'},{id:'visita',label:'Visita agendada',cor:'#8b5cf6'},{id:'financiamento',label:'Financiamento',cor:'#14b8a6'},{id:'fechado',label:'Fechado',cor:'#00c853'},{id:'perdido',label:'Perdido',cor:'#ef4444'}],
+  vendedor:[{id:'recebido',label:'📋 Recebido',cor:'#3b82f6'},{id:'negociacao',label:'💬 Em negociação',cor:'#f59e0b'},{id:'visita',label:'Visita agendada',cor:'#8b5cf6'},{id:'financiamento',label:'Financiamento',cor:'#14b8a6'},{id:'fechado',label:'Fechado',cor:'#00c853'},{id:'perdido',label:'Perdido',cor:'#ef4444'},{id:'vendido_concluido',label:'🏁 Vendido Concluído',cor:'#00c853'}],
   financiamento:[{id:'aguardando_docs',label:'📄 Aguard. docs',cor:'#f59e0b'},{id:'preenchimento',label:'📝 Preench. ficha',cor:'#3b82f6'},{id:'aguardando_resp',label:'⏳ Aguard. resposta',cor:'#8b5cf6'},{id:'pendencia',label:'🔄 Pendência',cor:'#f97316'},{id:'aprovado',label:'✅ Aprovado',cor:'#00c853'},{id:'aprovado_restricao',label:'⚠️ Aprov. c/ restrição',cor:'#eab308'},{id:'reprovado',label:'Reprovado',cor:'#ef4444'}]
 };
 let perfil=null,allLeads=[],allCam=[],activeDept='sdr',modalTab='dados';
@@ -1818,6 +1845,7 @@ function cardHTML(l){
     ${l.vendedor?`<div class="card-vendedor">→ ${l.vendedor}</div>`:''}
     ${taskAlertHtml}
     ${timer?`<div class="card-timer ${timer.cls}">⏱ ${timer.txt} nesta etapa</div>`:''}
+    ${(l.etapa_vend==='vendido_concluido'||l.etapa==='vendido_concluido')?fmtGarantiaBadge(l):''}
     ${l.telefone?`<a class="card-wpp-btn" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg>WhatsApp</a>`:''}
   </div>`;
 }
@@ -1883,6 +1911,7 @@ async function onColDrop(e,colId){
     abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLabel);
     return;
   }
+  if(colId==='vendido_concluido'){abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu);return;}
   hist.push({msg:`${nomeQuemMoveu}: ${colLabel(etapaAtual)||'—'} → ${colLabel(colId)}`,data:new Date().toISOString(),tipo:perfil==='gerente'?'amber':'green'});
   const updateObj={[campoEtapa]:colId,historico:hist};
   const{error}=await sb.from('leads').update(updateObj).eq('id',leadId);
@@ -2767,10 +2796,16 @@ function renderLeadModal(l){
   }
   if(modalTab==='financiamento'){
     const isEnviado = !!l.etapa_fin;
+    // Carregar campos extras personalizados
+    const camposExtras = JSON.parse(localStorage.getItem('fin_campos_extras')||'[]');
+    const finExtra = l.ficha_fin_extra || {};
     bodyHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div>${finStatus}</div>
-        ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})"><span class="btn-fin-icon">💰</span> Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">🔄 Reenviar</button>`}
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="abrirEditorCamposFicha(${l.id})">✏️ Editar campos</button>
+          ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})"><span class="btn-fin-icon">💰</span> Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">🔄 Reenviar</button>`}
+        </div>
       </div>
       <div class="fin-section">
         <div class="fin-section-title">👤 Dados Pessoais</div>
@@ -2780,32 +2815,64 @@ function renderLeadModal(l){
         </div>
         <div class="form-grid">
           <div class="form-row"><label>RG</label><input id="fin_rg" value="${fin.rg||''}" placeholder="00.000.000-0"></div>
-          <div class="form-row"><label>Data de emissão RG</label><input type="date" id="fin_rg_emissao" value="${fin.rg_emissao||''}"></div>
+          <div class="form-row"><label>Data de nascimento</label><input type="date" id="fin_nascimento" value="${fin.nascimento||''}"></div>
         </div>
         <div class="form-grid">
-          <div class="form-row"><label>Data de nascimento</label><input type="date" id="fin_nascimento" value="${fin.nascimento||''}"></div>
-          <div class="form-row"><label>Local de nascimento / UF</label><input id="fin_naturalidade" value="${fin.naturalidade||''}" placeholder="Ex: São Paulo / SP"></div>
+          <div class="form-row"><label>Nome da mãe</label><input id="fin_mae" value="${fin.mae||''}" placeholder="Nome completo da mãe"></div>
+          <div class="form-row"><label>Nome do pai</label><input id="fin_pai" value="${fin.pai||''}" placeholder="Nome completo do pai"></div>
         </div>
-        <div class="form-row"><label>Nome da mãe</label><input id="fin_mae" value="${fin.mae||''}" placeholder="Nome completo da mãe"></div>
-      </div>
-      <div class="fin-section">
-        <div class="fin-section-title">🏡 Endereço Residencial</div>
         <div class="form-grid">
           <div class="form-row"><label>CEP</label><input id="fin_cep" value="${fin.cep||''}" placeholder="00000-000" oninput="buscarCepFin(this)"></div>
-          <div class="form-row"><label>Bairro</label><input id="fin_bairro" value="${fin.bairro||''}"></div>
+          <div class="form-row"><label>Número</label><input id="fin_numero" value="${fin.numero||''}" placeholder="Ex: 123"></div>
         </div>
-        <div class="form-row"><label>Rua / Endereço</label><input id="fin_rua" value="${fin.rua||''}" placeholder="Rua, número"></div>
+        <div class="form-grid">
+          <div class="form-row"><label>Bairro</label><input id="fin_bairro" value="${fin.bairro||''}"></div>
+          <div class="form-row"><label>Rua / Endereço</label><input id="fin_rua" value="${fin.rua||''}" placeholder="Rua, número"></div>
+        </div>
         <div class="form-grid">
           <div class="form-row"><label>Cidade</label><input id="fin_cidade" value="${fin.cidade||''}"></div>
           <div class="form-row"><label>Estado</label><input id="fin_estado" value="${fin.estado||''}" placeholder="SP"></div>
         </div>
-      </div>
-      <div class="fin-section">
-        <div class="fin-section-title">📱 Contato</div>
         <div class="form-grid">
           <div class="form-row"><label>Celular</label><input id="fin_celular" value="${fin.celular||l.telefone||''}" placeholder="(00) 00000-0000"></div>
           <div class="form-row"><label>E-mail</label><input id="fin_email" value="${fin.email||''}" placeholder="email@exemplo.com"></div>
         </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Tem CNH?</label><select id="fin_cnh"><option value="">—</option><option ${fin.cnh==='Sim'?'selected':''}>Sim</option><option ${fin.cnh==='Não'?'selected':''}>Não</option></select></div>
+        </div>
+      </div>
+      <div class="fin-section">
+        <div class="fin-section-title">💼 Dados Profissionais</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Nome da empresa</label><input id="fin_empresa" value="${fin.empresa||''}" placeholder="Razão social ou nome fantasia"></div>
+          <div class="form-row"><label>Cargo</label><input id="fin_cargo" value="${fin.cargo||''}" placeholder="Ex: Motorista, Gerente..."></div>
+        </div>
+        <div class="form-row"><label>Endereço da empresa</label><input id="fin_empresa_end" value="${fin.empresa_end||''}" placeholder="Endereço completo"></div>
+        <div class="form-grid">
+          <div class="form-row"><label>Telefone da empresa</label><input id="fin_empresa_tel" value="${fin.empresa_tel||''}" placeholder="(00) 0000-0000"></div>
+          <div class="form-row"><label>Data de admissão</label><input type="date" id="fin_admissao" value="${fin.admissao||''}"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Renda (R$)</label><input id="fin_renda" value="${fin.renda||''}" placeholder="Ex: 5000,00"></div>
+        </div>
+      </div>
+      <div class="fin-section">
+        <div class="fin-section-title">👥 Referência Pessoal</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Nome — Referência 1</label><input id="fin_ref1_nome" value="${fin.ref1_nome||''}" placeholder="Nome completo"></div>
+          <div class="form-row"><label>Telefone — Referência 1</label><input id="fin_ref1_tel" value="${fin.ref1_tel||''}" placeholder="(00) 00000-0000"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Nome — Referência 2</label><input id="fin_ref2_nome" value="${fin.ref2_nome||''}" placeholder="Nome completo"></div>
+          <div class="form-row"><label>Telefone — Referência 2</label><input id="fin_ref2_tel" value="${fin.ref2_tel||''}" placeholder="(00) 00000-0000"></div>
+        </div>
+      </div>
+      <div class="fin-section">
+        <div class="fin-section-title">ℹ️ Informações Complementares</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Tem renda extra?</label><select id="fin_renda_extra"><option value="">—</option><option ${fin.renda_extra==='Sim'?'selected':''}>Sim</option><option ${fin.renda_extra==='Não'?'selected':''}>Não</option></select></div>
+        </div>
+        <div class="form-row"><label>Se autônomo/empresário — função ou atividade</label><input id="fin_autonomo" value="${fin.autonomo||''}" placeholder="Ex: Transportador autônomo, dono de frota..."></div>
       </div>
       <div class="fin-section">
         <div class="fin-section-title">🚛 Dados do Veículo</div>
@@ -2817,9 +2884,12 @@ function renderLeadModal(l){
           <div class="form-row"><label>Placa</label><input id="fin_veiculo_placa" value="${fin.veiculo_placa||veiculo?.placa||''}" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
           <div class="form-row"><label>Valor (R$)</label><input id="fin_veiculo_valor" value="${fin.veiculo_valor||veiculo?.valor||''}" placeholder="175000"></div>
         </div>
-      </div>`;
+      </div>
+      ${camposExtras.length ? `<div class="fin-section"><div class="fin-section-title">📋 Campos Personalizados</div>`
+        + camposExtras.map(c=>`<div class="form-row"><label>${c.label}</label><input id="fin_extra_${c.id}" value="${finExtra[c.id]||''}" placeholder="${c.placeholder||''}"></div>`).join('')
+        + `</div>` : ''}
+    `;
   }
-
   if(modalTab==='documentos'){
     const docs = l.documentos || [];
     const docsByType = {
@@ -2934,6 +3004,10 @@ async function enviarParaFinanciamento(id){
 // ── SALVAR FICHA FINANCIAMENTO ──
 async function salvarFichaFin(id){
   const l=allLeads.find(x=>x.id===id);if(!l)return;
+  // Coletar campos extras personalizados
+  const camposExtras=JSON.parse(localStorage.getItem('fin_campos_extras')||'[]');
+  const finExtraData={};
+  camposExtras.forEach(c=>{const el=document.getElementById('fin_extra_'+c.id);if(el)finExtraData[c.id]=el.value||'';});
   const ficha={
     nome:document.getElementById('fin_nome')?.value||'',
     cpf:document.getElementById('fin_cpf')?.value||'',
@@ -2942,13 +3016,28 @@ async function salvarFichaFin(id){
     nascimento:document.getElementById('fin_nascimento')?.value||'',
     naturalidade:document.getElementById('fin_naturalidade')?.value||'',
     mae:document.getElementById('fin_mae')?.value||'',
+    pai:document.getElementById('fin_pai')?.value||'',
     cep:document.getElementById('fin_cep')?.value||'',
+    numero:document.getElementById('fin_numero')?.value||'',
     rua:document.getElementById('fin_rua')?.value||'',
     bairro:document.getElementById('fin_bairro')?.value||'',
     cidade:document.getElementById('fin_cidade')?.value||'',
     estado:document.getElementById('fin_estado')?.value||'',
     celular:document.getElementById('fin_celular')?.value||'',
     email:document.getElementById('fin_email')?.value||'',
+    cnh:document.getElementById('fin_cnh')?.value||'',
+    empresa:document.getElementById('fin_empresa')?.value||'',
+    empresa_end:document.getElementById('fin_empresa_end')?.value||'',
+    empresa_tel:document.getElementById('fin_empresa_tel')?.value||'',
+    cargo:document.getElementById('fin_cargo')?.value||'',
+    renda:document.getElementById('fin_renda')?.value||'',
+    admissao:document.getElementById('fin_admissao')?.value||'',
+    ref1_nome:document.getElementById('fin_ref1_nome')?.value||'',
+    ref1_tel:document.getElementById('fin_ref1_tel')?.value||'',
+    ref2_nome:document.getElementById('fin_ref2_nome')?.value||'',
+    ref2_tel:document.getElementById('fin_ref2_tel')?.value||'',
+    renda_extra:document.getElementById('fin_renda_extra')?.value||'',
+    autonomo:document.getElementById('fin_autonomo')?.value||'',
     veiculo_modelo:document.getElementById('fin_veiculo_modelo')?.value||'',
     veiculo_ano:document.getElementById('fin_veiculo_ano')?.value||'',
     veiculo_placa:document.getElementById('fin_veiculo_placa')?.value||'',
@@ -2967,7 +3056,7 @@ async function salvarFichaFin(id){
       'Content-Type':'application/json',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({ficha_fin:ficha,historico:hist})
+    body:JSON.stringify({ficha_fin:ficha,ficha_fin_extra:finExtraData,historico:hist})
   });
   if(!res.ok){const t=await res.text();showToast('Erro ao salvar ficha: '+t);return;}
   // Feedback visual
@@ -4017,6 +4106,304 @@ function updateFilterBadge(tipo){
   badge.style.display=count>0?'inline-flex':'none';
   btn.classList.toggle('has-filters',count>0);
 }
+
+
+
+// ── GARANTIA ──
+function fmtGarantiaBadge(l){
+  const dataEntrega=l.data_entrega_veiculo;
+  if(!dataEntrega){
+    return '<div class="garantia-badge garantia-pend">🚛 Aguardando data de entrega</div>';
+  }
+  const entrega=new Date(dataEntrega+'T00:00:00');
+  const fim=new Date(entrega);fim.setDate(fim.getDate()+90);
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const diasRestantes=Math.ceil((fim-hoje)/86400000);
+  if(diasRestantes<=0){
+    return '<div class="garantia-badge garantia-enc">🔒 Garantia encerrada</div>';
+  }
+  const cls=diasRestantes>30?'garantia-ok':'garantia-warn';
+  return '<div class="garantia-badge '+cls+'">🛡️ Garantia: '+diasRestantes+'d restantes</div>';
+}
+
+// ── MODAL VENDIDO CONCLUÍDO ──
+function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu){
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  const dataAtual=l.data_entrega_veiculo||'';
+  openModal(`<div class="modal-head">
+      <div><h3>🏁 Vendido Concluído</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Informe a data de entrega do veículo ao cliente</div></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:14px;background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-lg);margin-bottom:16px">
+        <div style="font-size:var(--text-sm);color:var(--accent);font-weight:700;margin-bottom:4px">🛡️ Garantia de 90 dias</div>
+        <div style="font-size:var(--text-sm);color:var(--text-3)">A contagem da garantia começa a partir da data real de entrega do veículo.</div>
+      </div>
+      <div class="form-row">
+        <label>Data de entrega do veículo *</label>
+        <input type="date" id="data_entrega_input" value="${dataAtual}" max="${new Date().toISOString().split('T')[0]}">
+      </div>
+      <div id="garantia_preview" style="margin-top:8px;font-size:var(--text-sm);color:var(--text-3)"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarVendidoConcluido(${leadId},'${campoEtapa}')">✅ Confirmar entrega</button>
+    </div>`);
+  // Preview dinâmico
+  setTimeout(()=>{
+    const inp=document.getElementById('data_entrega_input');
+    const prev=document.getElementById('garantia_preview');
+    if(inp&&prev){
+      const atualizar=()=>{
+        if(!inp.value){prev.textContent='';return;}
+        const d=new Date(inp.value+'T00:00:00');
+        const fim=new Date(d);fim.setDate(fim.getDate()+90);
+        prev.innerHTML='<span style="color:var(--accent);font-weight:600">🛡️ Garantia até: '+fim.toLocaleDateString('pt-BR')+'</span>';
+      };
+      inp.addEventListener('input',atualizar);
+      atualizar();
+    }
+  },100);
+}
+
+async function confirmarVendidoConcluido(leadId,campoEtapa){
+  const dataEntrega=document.getElementById('data_entrega_input')?.value;
+  if(!dataEntrega){showToast('Informe a data de entrega!','warning');return;}
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  const hist=[...(l.historico||[])];
+  hist.push({msg:'Lead movido para Vendido Concluído — Entrega: '+new Date(dataEntrega+'T00:00:00').toLocaleDateString('pt-BR'),data:new Date().toISOString(),tipo:'green'});
+  const updateObj={};
+  updateObj[campoEtapa]='vendido_concluido';
+  updateObj.data_entrega_veiculo=dataEntrega;
+  updateObj.historico=hist;
+  const res=await fetch(`${SB_URL}/rest/v1/leads?id=eq.${leadId}`,{
+    method:'PATCH',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(updateObj)
+  });
+  if(!res.ok){const t=await res.text();showToast('Erro: '+t,'error');return;}
+  closeModal();showToast('Entrega registrada! Garantia de 90 dias iniciada.','success');
+  await loadAll();
+}
+
+// ── CONFIGURAR COLUNAS ──
+function abrirCfgColunas(dept){
+  const cols=JSON.parse(JSON.stringify(colunas[dept]||[]));
+  const renderLista=()=>{
+    const lista=document.getElementById('cfgColLista');if(!lista)return;
+    lista.innerHTML=cols.map((c,i)=>`
+      <div class="cfg-col-item" data-idx="${i}">
+        <span class="cfg-col-drag">⠿</span>
+        <div class="cfg-col-dot" style="background:${c.cor}" onclick="trocarCorCol(${i},'${dept}')" title="Clique para mudar cor"></div>
+        <input class="cfg-col-input" value="${c.label}" onchange="cols_temp[${i}].label=this.value" id="cfg_col_lbl_${i}">
+        <div class="cfg-col-actions">
+          ${i>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i},-1)">↑</button>`:'<span style="width:30px"></span>'}
+          ${i<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i},1)">↓</button>`:'<span style="width:30px"></span>'}
+          <button class="cfg-col-btn" onclick="removerColCfg(${i})">🗑</button>
+        </div>
+      </div>`).join('');
+    window.cols_temp=cols;
+  };
+  window.cols_temp=cols;
+  window.cfg_dept_atual=dept;
+  openModal(`<div class="modal-head">
+      <div><h3>⚙️ Configurar Colunas</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Funil: ${dept==='sdr'?'SDR':dept==='vendedor'?'Vendedor':'Financiamento'}</div></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="cfgColLista"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="novaColNomeCfg" placeholder="Nome da nova coluna..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);color:var(--text);font-size:var(--text-sm)">
+        <input id="novaColCorCfg" type="color" value="#3b82f6" style="width:42px;height:38px;border-radius:8px;border:1px solid var(--border);padding:2px;cursor:pointer">
+        <button class="btn btn-primary" onclick="adicionarColCfg()">+ Adicionar</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCfgColunas()">💾 Salvar configuração</button>
+    </div>`);
+  setTimeout(renderLista,50);
+}
+
+function moverColCfg(i,dir){
+  const cols=window.cols_temp;
+  const t=cols[i];cols[i]=cols[i+dir];cols[i+dir]=t;
+  // Reler labels dos inputs antes de re-renderizar
+  const lista=document.getElementById('cfgColLista');
+  if(lista){lista.querySelectorAll('.cfg-col-input').forEach((inp,idx)=>{if(cols[idx])cols[idx].label=inp.value;});}
+  const renderLista=()=>{
+    const lista2=document.getElementById('cfgColLista');if(!lista2)return;
+    lista2.innerHTML=cols.map((c,i2)=>`
+      <div class="cfg-col-item">
+        <span class="cfg-col-drag">⠿</span>
+        <div class="cfg-col-dot" style="background:${c.cor}"></div>
+        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
+        <div class="cfg-col-actions">
+          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
+          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
+          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
+        </div>
+      </div>`).join('');
+    window.cols_temp=cols;
+  };
+  renderLista();
+}
+
+function removerColCfg(i){
+  const cols=window.cols_temp;
+  const col=cols[i];
+  // Verificar se tem leads nessa coluna
+  const dept=window.cfg_dept_atual;
+  const leadsNaCol=allLeads.filter(l=>{
+    if(dept==='vendedor')return l.etapa_vend===col.id;
+    if(dept==='sdr')return l.etapa===col.id;
+    return l.etapa_fin===col.id;
+  });
+  if(leadsNaCol.length>0){
+    const outras=cols.filter((_,idx)=>idx!==i).map(c=>c.label).join(', ');
+    const destino=prompt(`A coluna "${col.label}" tem ${leadsNaCol.length} lead(s). Para qual coluna mover? (Digite o nome exato)\n\nOpções: ${outras}`);
+    if(!destino){return;}
+    const colDestino=cols.find((c,idx)=>idx!==i&&c.label.toLowerCase()===destino.toLowerCase());
+    if(!colDestino){showToast('Coluna de destino não encontrada!','warning');return;}
+    // Mover os leads localmente (serão salvos quando salvar a config)
+    window.leads_para_mover=window.leads_para_mover||[];
+    leadsNaCol.forEach(l=>window.leads_para_mover.push({id:l.id,dept,novaEtapa:colDestino.id}));
+  }
+  cols.splice(i,1);
+  moverColCfg(0,0);// re-renderizar
+  const lista=document.getElementById('cfgColLista');
+  if(lista){
+    lista.innerHTML=cols.map((c,i2)=>`
+      <div class="cfg-col-item">
+        <span class="cfg-col-drag">⠿</span>
+        <div class="cfg-col-dot" style="background:${c.cor}"></div>
+        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
+        <div class="cfg-col-actions">
+          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
+          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
+          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function adicionarColCfg(){
+  const nome=document.getElementById('novaColNomeCfg')?.value.trim();
+  const cor=document.getElementById('novaColCorCfg')?.value||'#3b82f6';
+  if(!nome){showToast('Digite o nome da coluna','warning');return;}
+  const cols=window.cols_temp;
+  // Ler labels atuais dos inputs
+  const lista=document.getElementById('cfgColLista');
+  if(lista)lista.querySelectorAll('.cfg-col-input').forEach((inp,i)=>{if(cols[i])cols[i].label=inp.value;});
+  cols.push({id:nome.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'')+'_'+Date.now(),label:nome,cor});
+  document.getElementById('novaColNomeCfg').value='';
+  moverColCfg(0,0);
+  if(lista){
+    lista.innerHTML=cols.map((c,i2)=>`
+      <div class="cfg-col-item">
+        <span class="cfg-col-drag">⠿</span>
+        <div class="cfg-col-dot" style="background:${c.cor}"></div>
+        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
+        <div class="cfg-col-actions">
+          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
+          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
+          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+async function salvarCfgColunas(){
+  const cols=window.cols_temp;
+  const dept=window.cfg_dept_atual;
+  // Ler labels finais dos inputs
+  const lista=document.getElementById('cfgColLista');
+  if(lista)lista.querySelectorAll('.cfg-col-input').forEach((inp,i)=>{if(cols[i])cols[i].label=inp.value;});
+  colunas[dept]=cols;
+  localStorage.setItem('st_colunas',JSON.stringify(colunas));
+  // Mover leads se necessário
+  const paraMove=window.leads_para_mover||[];
+  for(const mv of paraMove){
+    const campo=mv.dept==='vendedor'?'etapa_vend':mv.dept==='sdr'?'etapa':'etapa_fin';
+    const upd={};upd[campo]=mv.novaEtapa;
+    await fetch(`${SB_URL}/rest/v1/leads?id=eq.${mv.id}`,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(upd)});
+  }
+  window.leads_para_mover=[];
+  closeModal();
+  showToast('Colunas salvas!','success');
+  await loadAll();
+}
+
+// ── EDITOR DE CAMPOS DA FICHA ──
+function abrirEditorCamposFicha(leadId){
+  const campos=JSON.parse(localStorage.getItem('fin_campos_extras')||'[]');
+  const renderCampos=()=>{
+    const lista=document.getElementById('finFieldLista');if(!lista)return;
+    lista.innerHTML=campos.length?campos.map((c,i)=>`
+      <div class="fin-field-row">
+        <input class="fin-field-label-input" value="${c.label}" placeholder="Nome do campo" id="fin_fld_${i}" onchange="campos_temp[${i}].label=this.value">
+        <button class="fin-field-del" onclick="removerCampoFicha(${i})">🗑</button>
+      </div>`).join(''):'<div style="color:var(--text-4);font-size:var(--text-sm);padding:8px 0">Nenhum campo personalizado ainda.</div>';
+    window.campos_temp=campos;
+  };
+  window.campos_temp=campos;
+  openModal(`<div class="modal-head">
+      <div><h3>✏️ Editar Campos da Ficha</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Adicione ou remova campos personalizados</div></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="finFieldLista"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="novoFieldNome" placeholder="Nome do novo campo..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);color:var(--text);font-size:var(--text-sm)">
+        <button class="btn btn-primary" onclick="adicionarCampoFicha()">+ Adicionar</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCamposFicha(${leadId})">💾 Salvar</button>
+    </div>`);
+  setTimeout(renderCampos,50);
+}
+
+function adicionarCampoFicha(){
+  const nome=document.getElementById('novoFieldNome')?.value.trim();if(!nome)return;
+  const campos=window.campos_temp;
+  const lista=document.getElementById('finFieldLista');
+  if(lista)lista.querySelectorAll('.fin-field-label-input').forEach((inp,i)=>{if(campos[i])campos[i].label=inp.value;});
+  campos.push({id:'campo_'+Date.now(),label:nome,placeholder:''});
+  document.getElementById('novoFieldNome').value='';
+  const lista2=document.getElementById('finFieldLista');
+  if(lista2){lista2.innerHTML=campos.map((c,i)=>`
+    <div class="fin-field-row">
+      <input class="fin-field-label-input" value="${c.label}" placeholder="Nome do campo" id="fin_fld_${i}">
+      <button class="fin-field-del" onclick="removerCampoFicha(${i})">🗑</button>
+    </div>`).join('');}
+}
+
+function removerCampoFicha(i){
+  const campos=window.campos_temp;
+  const lista=document.getElementById('finFieldLista');
+  if(lista)lista.querySelectorAll('.fin-field-label-input').forEach((inp,idx)=>{if(campos[idx])campos[idx].label=inp.value;});
+  campos.splice(i,1);
+  if(lista){lista.innerHTML=campos.length?campos.map((c,i2)=>`
+    <div class="fin-field-row">
+      <input class="fin-field-label-input" value="${c.label}" id="fin_fld_${i2}">
+      <button class="fin-field-del" onclick="removerCampoFicha(${i2})">🗑</button>
+    </div>`).join(''):'<div style="color:var(--text-4);font-size:var(--text-sm);padding:8px 0">Nenhum campo personalizado ainda.</div>';}
+}
+
+function salvarCamposFicha(leadId){
+  const campos=window.campos_temp;
+  const lista=document.getElementById('finFieldLista');
+  if(lista)lista.querySelectorAll('.fin-field-label-input').forEach((inp,i)=>{if(campos[i])campos[i].label=inp.value;});
+  localStorage.setItem('fin_campos_extras',JSON.stringify(campos));
+  closeModal();
+  showToast('Campos salvos!','success');
+  // Reabrir ficha
+  const l=allLeads.find(x=>x.id===leadId);
+  if(l){modalTab='financiamento';renderLeadModal(l);}
+}
+
 
 </script>
 </body>

@@ -1544,6 +1544,12 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
       </div>
+      <div id="page-estoque" class="page">
+        <div class="table-wrap">
+          <div class="table-top">
+            <h3>🚛 Estoque de Veículos</h3>
+            <button class="btn btn-primary btn-sm" onclick="openCaminhaoModal(0)">+ Novo Veículo</button>
+          </div>
           <div class="table-filters">
             <select id="filtroStatus" onchange="renderEstoque()"><option value="">Todos</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option><option>Vendido</option></select>
             <input id="buscaCam" placeholder="Buscar modelo ou placa..." oninput="renderEstoque()">
@@ -1721,103 +1727,6 @@ function fmtDate(d){return d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digi
 function fmtBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR')}
 
 let dragLeadId=null,gerenteViewAtual='geral';
-function cardHTML(l){
-  const tasks=l.tasks||[];
-  const nextTask=tasks.filter(t=>!t.done&&t.due).sort((a,b)=>a.due>b.due?1:-1)[0];
-  const late=tasks.filter(t=>!t.done&&t.due&&new Date(t.due)<new Date()).length;
-  const sc=l.ultimo_contato?Math.floor((Date.now()-new Date(l.ultimo_contato))/36e5):999;
-  const sla=sc>=24&&!['qualificado','sem_interesse','fechado','perdido'].includes(l.etapa);
-  const timer=timerInfo(l.atualizado_em||l.criado_em);const tc=l.temperatura||'cold';
-  const score=calcScore(l);const sClass=scoreClass(score);
-  // Próximo follow-up formatado
-  const proxFmt=nextTask?new Date(nextTask.due+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
-  return`<div class="lead-card ${tc} ${sla?'sla-alert':''}"
-    draggable="true"
-    ondragstart="onCardDragStart(event,${l.id})"
-    ondragend="onCardDragEnd(event)"
-    onclick="if(!isDragging)openLead(${l.id})">
-    ${sla?'<div class="sla-dot" title="Sem contato há +24h"></div>':''}
-    <div class="card-top"><div class="card-nome">${l.nome}</div>${tempBadge(tc)}</div>
-    ${l.interesse?`<div class="card-interesse">${l.interesse}</div>`:''}
-    ${proxFmt?`<div class="card-followup ${late>0?'overdue':''}">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      ${proxFmt}${late>0?' · '+late+' atrasada'+(late>1?'s':''):''}
-    </div>`:''}
-    ${l.prox_acao?`<div class="card-prox">${l.prox_acao}</div>`:''}
-    ${timer?`<div class="card-timer ${timer.cls}">${timer.txt}</div>`:''}
-    ${l.telefone?`<a class="card-wpp-btn" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg>WhatsApp</a>`:''}
-  </div>`;
-}
-function calcScore(l){
-  let s=0;
-  if(l.temperatura==='hot')s+=30;
-  else if(l.temperatura==='warm')s+=15;
-  if(l.ultimo_contato){const h=(Date.now()-new Date(l.ultimo_contato))/36e5;if(h<2)s+=25;else if(h<24)s+=15;else if(h<72)s+=5;}
-  if((l.documentos||[]).length>0)s+=20;
-  if(l.ficha_fin)s+=15;
-  if((l.tasks||[]).some(t=>t.title&&(t.title.toLowerCase().includes('visita')||t.title.toLowerCase().includes('simulação')||t.title.toLowerCase().includes('proposta'))))s+=10;
-  if(l.vendedor)s+=5;
-  return Math.min(s,100);
-}
-function scoreClass(s){return s>=70?'strong':s>=40?'medium':'weak';}
-function scoreLabel(s){return s>=70?'Forte':s>=40?'Médio':'Fraco';}
-
-function abrirWhatsApp(tel,nome,interesse,e){
-  if(e){e.stopPropagation();e.preventDefault();}
-  const num=(tel||'').replace(/\D/g,'');
-  if(!num){showToast('Lead sem telefone cadastrado','warning');return;}
-  const fullNum=num.startsWith('55')?num:'55'+num;
-  const msg=encodeURIComponent(`Olá ${nome||''}! Tudo bem? Sou da ST Seminovos e gostaria de conversar sobre ${interesse||'um veículo do seu interesse'}. Posso te ajudar?`);
-  window.open(`https://wa.me/${fullNum}?text=${msg}`,'_blank');
-}
-
-function fmtUltimoContato(l){
-  const d=l.ultimo_contato;if(!d)return null;
-  const h=Math.floor((Date.now()-new Date(d))/36e5);
-  if(h<1)return'Agora mesmo';if(h<24)return`${h}h atrás`;
-  const days=Math.floor(h/24);if(days<7)return`${days}d atrás`;
-  return new Date(d).toLocaleDateString('pt-BR');
-}
-
-// Calcula prioridade de tarefa para ordenação e exibição
-function getTaskPriority(l){
-  const tasks=(l.tasks||[]).filter(t=>!t.done&&t.due);
-  if(!tasks.length) return {level:3, task:null}; // sem tarefa
-  const todayStr=new Date().toISOString().split('T')[0];
-  const lateTasks=tasks.filter(t=>isTaskLate(t));
-  if(lateTasks.length){
-    const t=lateTasks.sort((a,b)=>a.due>b.due?1:-1)[0];
-    return {level:0, task:t, type:'late'};
-  }
-  const todayTasks=tasks.filter(t=>t.due===todayStr);
-  if(todayTasks.length){
-    const t=todayTasks.sort((a,b)=>(a.time||'99:99')>(b.time||'99:99')?1:-1)[0];
-    return {level:1, task:t, type:'today'};
-  }
-  const futTasks=tasks.sort((a,b)=>a.due>b.due?1:-1);
-  return {level:2, task:futTasks[0], type:'future'};
-}
-
-function fmtTaskAlert(tp){
-  if(!tp.task) return '';
-  const t=tp.task;
-  const todayStr=new Date().toISOString().split('T')[0];
-  const fmtDate2=d=>new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
-  const timeStr=t.time?' às '+t.time:'';
-  if(tp.type==='late'){
-    const daysLate=Math.floor((new Date()-new Date(t.due+'T00:00:00'))/86400000);
-    const lateText=daysLate===0?'hoje'+timeStr:daysLate===1?'ontem':daysLate+'d atrás';
-    return `<div class="card-task-alert late"><div class="card-task-alert-dot"></div>Atrasada · ${lateText} · ${t.title}</div>`;
-  }
-  if(tp.type==='today'){
-    return `<div class="card-task-alert today"><div class="card-task-alert-dot"></div>Hoje${timeStr} · ${t.title}</div>`;
-  }
-  if(tp.type==='future'){
-    return `<div class="card-task-alert future"><div class="card-task-alert-dot"></div>${fmtDate2(t.due)}${timeStr} · ${t.title}</div>`;
-  }
-  return '';
-}
-
 function cardHTML(l){
   const tasks=l.tasks||[];const pend=tasks.filter(t=>!t.done).length;
   const sc=l.ultimo_contato?Math.floor((Date.now()-new Date(l.ultimo_contato))/36e5):999;
@@ -2153,7 +2062,7 @@ function renderDayTasks(){
       <div class="dtask-chk ${t.done?'done':''}" onclick="event.stopPropagation();toggleDayTask('${t.src}',${t.leadId||0},${t.taskIdx})">${t.done?'✓':''}</div>
       <div class="dtask-info" onclick="abrirTaskModal('${t.src}',${t.leadId||0},${t.taskIdx})">
         <div class="dtask-name ${t.done?'done':''}">${t.title}</div>
-        <div class="dtask-sub ${ov?'late':''}">${t.resp||''}${ds?' · '+ds+ts:''}${ov?' · Atrasada':''}</div>
+        <div class="dtask-sub ${ov?'late':''}">${t.resp||''}${ds?' · '+ds+(t.time?' às '+t.time:''):''}${ov?' · Atrasada':''}</div>
         ${t.leadNome?`<div class="dtask-lead" onclick="event.stopPropagation();abrirLeadDaTarefa(${t.leadId})" style="cursor:pointer">📌 ${t.leadNome} <span style="color:var(--teal);font-size:10px">→ abrir</span></div>`:''}
       </div>
     </div>`;}).join('');

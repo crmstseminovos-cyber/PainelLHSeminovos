@@ -736,6 +736,69 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
 .temp-opt.cold{border-color:var(--blue-border);color:var(--blue)}
 .temp-opt.cold.sel{background:rgba(96,165,250,.15);border-color:var(--blue)}
 
+/* ═══════════ ESTOQUE 2.0 — IDENTIDADE PRÓPRIA ═══════════ */
+.estoque2-wrap{padding:24px}
+.estoque2-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.estoque2-top h3{font-size:22px;font-weight:800;margin:0}
+.btn2-primary{
+  background:var(--green);color:#000;border:none;border-radius:10px;
+  padding:11px 20px;font-weight:800;font-size:14px;cursor:pointer;transition:.2s;
+}
+.btn2-primary:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px)}
+.estoque2-filters{display:flex;gap:10px;margin-bottom:20px}
+.glow2{
+  padding:10px 14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--text);font-size:14px;transition:.2s;
+}
+.glow2:focus{
+  outline:none;border-color:#00e676;
+  box-shadow:0 0 0 3px rgba(0,230,118,.2),0 0 14px rgba(0,230,118,.35);
+}
+#buscaCam.glow2{flex:1}
+.estoque2-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.estoque2-card{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:16px;
+  padding:18px;display:flex;flex-direction:column;gap:12px;transition:.2s;
+}
+.estoque2-card:hover{border-color:var(--border-3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.plate2{
+  width:150px;height:48px;border-radius:6px;background:#fff;border:2px solid #0a0a0a;
+  position:relative;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;align-self:center;
+}
+.plate2-top{height:11px;background:#0033a0;display:flex;align-items:center;justify-content:center}
+.plate2-top span{color:#fff;font-size:6px;font-weight:700;letter-spacing:.5px}
+.plate2-body{flex:1;display:flex;align-items:center;justify-content:center}
+.plate2-body span{font-family:Arial,sans-serif;font-weight:800;font-size:17px;letter-spacing:2px;color:#0a0a0a}
+.plate2.antiga{background:#c81e1e}
+.plate2.antiga .plate2-body span{color:#fff}
+.plate2.vazia{background:var(--surface-3);border-style:dashed;border-color:var(--border-3)}
+.plate2.vazia .plate2-body span{color:var(--text-4);font-size:11px;font-weight:600;letter-spacing:0}
+.estoque2-info h4{margin:0 0 2px;font-size:16px;font-weight:800;text-align:center}
+.estoque2-info p{margin:0;font-size:13px;color:var(--text-3);text-align:center}
+.estoque2-badges{display:flex;justify-content:center;gap:8px;margin-top:6px}
+.estoque2-valor{font-size:18px;font-weight:800;color:var(--green);text-align:center;margin-top:4px}
+.estoque2-actions{display:flex;gap:8px;margin-top:8px}
+.estoque2-actions button{
+  flex:1;padding:9px 6px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-3);color:var(--text-2);font-size:12px;font-weight:700;cursor:pointer;transition:.15s;
+}
+.estoque2-actions button:hover{border-color:#00e676;color:var(--text);box-shadow:0 0 8px rgba(0,230,118,.3)}
+.cat-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.cat-opt2{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:14px 4px;border-radius:12px;border:1px solid var(--border);
+  background:var(--surface-3);color:var(--text-3);cursor:pointer;
+  font-size:11px;font-weight:700;transition:.15s;
+}
+.cat-opt2 span{font-size:22px}
+.cat-opt2.sel{border-color:#00e676;box-shadow:0 0 10px rgba(0,230,118,.45);color:var(--text);background:rgba(0,230,118,.08)}
+.item-row2{display:flex;justify-content:space-between;align-items:center;background:var(--surface-3);border-radius:10px;padding:10px 14px;margin-bottom:6px;font-size:14px}
+.os-card2{background:var(--surface-3);border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--border)}
+.os-card2-head{display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-bottom:4px}
+.os-card2-sub{font-size:12px;color:var(--text-4)}
+
+/* CENTRAL DE CUSTOS */
+
 /* BUTTONS */
 .btn{
   padding:8px 16px;border-radius:var(--r-md);
@@ -1579,16 +1642,16 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div id="page-estoque" class="page">
-        <div class="table-wrap">
-          <div class="table-top">
+        <div class="estoque2-wrap">
+          <div class="estoque2-top">
             <h3>🚛 Estoque de Veículos</h3>
-            <button class="btn btn-primary btn-sm" onclick="openCaminhaoModal(0)">+ Novo Veículo</button>
+            <button class="btn2-primary" onclick="openCaminhaoModal(0)">+ Novo Veículo</button>
           </div>
-          <div class="table-filters">
-            <select id="filtroStatus" onchange="renderEstoque()"><option value="">Todos</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option><option>Vendido</option></select>
-            <input id="buscaCam" placeholder="Buscar modelo ou placa..." oninput="renderEstoque()">
+          <div class="estoque2-filters">
+            <select id="filtroStatus" class="glow2" onchange="renderEstoque()"><option value="">Todos os status</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option><option>Vendido</option></select>
+            <input id="buscaCam" class="glow2" placeholder="Buscar modelo ou placa..." oninput="renderEstoque()">
           </div>
-          <div style="overflow-x:auto"><table><thead><tr><th>Modelo</th><th>Placa</th><th>Ano</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="estoqueBody"></tbody></table></div>
+          <div id="estoqueBody" class="estoque2-grid"></div>
         </div>
       </div>
       <div id="page-base-clientes" class="page">
@@ -1638,6 +1701,7 @@ const COLS_DEF={
   financiamento:[{id:'aguardando_docs',label:'📄 Aguard. docs',cor:'#f59e0b'},{id:'preenchimento',label:'📝 Preench. ficha',cor:'#3b82f6'},{id:'aguardando_resp',label:'⏳ Aguard. resposta',cor:'#8b5cf6'},{id:'pendencia',label:'🔄 Pendência',cor:'#f97316'},{id:'aprovado',label:'✅ Aprovado',cor:'#00c853'},{id:'aprovado_restricao',label:'⚠️ Aprov. c/ restrição',cor:'#eab308'},{id:'reprovado',label:'Reprovado',cor:'#ef4444'}]
 };
 let perfil=null,allLeads=[],allCam=[],activeDept='sdr',modalTab='dados';
+let camAtualCustos=null,custosDoVeiculo=[],itensNovaOS=[],catNovaOS=null;
 let colunas=JSON.parse(JSON.stringify(COLS_DEF));
 let tkFilter='hoje',calOffset=0,calSelDay=null;
 let quickTasks=JSON.parse(localStorage.getItem('st_qtasks')||'[]');
@@ -2533,16 +2597,38 @@ function addColuna(){
 function removeCol(i){if(!confirm('Remover?'))return;colunas[activeDept].splice(i,1);localStorage.setItem(cfgKey('st_colunas'),JSON.stringify(colunas));renderAdmColunas();}
 function moveCol(i,dir){const a=colunas[activeDept],t=a[i];a[i]=a[i+dir];a[i+dir]=t;localStorage.setItem(cfgKey('st_colunas'),JSON.stringify(colunas));renderAdmColunas();}
 
+function tipoPlacaDetectado(placa){
+  if(!placa)return null;
+  const p=placa.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+  if(p.length<5)return null;
+  return /[A-Z]/.test(p[4])?'mercosul':'antiga';
+}
+function plateHTML(placa){
+  const tipo=tipoPlacaDetectado(placa);
+  if(!placa)return`<div class="plate2 vazia"><div class="plate2-body"><span>SEM PLACA</span></div></div>`;
+  if(tipo==='antiga')return`<div class="plate2 antiga"><div class="plate2-body"><span>${placa}</span></div></div>`;
+  return`<div class="plate2"><div class="plate2-top"><span>BRASIL</span></div><div class="plate2-body"><span>${placa}</span></div></div>`;
+}
 function renderEstoque(){
   const filtro=document.getElementById('filtroStatus')?.value||'';
   const busca=(document.getElementById('buscaCam')?.value||'').toLowerCase();
   const list=allCam.filter(c=>(!filtro||c.status===filtro)&&(!busca||c.modelo?.toLowerCase().includes(busca)||c.placa?.toLowerCase().includes(busca)));
   const sb2={'Disponível':'b-disp','Funilaria':'b-fun','Tapeçaria':'b-tap','Mecânica':'b-mec','Lavagem':'b-lav','Reservado':'b-res','Vendido':'b-vend'};
-  document.getElementById('estoqueBody').innerHTML=list.length?list.map(c=>`<tr>
-    <td><strong>${c.modelo}</strong></td><td>${c.placa||'-'}</td><td>${c.ano||'-'}</td>
-    <td>${c.valor?fmtBRL(c.valor):'-'}</td><td><span class="badge ${sb2[c.status]||'b-disp'}">${c.status}</span></td>
-    <td><button class="btn btn-icon btn-sm" onclick="openCaminhaoModal(${c.id})">✏️</button><button class="btn btn-icon btn-sm" onclick="mudarStatusCam(${c.id})" style="margin-left:4px">📍</button></td>
-  </tr>`).join(''):`<tr><td colspan="6" class="empty-state">Nenhum veículo encontrado</td></tr>`;
+  document.getElementById('estoqueBody').innerHTML=list.length?list.map(c=>`
+    <div class="estoque2-card">
+      ${plateHTML(c.placa)}
+      <div class="estoque2-info">
+        <h4>${c.modelo}</h4>
+        <p>${c.ano||'ano não informado'}</p>
+        <div class="estoque2-badges"><span class="badge ${sb2[c.status]||'b-disp'}">${c.status}</span></div>
+      </div>
+      <div class="estoque2-valor">${c.valor?fmtBRL(c.valor):'Valor não informado'}</div>
+      <div class="estoque2-actions">
+        <button onclick="openCaminhaoModal(${c.id})">✏️ Editar</button>
+        <button onclick="mudarStatusCam(${c.id})">📍 Status</button>
+        <button onclick="openCustosModal(${c.id})">💰 Custos</button>
+      </div>
+    </div>`).join(''):`<div class="empty-state">Nenhum veículo encontrado</div>`;
 }
 
 function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalOverlay').classList.remove('hidden');}
@@ -3385,17 +3471,22 @@ function openCaminhaoModal(id){
   const c=id?allCam.find(x=>x.id===id):null;
   openModal(`<div class="modal-head"><h3>${c?'✏️ Editar Veículo':'🚛 Novo Veículo'}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="modal-body">
-      <div class="form-row"><label>Placa</label><div style="display:flex;gap:8px"><input id="cm_placa" value="${c?.placa||''}" placeholder="ABC1D23" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"><button class="btn btn-primary" onclick="buscarPlaca()" id="btnBuscarPlaca">🔍 Buscar</button></div><div id="placa_status" style="font-size:12px;margin-top:5px;color:var(--muted)"></div></div>
-      <div class="form-grid"><div class="form-row"><label>Modelo</label><input id="cm_modelo" value="${c?.modelo||''}" placeholder="Ex: Volvo FH 460"></div><div class="form-row"><label>Ano</label><input id="cm_ano" value="${c?.ano||''}" placeholder="2021"></div></div>
-      <div class="form-grid"><div class="form-row"><label>Cor</label><input id="cm_cor" value="${c?.cor||''}" placeholder="Branco"></div><div class="form-row"><label>Valor de venda (R$)</label><input id="cm_valor" type="number" value="${c?.valor||''}" placeholder="350000"></div></div>
+      <div style="display:flex;justify-content:center;margin-bottom:14px" id="cm_plate_preview">${plateHTML(c?.placa||'')}</div>
+      <div class="form-row"><label>Placa</label><div style="display:flex;gap:8px"><input id="cm_placa" class="glow2" value="${c?.placa||''}" placeholder="ABC1D23" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();atualizarPreviewPlaca()"><button class="btn btn-primary" onclick="buscarPlaca()" id="btnBuscarPlaca">🔍 Buscar</button></div><div id="placa_status" style="font-size:12px;margin-top:5px;color:var(--muted)"></div></div>
+      <div class="form-grid"><div class="form-row"><label>Modelo</label><input id="cm_modelo" class="glow2" value="${c?.modelo||''}" placeholder="Ex: Volvo FH 460"></div><div class="form-row"><label>Ano</label><input id="cm_ano" class="glow2" value="${c?.ano||''}" placeholder="2021"></div></div>
+      <div class="form-grid"><div class="form-row"><label>Cor</label><input id="cm_cor" class="glow2" value="${c?.cor||''}" placeholder="Branco"></div><div class="form-row"><label>Valor de venda</label><input id="cm_valor" class="glow2" value="${c?.valor?fmtBRL(c.valor):''}" placeholder="R$ 0,00" oninput="maskMoedaCusto(this)"></div></div>
       <div id="fipe_box" style="display:${c?.fipe_valor?'block':'none'};background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border);margin-top:4px">
         <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Tabela FIPE</div>
         <div class="form-grid"><div class="form-row"><label>Valor FIPE</label><input id="cm_fipe_valor" value="${c?.fipe_valor||''}" style="background:#fff"></div><div class="form-row"><label>Código FIPE</label><input id="cm_fipe_codigo" value="${c?.fipe_codigo||''}" style="background:#fff"></div></div>
       </div>
-      <div class="form-row"><label>Status</label><select id="cm_status">${['Disponível','Funilaria','Tapeçaria','Mecânica','Lavagem','Reservado','Vendido'].map(s=>`<option ${s===c?.status?'selected':''}>${s}</option>`).join('')}</select></div>
-      <div class="form-row"><label>Observações</label><textarea id="cm_obs">${c?.observacoes||''}</textarea></div>
+      <div class="form-row"><label>Status</label><select id="cm_status" class="glow2">${['Disponível','Funilaria','Tapeçaria','Mecânica','Lavagem','Reservado','Vendido'].map(s=>`<option ${s===c?.status?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="form-row"><label>Observações</label><textarea id="cm_obs" class="glow2">${c?.observacoes||''}</textarea></div>
     </div>
     <div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveCaminhao(${id||0})">${c?'Salvar':'Adicionar'}</button></div>`);
+}
+function atualizarPreviewPlaca(){
+  const v=document.getElementById('cm_placa').value;
+  document.getElementById('cm_plate_preview').innerHTML=plateHTML(v);
 }
 async function buscarPlaca(){
   const placa=document.getElementById('cm_placa').value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
@@ -3446,7 +3537,9 @@ async function buscarPlaca(){
 }
 async function saveCaminhao(id){
   const modelo=document.getElementById('cm_modelo').value.trim();if(!modelo){showToast('Informe o modelo do veículo','warning');return;}
-  const obj={modelo,placa:document.getElementById('cm_placa').value,ano:document.getElementById('cm_ano').value||null,cor:document.getElementById('cm_cor')?.value||null,valor:document.getElementById('cm_valor').value||null,fipe_valor:document.getElementById('cm_fipe_valor')?.value||null,fipe_codigo:document.getElementById('cm_fipe_codigo')?.value||null,status:document.getElementById('cm_status').value,observacoes:document.getElementById('cm_obs').value};
+  const valorStr=document.getElementById('cm_valor').value.replace('R$','').trim().replace(/\./g,'').replace(',','.');
+  const valorNum=parseFloat(valorStr)||null;
+  const obj={modelo,placa:document.getElementById('cm_placa').value,ano:document.getElementById('cm_ano').value||null,cor:document.getElementById('cm_cor')?.value||null,valor:valorNum,fipe_valor:document.getElementById('cm_fipe_valor')?.value||null,fipe_codigo:document.getElementById('cm_fipe_codigo')?.value||null,status:document.getElementById('cm_status').value,observacoes:document.getElementById('cm_obs').value};
   let error;
   if(id){({error}=await sb.from('caminhoes').update(obj).eq('id',id));}
   else{({error}=await sb.from('caminhoes').insert(obj));}
@@ -3466,6 +3559,137 @@ async function mudarStatusCam(id){
 async function setStatusCam(id,status){
   await sb.from('caminhoes').update({status}).eq('id',id);
   closeModal();await loadAll();renderEstoque();
+}
+
+// ── CENTRAL DE CUSTOS ──
+const CATEGORIAS_CUSTO=[
+  {n:'Funilaria',e:'🔧'},{n:'Mecânica',e:'⚙️'},{n:'Borracharia',e:'🛞'},
+  {n:'Elétrica',e:'⚡'},{n:'Tapeçaria',e:'🪑'},{n:'Documentação',e:'📄'},
+  {n:'Lavagem',e:'💧'},{n:'Outro',e:'➕'}
+];
+async function openCustosModal(camId){
+  camAtualCustos=camId;itensNovaOS=[];catNovaOS=null;
+  const cam=allCam.find(x=>x.id===camId);
+  if(!cam){showToast('Veículo não encontrado','error');return;}
+  const{data,error}=await sb.from('os_custos').select('*').eq('caminhao_id',camId).order('criado_em',{ascending:false});
+  if(error){showToast('Erro ao carregar custos: '+error.message,'error');return;}
+  custosDoVeiculo=data||[];
+  openModal(renderCustosModalHTML(cam));
+}
+function renderCustosModalHTML(cam){
+  const total=custosDoVeiculo.reduce((a,o)=>a+Number(o.valor_total||0),0);
+  return `<div class="modal-head"><h3>💰 Central de Custos</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+      ${plateHTML(cam.placa)}
+      <div><h4 style="margin:0;font-size:16px;font-weight:800">${cam.modelo}</h4><p style="margin:2px 0 0;font-size:13px;color:var(--text-3)">${cam.ano||'ano não informado'}</p></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong>Ordens de serviço</strong>
+      <button class="btn2-primary" style="padding:8px 16px;font-size:13px" onclick="toggleNovaOSForm()">+ Nova OS</button>
+    </div>
+    <div id="novaOSForm" style="display:none;background:var(--surface-3);border-radius:14px;padding:16px;margin-bottom:14px">
+      <div class="cat-grid2" id="catGridCusto">
+        ${CATEGORIAS_CUSTO.map(c=>`<div class="cat-opt2" id="cat_${c.n}" onclick="selecionarCategoriaCusto('${c.n}')"><span>${c.e}</span>${c.n}</div>`).join('')}
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Prestador</label><input id="custo_prest" class="glow2" placeholder="Nome do prestador" oninput="validarNovaOS()"></div>
+        <div class="form-row"><label>Data</label><input id="custo_data" class="glow2" type="date" oninput="validarNovaOS()"></div>
+      </div>
+      <div class="form-row"><label>Itens desta OS</label>
+        <div id="itensListCusto"></div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input id="item_desc" class="glow2" placeholder="Descrição (ex: para-lama)" style="flex:2">
+          <input id="item_valor" class="glow2" placeholder="R$ 0,00" style="flex:1" oninput="maskMoedaCusto(this)">
+          <button class="btn2-primary" style="padding:0 16px" onclick="addItemCusto()">+</button>
+        </div>
+        <div style="text-align:right;font-weight:700;margin-top:6px">Subtotal: <span id="subtotalCusto">R$ 0,00</span></div>
+      </div>
+      <div class="form-row"><label>Observação (opcional)</label><input id="custo_obs" class="glow2" placeholder="Observação"></div>
+      <button class="btn2-primary" id="btnSalvarOS" disabled style="opacity:.5;cursor:not-allowed" onclick="salvarOS()">Salvar OS</button>
+      <div id="avisoCusto" style="display:none;color:var(--red);font-size:var(--text-sm);margin-top:8px"></div>
+    </div>
+    <div id="listaOSCusto">${renderListaOSHTML()}</div>
+    <div style="text-align:right;font-weight:800;font-size:var(--text-lg);border-top:1px solid var(--border);padding-top:10px;margin-top:10px">Total: ${fmtBRL(total)}</div>
+  </div>
+  <div class="modal-footer"><button class="btn" onclick="closeModal()">Fechar</button></div>`;
+}
+function renderListaOSHTML(){
+  if(!custosDoVeiculo.length)return'<div class="empty-state">Nenhuma OS lançada ainda</div>';
+  return custosDoVeiculo.map(o=>{
+    const itensTxt=(o.itens||[]).map(i=>i.desc).join(', ');
+    return `<div class="os-card2"><div class="os-card2-head"><span>${o.categoria} · ${o.prestador||'sem prestador'}</span><span>${fmtBRL(o.valor_total||0)}</span></div>
+    <div class="os-card2-sub">${(o.itens||[]).map(i=>i.desc).join(', ')}${o.data_servico?' · '+fmtDataBR(o.data_servico):''}${o.observacao?' · '+o.observacao:''}</div></div>`;
+  }).join('');
+}
+function fmtDataBR(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function toggleNovaOSForm(){
+  const f=document.getElementById('novaOSForm');
+  f.style.display=f.style.display==='none'?'block':'none';
+  if(f.style.display==='block'){document.getElementById('custo_data').valueAsDate=new Date();}
+}
+function selecionarCategoriaCusto(cat){
+  catNovaOS=cat;
+  CATEGORIAS_CUSTO.forEach(c=>document.getElementById('cat_'+c.n).classList.toggle('sel',c.n===cat));
+  validarNovaOS();
+}
+function maskMoedaCusto(el){
+  let v=el.value.replace(/\D/g,'');
+  v=(parseInt(v||'0',10)/100).toFixed(2);
+  v=v.replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  el.value='R$ '+v;
+}
+function addItemCusto(){
+  const desc=document.getElementById('item_desc').value.trim();
+  const valorEl=document.getElementById('item_valor');
+  const valorStr=valorEl.value.replace('R$','').trim().replace(/\./g,'').replace(',','.');
+  const valor=parseFloat(valorStr)||0;
+  if(!desc||!valor){showToast('Preencha descrição e valor do item','warning');return;}
+  itensNovaOS.push({desc,valor});
+  document.getElementById('item_desc').value='';
+  valorEl.value='';
+  renderItensNovaOS();
+  validarNovaOS();
+}
+function removerItemCusto(idx){
+  itensNovaOS.splice(idx,1);
+  renderItensNovaOS();
+  validarNovaOS();
+}
+function renderItensNovaOS(){
+  const el=document.getElementById('itensListCusto');
+  let sub=0;
+  el.innerHTML=itensNovaOS.map((it,idx)=>{sub+=it.valor;return`<div class="item-row2"><span>${it.desc}</span><span>${fmtBRL(it.valor)} <button class="btn btn-icon btn-sm" onclick="removerItemCusto(${idx})" style="margin-left:6px">🗑️</button></span></div>`;}).join('');
+  document.getElementById('subtotalCusto').textContent=fmtBRL(sub);
+}
+function validarNovaOS(){
+  const prest=document.getElementById('custo_prest')?.value;
+  const data=document.getElementById('custo_data')?.value;
+  const btn=document.getElementById('btnSalvarOS');
+  const faltando=[];
+  if(!catNovaOS)faltando.push('categoria');
+  if(!prest)faltando.push('prestador');
+  if(!data)faltando.push('data');
+  if(!itensNovaOS.length)faltando.push('pelo menos 1 item');
+  if(!faltando.length){btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
+  else{btn.disabled=true;btn.style.opacity='.5';btn.style.cursor='not-allowed';}
+  btn.dataset.faltando=faltando.join(', ');
+}
+async function salvarOS(){
+  const btn=document.getElementById('btnSalvarOS');
+  if(btn.disabled){
+    const av=document.getElementById('avisoCusto');
+    av.textContent='Falta preencher: '+btn.dataset.faltando;av.style.display='block';return;
+  }
+  const prestador=document.getElementById('custo_prest').value;
+  const data_servico=document.getElementById('custo_data').value;
+  const observacao=document.getElementById('custo_obs').value||null;
+  const valor_total=itensNovaOS.reduce((a,i)=>a+i.valor,0);
+  const obj={caminhao_id:camAtualCustos,categoria:catNovaOS,prestador,data_servico,itens:itensNovaOS,valor_total,observacao,status:'Concluída'};
+  const{error}=await sb.from('os_custos').insert(obj);
+  if(error){showToast('Erro ao salvar OS: '+error.message,'error');return;}
+  showToast('OS salva com sucesso!','success');
+  await openCustosModal(camAtualCustos);
 }
 
 // ── EXPORTAR ──

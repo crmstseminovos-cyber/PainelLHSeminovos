@@ -669,6 +669,7 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
   animation:slideUp .2s ease;
 }
 .modal-box.modal-lg{max-width:680px}
+.modal-box.modal-xl{max-width:900px;max-height:94vh}
 .modal-head{
   padding:20px 24px 16px;
   border-bottom:1px solid var(--border);
@@ -2634,7 +2635,7 @@ function renderEstoque(){
   if(typeof lucide!=='undefined')lucide.createIcons();
 }
 
-function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalOverlay').classList.remove('hidden');}
+function openModal(html){const box=document.getElementById('modalBox');box.innerHTML=html;box.classList.remove('modal-lg','modal-xl');document.getElementById('modalOverlay').classList.remove('hidden');}
 function closeModal(e){if(!e||e.target===document.getElementById('modalOverlay'))document.getElementById('modalOverlay').classList.add('hidden');}
 
 function openNovoLead(etapa){
@@ -3589,6 +3590,7 @@ async function openCustosModal(camId){
   if(error){showToast('Erro ao carregar custos: '+error.message,'error');return;}
   custosDoVeiculo=data||[];
   openModal(renderCustosModalHTML(cam));
+  document.querySelector('.modal-box')?.classList.add('modal-xl');
   if(typeof lucide!=='undefined')lucide.createIcons();
 }
 function renderCustosModalHTML(cam){
@@ -3616,6 +3618,7 @@ function renderCustosModalHTML(cam){
         <div id="itensListCusto"></div>
         <div style="display:flex;gap:8px;margin-top:6px">
           <input id="item_desc" class="glow2" placeholder="Descrição (ex: para-lama)" style="flex:2">
+          <input id="item_fornecedor" class="glow2" placeholder="Fornecedor (opcional, se for diferente)" style="flex:1.6">
           <input id="item_valor" class="glow2" placeholder="R$ 0,00" style="flex:1" oninput="maskMoedaCusto(this)">
           <button class="btn2-primary" style="padding:0 16px" onclick="addItemCusto()">+</button>
         </div>
@@ -3641,7 +3644,7 @@ function renderListaOSHTML(){
   if(!custosDoVeiculo.length)return'<div class="empty-state">Nenhuma OS lançada ainda</div>';
   return custosDoVeiculo.map(o=>{
     return `<div class="os-card2" onclick="abrirOSDetalhe(${o.id})"><div class="os-card2-head"><span>OS Nº ${o.id} · ${o.categoria} · ${o.prestador||'sem prestador'}</span><span>${fmtBRL(o.valor_total||0)}</span></div>
-    <div class="os-card2-sub">${(o.itens||[]).map(i=>i.desc).join(', ')}${o.data_servico?' · '+fmtDataBR(o.data_servico):''}${o.observacao?' · '+o.observacao:''}</div></div>`;
+    <div class="os-card2-sub">${(o.itens||[]).map(i=>i.desc+(i.fornecedor?' ('+i.fornecedor+')':'')).join(', ')}${o.data_servico?' · '+fmtDataBR(o.data_servico):''}${o.observacao?' · '+o.observacao:''}</div></div>`;
   }).join('');
 }
 function fmtDataBR(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
@@ -3691,12 +3694,14 @@ function maskMoedaCusto(el){
 }
 function addItemCusto(){
   const desc=document.getElementById('item_desc').value.trim();
+  const fornecedor=document.getElementById('item_fornecedor').value.trim();
   const valorEl=document.getElementById('item_valor');
   const valorStr=valorEl.value.replace('R$','').trim().replace(/\./g,'').replace(',','.');
   const valor=parseFloat(valorStr)||0;
   if(!desc||!valor){showToast('Preencha descrição e valor do item','warning');return;}
-  itensNovaOS.push({desc,valor});
+  itensNovaOS.push({desc,valor,fornecedor:fornecedor||null});
   document.getElementById('item_desc').value='';
+  document.getElementById('item_fornecedor').value='';
   valorEl.value='';
   renderItensNovaOS();
   validarNovaOS();
@@ -3709,7 +3714,7 @@ function removerItemCusto(idx){
 function renderItensNovaOS(){
   const el=document.getElementById('itensListCusto');
   let sub=0;
-  el.innerHTML=itensNovaOS.map((it,idx)=>{sub+=it.valor;return`<div class="item-row2"><span>${it.desc}</span><span>${fmtBRL(it.valor)} <button class="btn btn-icon btn-sm" onclick="removerItemCusto(${idx})" style="margin-left:6px"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></span></div>`;}).join('');
+  el.innerHTML=itensNovaOS.map((it,idx)=>{sub+=it.valor;return`<div class="item-row2"><span>${it.desc}${it.fornecedor?` <span style="color:var(--text-3);font-size:12px">(${it.fornecedor})</span>`:''}</span><span>${fmtBRL(it.valor)} <button class="btn btn-icon btn-sm" onclick="removerItemCusto(${idx})" style="margin-left:6px"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></span></div>`;}).join('');
   if(typeof lucide!=='undefined')lucide.createIcons();
   document.getElementById('subtotalCusto').textContent=fmtBRL(sub);
 }
@@ -3801,7 +3806,7 @@ function gerarPDFIndividual(){
 
   doc.setFont('helvetica','normal');
   (o.itens||[]).forEach(it=>{
-    doc.text(it.desc,14,y);
+    doc.text(it.desc+(it.fornecedor?' ('+it.fornecedor+')':''),14,y);
     doc.text(fmtBRL(it.valor),W-14,y,{align:'right'});
     y+=7;
   });
@@ -3859,7 +3864,7 @@ function gerarResumoOS(){
 
     doc.setTextColor(0,0,0);doc.setFont('helvetica','normal');doc.setFontSize(9);
     itens.forEach(it=>{
-      doc.text('- '+it.desc,20,y);
+      doc.text('- '+it.desc+(it.fornecedor?' ('+it.fornecedor+')':''),20,y);
       doc.text(fmtBRL(it.valor),W-17,y,{align:'right'});
       y+=6;
     });

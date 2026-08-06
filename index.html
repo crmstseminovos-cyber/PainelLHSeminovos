@@ -2685,6 +2685,18 @@ function selTemp(el,val){
   document.querySelectorAll('.temp-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');
   const t=document.getElementById('nl_temp')||document.getElementById('el_temp');if(t)t.value=val;
 }
+function onVeiculoInteresseChange(sel){
+  const c=allCam.find(x=>x.id==sel.value);
+  const intInput=document.getElementById('el_int');
+  if(!c){return;}
+  if(intInput){
+    intInput.value=`${c.modelo||''}${c.placa?' — '+c.placa:''}`.trim();
+  }
+  const infoEl=document.getElementById('el_veiculo_info');
+  if(infoEl){
+    infoEl.innerHTML=c?`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`:'';
+  }
+}
 async function saveLead(){
   const nome=document.getElementById('nl_nome').value.trim();if(!nome){showToast('Informe o nome do lead','warning');return;}
   const tel=document.getElementById('nl_tel').value.trim();
@@ -2796,7 +2808,9 @@ function renderLeadModal(l){
         <input type="date" id="el_data_entrega" value="${l.data_entrega_veiculo||''}" max="${new Date().toISOString().split('T')[0]}">
         <div style="font-size:var(--text-xs);color:var(--text-3);margin-top:4px">Necessária para calcular os 90 dias de garantia</div>
       </div>`:''}
-      <div class="form-row"><label>Veículo de interesse</label><select id="el_veiculo"><option value="">—</option>${allCam.filter(c=>c.status==='Disponível').map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||''}</option>`).join('')}</select></div>
+      <div class="form-row"><label>Veículo de interesse</label><select id="el_veiculo" onchange="onVeiculoInteresseChange(this)"><option value="">—</option>${allCam.filter(c=>c.status==='Disponível'||c.id==l.veiculo_id).map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||''} (${c.status})</option>`).join('')}</select>
+        <div id="el_veiculo_info" style="margin-top:6px;font-size:var(--text-xs);color:var(--text-3)">${veiculo?`📦 ${veiculo.modelo||''} ${veiculo.ano?'('+veiculo.ano+')':''} — ${veiculo.placa||'sem placa'}${veiculo.valor?' · R$ '+Number(veiculo.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${veiculo.status||'—'}</span>`:''}</div>
+      </div>
       <div class="form-row"><label>Observações</label><textarea id="el_obs">${l.observacoes||''}</textarea></div>`;
   }
 
@@ -3358,6 +3372,15 @@ async function updateLead(id){
   };
   const{error}=await sb.from('leads').update(obj).eq('id',id);
   if(error){showToast('Erro ao salvar: '+error.message,'error');return;}
+  // Se a etapa do vendedor mudou PARA "Vendido Concluído" por aqui (edição manual, não pelo drag-and-drop), dar baixa no estoque também
+  if(etapaVendFinal==='vendido_concluido'&&l.etapa_vend!=='vendido_concluido'&&obj.veiculo_id){
+    const resCam=await fetch(`${SB_URL}/rest/v1/caminhoes?id=eq.${obj.veiculo_id}`,{
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({status:'Vendido'})
+    });
+    if(!resCam.ok){showToast('Lead salvo, mas houve erro ao dar baixa no estoque.','warning');}
+  }
   closeModal();await loadAll();
 }
 async function toggleTask(leadId,idx){
@@ -4670,7 +4693,16 @@ async function confirmarVendidoConcluido(leadId,campoEtapa){
     body:JSON.stringify(updateObj)
   });
   if(!res.ok){const t=await res.text();showToast('Erro: '+t,'error');return;}
-  closeModal();showToast('Entrega registrada! Garantia de 90 dias iniciada.','success');
+  // Dar baixa no estoque: marcar o caminhão vinculado como Vendido
+  if(l.veiculo_id){
+    const resCam=await fetch(`${SB_URL}/rest/v1/caminhoes?id=eq.${l.veiculo_id}`,{
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({status:'Vendido'})
+    });
+    if(!resCam.ok){const t=await resCam.text();showToast('Entrega registrada, mas houve erro ao dar baixa no estoque: '+t,'warning');}
+  }
+  closeModal();showToast(l.veiculo_id?'Entrega registrada! Garantia iniciada e estoque atualizado (baixa do caminhão).':'Entrega registrada! Garantia de 90 dias iniciada. (Nenhum veículo vinculado ao lead — estoque não foi atualizado.)','success');
   await loadAll();
 }
 

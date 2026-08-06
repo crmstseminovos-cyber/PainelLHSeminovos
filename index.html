@@ -2665,6 +2665,9 @@ function openNovoLead(etapa){
         <div class="form-row"><label>Nome</label><input id="nl_nome" placeholder="Nome completo"></div>
         <div class="form-row"><label>Telefone</label><input id="nl_tel" placeholder="(11) 99999-9999"></div>
       </div>
+      <div class="form-row"><label>Veículo de interesse (estoque)</label><select id="nl_veiculo" onchange="onVeiculoInteresseChangeNovo(this)"><option value="">— Selecione do estoque (opcional) —</option>${allCam.map(c=>`<option value="${c.id}">${c.modelo} — ${c.placa||'sem placa'} (${c.status})</option>`).join('')}</select>
+        <div id="nl_veiculo_info" style="margin-top:6px;font-size:var(--text-xs);color:var(--text-3)"></div>
+      </div>
       <div class="form-row"><label>Interesse</label><input id="nl_int" placeholder="Ex: Volvo FH 460, Carreta Sider..."></div>
       <div class="form-grid">
         <div class="form-row"><label>Origem</label><select id="nl_orig"><option>Meta Ads</option><option>WhatsApp direto</option><option>Instagram</option><option>Indicação</option><option>Mercado Livre</option><option>Caminhões e Carretas</option><option>OLX</option></select></div>
@@ -2688,13 +2691,25 @@ function selTemp(el,val){
 function onVeiculoInteresseChange(sel){
   const c=allCam.find(x=>x.id==sel.value);
   const intInput=document.getElementById('el_int');
-  if(!c){return;}
+  if(!c){const infoEl0=document.getElementById('el_veiculo_info');if(infoEl0)infoEl0.innerHTML='';return;}
   if(intInput){
     intInput.value=`${c.modelo||''}${c.placa?' — '+c.placa:''}`.trim();
   }
   const infoEl=document.getElementById('el_veiculo_info');
   if(infoEl){
-    infoEl.innerHTML=c?`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`:'';
+    infoEl.innerHTML=`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
+  }
+}
+function onVeiculoInteresseChangeNovo(sel){
+  const c=allCam.find(x=>x.id==sel.value);
+  const intInput=document.getElementById('nl_int');
+  const infoEl=document.getElementById('nl_veiculo_info');
+  if(!c){if(infoEl)infoEl.innerHTML='';return;}
+  if(intInput){
+    intInput.value=`${c.modelo||''}${c.placa?' — '+c.placa:''}`.trim();
+  }
+  if(infoEl){
+    infoEl.innerHTML=`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
   }
 }
 async function saveLead(){
@@ -2720,6 +2735,7 @@ async function saveLead(){
     nome,
     telefone:tel,
     interesse:document.getElementById('nl_int').value,
+    veiculo_id:document.getElementById('nl_veiculo')?.value||null,
     origem:document.getElementById('nl_orig').value,
     // Se for vendedor: já atribui a si mesmo e define etapa_vend
     vendedor: isVendedor ? nomeVendedor : null,
@@ -2808,7 +2824,7 @@ function renderLeadModal(l){
         <input type="date" id="el_data_entrega" value="${l.data_entrega_veiculo||''}" max="${new Date().toISOString().split('T')[0]}">
         <div style="font-size:var(--text-xs);color:var(--text-3);margin-top:4px">Necessária para calcular os 90 dias de garantia</div>
       </div>`:''}
-      <div class="form-row"><label>Veículo de interesse</label><select id="el_veiculo" onchange="onVeiculoInteresseChange(this)"><option value="">—</option>${allCam.filter(c=>c.status==='Disponível'||c.id==l.veiculo_id).map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||''} (${c.status})</option>`).join('')}</select>
+      <div class="form-row"><label>Veículo de interesse (estoque completo)</label><select id="el_veiculo" onchange="onVeiculoInteresseChange(this)"><option value="">—</option>${allCam.map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||'sem placa'} (${c.status})</option>`).join('')}</select>
         <div id="el_veiculo_info" style="margin-top:6px;font-size:var(--text-xs);color:var(--text-3)">${veiculo?`📦 ${veiculo.modelo||''} ${veiculo.ano?'('+veiculo.ano+')':''} — ${veiculo.placa||'sem placa'}${veiculo.valor?' · R$ '+Number(veiculo.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${veiculo.status||'—'}</span>`:''}</div>
       </div>
       <div class="form-row"><label>Observações</label><textarea id="el_obs">${l.observacoes||''}</textarea></div>`;

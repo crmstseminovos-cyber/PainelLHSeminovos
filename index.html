@@ -1707,7 +1707,7 @@ const COLS_DEF={
   vendedor:[{id:'recebido',label:'📋 Recebido',cor:'#3b82f6'},{id:'negociacao',label:'💬 Em negociação',cor:'#f59e0b'},{id:'visita',label:'Visita agendada',cor:'#8b5cf6'},{id:'financiamento',label:'Financiamento',cor:'#14b8a6'},{id:'fechado',label:'Fechado',cor:'#00c853'},{id:'perdido',label:'Perdido',cor:'#ef4444'},{id:'vendido_concluido',label:'🏁 Vendido Concluído',cor:'#00c853'}],
   financiamento:[{id:'aguardando_docs',label:'📄 Aguard. docs',cor:'#f59e0b'},{id:'preenchimento',label:'📝 Preench. ficha',cor:'#3b82f6'},{id:'aguardando_resp',label:'⏳ Aguard. resposta',cor:'#8b5cf6'},{id:'pendencia',label:'🔄 Pendência',cor:'#f97316'},{id:'aprovado',label:'✅ Aprovado',cor:'#00c853'},{id:'aprovado_restricao',label:'⚠️ Aprov. c/ restrição',cor:'#eab308'},{id:'reprovado',label:'Reprovado',cor:'#ef4444'}]
 };
-let perfil=null,allLeads=[],allCam=[],activeDept='sdr',modalTab='dados';
+let perfil=null,allLeads=[],allCam=[],activeDept='sdr',modalTab='dados',finTipoUI=null;
 let camAtualCustos=null,custosDoVeiculo=[],itensNovaOS=[],catNovaOS=null,editingOsId=null;
 let colunas=JSON.parse(JSON.stringify(COLS_DEF));
 let tkFilter='hoje',calOffset=0,calSelDay=null;
@@ -2283,6 +2283,47 @@ function gerarPDFFicha(id){
     <div class="badge">Financiamento</div>
   </div>
 
+  ${f.tipo_pessoa==='PJ' ? `
+  <div class="section">
+    <div class="section-title">🏢 Dados da Empresa</div>
+    <div class="grid">
+      <div class="field full"><label>Razão Social</label><span>${fmt(f.pj_razao||l.nome)}</span></div>
+      <div class="field"><label>Nome Fantasia</label><span>${fmt(f.pj_fantasia)}</span></div>
+      <div class="field"><label>CNPJ</label><span>${fmt(f.pj_cnpj)}</span></div>
+      <div class="field"><label>Inscrição Estadual</label><span>${fmt(f.pj_ie)}</span></div>
+      <div class="field"><label>Data de abertura</label><span>${fmtData(f.pj_abertura)}</span></div>
+      <div class="field"><label>Faturamento médio mensal</label><span>${fmtValor(f.pj_faturamento)}</span></div>
+      <div class="field full"><label>Atividade / Ramo</label><span>${fmt(f.pj_atividade)}</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📍 Endereço da Empresa</div>
+    <div class="grid">
+      <div class="field"><label>CEP</label><span>${fmt(f.pj_cep)}</span></div>
+      <div class="field"><label>Número</label><span>${fmt(f.pj_numero)}</span></div>
+      <div class="field"><label>Bairro</label><span>${fmt(f.pj_bairro)}</span></div>
+      <div class="field full"><label>Rua / Endereço</label><span>${fmt(f.pj_rua)}</span></div>
+      <div class="field"><label>Cidade</label><span>${fmt(f.pj_cidade)}</span></div>
+      <div class="field"><label>Estado</label><span>${fmt(f.pj_estado)}</span></div>
+      <div class="field"><label>Telefone da empresa</label><span>${fmt(f.pj_tel)}</span></div>
+      <div class="field"><label>E-mail da empresa</label><span>${fmt(f.pj_email)}</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">👤 Sócio / Responsável Legal</div>
+    <div class="grid">
+      <div class="field full"><label>Nome completo</label><span>${fmt(f.pj_socio_nome)}</span></div>
+      <div class="field"><label>CPF</label><span>${fmt(f.pj_socio_cpf)}</span></div>
+      <div class="field"><label>RG</label><span>${fmt(f.pj_socio_rg)}</span></div>
+      <div class="field"><label>Data de nascimento</label><span>${fmtData(f.pj_socio_nascimento)}</span></div>
+      <div class="field"><label>Cargo / Participação</label><span>${fmt(f.pj_socio_cargo)}</span></div>
+      <div class="field"><label>Celular</label><span>${fmt(f.pj_socio_celular||l.telefone)}</span></div>
+      <div class="field"><label>E-mail</label><span>${fmt(f.pj_socio_email)}</span></div>
+    </div>
+  </div>
+  ` : `
   <div class="section">
     <div class="section-title">👤 Dados Pessoais</div>
     <div class="grid">
@@ -2317,20 +2358,21 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">👥 Referências Pessoais</div>
+    <div class="section-title">ℹ️ Informações Complementares</div>
+    <div class="grid">
+      <div class="field"><label>Tem renda extra?</label><span>${fmt(f.renda_extra)}</span></div>
+      <div class="field full"><label>Autônomo / Empresário — atividade</label><span>${fmt(f.autonomo)}</span></div>
+    </div>
+  </div>
+  `}
+
+  <div class="section">
+    <div class="section-title">👥 ${f.tipo_pessoa==='PJ'?'Referências Comerciais':'Referências Pessoais'}</div>
     <div class="grid">
       <div class="field"><label>Nome — Referência 1</label><span>${fmt(f.ref1_nome)}</span></div>
       <div class="field"><label>Telefone — Referência 1</label><span>${fmt(f.ref1_tel)}</span></div>
       <div class="field"><label>Nome — Referência 2</label><span>${fmt(f.ref2_nome)}</span></div>
       <div class="field"><label>Telefone — Referência 2</label><span>${fmt(f.ref2_tel)}</span></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">ℹ️ Informações Complementares</div>
-    <div class="grid">
-      <div class="field"><label>Tem renda extra?</label><span>${fmt(f.renda_extra)}</span></div>
-      <div class="field full"><label>Autônomo / Empresário — atividade</label><span>${fmt(f.autonomo)}</span></div>
     </div>
   </div>
 
@@ -2750,7 +2792,7 @@ async function saveLead(){
   closeModal();await loadAll();
 }
 
-async function openLead(id){const l=allLeads.find(x=>x.id===id);if(!l)return;modalTab='dados';renderLeadModal(l);}
+async function openLead(id){const l=allLeads.find(x=>x.id===id);if(!l)return;modalTab='dados';finTipoUI=null;renderLeadModal(l);}
 function renderLeadModal(l){
   const tasks=l.tasks||[];
   const vendOpts=['—','Luis Henrique','Claudinei'].map(v=>`<option ${v===l.vendedor?'selected':''}>${v}</option>`).join('');
@@ -2970,17 +3012,11 @@ function renderLeadModal(l){
   }
   if(modalTab==='financiamento'){
     const isEnviado = !!l.etapa_fin;
+    const tipoPessoa = finTipoUI || fin.tipo_pessoa || 'PF';
     // Carregar campos extras personalizados
     const camposExtras = JSON.parse(localStorage.getItem('fin_campos_extras')||'[]');
     const finExtra = l.ficha_fin_extra || {};
-    bodyHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <div>${finStatus}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="abrirEditorCamposFicha(${l.id})">✏️ Editar campos</button>
-          ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})"><span class="btn-fin-icon">💰</span> Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">🔄 Reenviar</button>`}
-        </div>
-      </div>
+    const blocoPF = `
       <div class="fin-section">
         <div class="fin-section-title">👤 Dados Pessoais</div>
         <div class="form-grid">
@@ -3031,7 +3067,84 @@ function renderLeadModal(l){
         </div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">👥 Referência Pessoal</div>
+        <div class="fin-section-title">ℹ️ Informações Complementares</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Tem renda extra?</label><select id="fin_renda_extra"><option value="">—</option><option ${fin.renda_extra==='Sim'?'selected':''}>Sim</option><option ${fin.renda_extra==='Não'?'selected':''}>Não</option></select></div>
+        </div>
+        <div class="form-row"><label>Se autônomo/empresário — função ou atividade</label><input id="fin_autonomo" value="${fin.autonomo||''}" placeholder="Ex: Transportador autônomo, dono de frota..."></div>
+      </div>`;
+    const blocoPJ = `
+      <div class="fin-section">
+        <div class="fin-section-title">🏢 Dados da Empresa</div>
+        <div class="form-grid">
+          <div class="form-row"><label>CNPJ</label><input id="fin_pj_cnpj" value="${fin.pj_cnpj||''}" placeholder="00.000.000/0000-00" oninput="buscarCnpjFin(this)"></div>
+          <div class="form-row"><label>Inscrição Estadual</label><input id="fin_pj_ie" value="${fin.pj_ie||''}" placeholder="Isento ou nº"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Razão Social</label><input id="fin_pj_razao" value="${fin.pj_razao||l.nome||''}"></div>
+          <div class="form-row"><label>Nome Fantasia</label><input id="fin_pj_fantasia" value="${fin.pj_fantasia||''}"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Data de abertura</label><input type="date" id="fin_pj_abertura" value="${fin.pj_abertura||''}"></div>
+          <div class="form-row"><label>Faturamento médio mensal (R$)</label><input id="fin_pj_faturamento" value="${fin.pj_faturamento||''}" placeholder="Ex: 45000,00"></div>
+        </div>
+        <div class="form-row"><label>Atividade / Ramo</label><input id="fin_pj_atividade" value="${fin.pj_atividade||''}" placeholder="Ex: Transporte rodoviário de cargas"></div>
+      </div>
+      <div class="fin-section">
+        <div class="fin-section-title">📍 Endereço da Empresa</div>
+        <div class="form-grid">
+          <div class="form-row"><label>CEP</label><input id="fin_pj_cep" value="${fin.pj_cep||''}" placeholder="00000-000" oninput="buscarCepFinPJ(this)"></div>
+          <div class="form-row"><label>Número</label><input id="fin_pj_numero" value="${fin.pj_numero||''}" placeholder="Ex: 123"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Bairro</label><input id="fin_pj_bairro" value="${fin.pj_bairro||''}"></div>
+          <div class="form-row"><label>Rua / Endereço</label><input id="fin_pj_rua" value="${fin.pj_rua||''}" placeholder="Rua, número"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Cidade</label><input id="fin_pj_cidade" value="${fin.pj_cidade||''}"></div>
+          <div class="form-row"><label>Estado</label><input id="fin_pj_estado" value="${fin.pj_estado||''}" placeholder="SP"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Telefone da empresa</label><input id="fin_pj_tel" value="${fin.pj_tel||''}" placeholder="(00) 0000-0000"></div>
+          <div class="form-row"><label>E-mail da empresa</label><input id="fin_pj_email" value="${fin.pj_email||''}" placeholder="contato@empresa.com"></div>
+        </div>
+      </div>
+      <div class="fin-section">
+        <div class="fin-section-title">👤 Sócio / Responsável Legal</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Nome completo</label><input id="fin_pj_socio_nome" value="${fin.pj_socio_nome||''}"></div>
+          <div class="form-row"><label>CPF</label><input id="fin_pj_socio_cpf" value="${fin.pj_socio_cpf||''}" placeholder="000.000.000-00"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>RG</label><input id="fin_pj_socio_rg" value="${fin.pj_socio_rg||''}" placeholder="00.000.000-0"></div>
+          <div class="form-row"><label>Data de nascimento</label><input type="date" id="fin_pj_socio_nascimento" value="${fin.pj_socio_nascimento||''}"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Cargo / Participação societária</label><input id="fin_pj_socio_cargo" value="${fin.pj_socio_cargo||''}" placeholder="Ex: Sócio-administrador, 100%"></div>
+          <div class="form-row"><label>Celular</label><input id="fin_pj_socio_celular" value="${fin.pj_socio_celular||l.telefone||''}" placeholder="(00) 00000-0000"></div>
+        </div>
+        <div class="form-row"><label>E-mail</label><input id="fin_pj_socio_email" value="${fin.pj_socio_email||''}" placeholder="email@exemplo.com"></div>
+      </div>`;
+    bodyHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>${finStatus}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="abrirEditorCamposFicha(${l.id})">✏️ Editar campos</button>
+          ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})"><span class="btn-fin-icon">💰</span> Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">🔄 Reenviar</button>`}
+        </div>
+      </div>
+      <div class="fin-section" style="padding:12px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div class="fin-section-title" style="margin:0">Tipo de Cliente</div>
+          <div class="seg-ctrl">
+            <button type="button" class="seg-btn ${tipoPessoa==='PF'?'active':''}" onclick="setFinTipo('PF',${l.id})">👤 Pessoa Física</button>
+            <button type="button" class="seg-btn ${tipoPessoa==='PJ'?'active':''}" onclick="setFinTipo('PJ',${l.id})">🏢 Pessoa Jurídica</button>
+          </div>
+        </div>
+      </div>
+      ${tipoPessoa==='PJ' ? blocoPJ : blocoPF}
+      <div class="fin-section">
+        <div class="fin-section-title">👥 ${tipoPessoa==='PJ'?'Referência Comercial':'Referência Pessoal'}</div>
         <div class="form-grid">
           <div class="form-row"><label>Nome — Referência 1</label><input id="fin_ref1_nome" value="${fin.ref1_nome||''}" placeholder="Nome completo"></div>
           <div class="form-row"><label>Telefone — Referência 1</label><input id="fin_ref1_tel" value="${fin.ref1_tel||''}" placeholder="(00) 00000-0000"></div>
@@ -3040,13 +3153,6 @@ function renderLeadModal(l){
           <div class="form-row"><label>Nome — Referência 2</label><input id="fin_ref2_nome" value="${fin.ref2_nome||''}" placeholder="Nome completo"></div>
           <div class="form-row"><label>Telefone — Referência 2</label><input id="fin_ref2_tel" value="${fin.ref2_tel||''}" placeholder="(00) 00000-0000"></div>
         </div>
-      </div>
-      <div class="fin-section">
-        <div class="fin-section-title">ℹ️ Informações Complementares</div>
-        <div class="form-grid">
-          <div class="form-row"><label>Tem renda extra?</label><select id="fin_renda_extra"><option value="">—</option><option ${fin.renda_extra==='Sim'?'selected':''}>Sim</option><option ${fin.renda_extra==='Não'?'selected':''}>Não</option></select></div>
-        </div>
-        <div class="form-row"><label>Se autônomo/empresário — função ou atividade</label><input id="fin_autonomo" value="${fin.autonomo||''}" placeholder="Ex: Transportador autônomo, dono de frota..."></div>
       </div>
       <div class="fin-section">
         <div class="fin-section-title">🚛 Dados do Veículo</div>
@@ -3149,6 +3255,7 @@ function renderLeadModal(l){
   }
 }
 function setModalTab(tab,id){modalTab=tab;const l=allLeads.find(x=>x.id===id);if(l)renderLeadModal(l);}
+function setFinTipo(tipo,id){finTipoUI=tipo;const l=allLeads.find(x=>x.id===id);if(l)renderLeadModal(l);}
 
 // ── ENVIAR PARA FINANCIAMENTO ──
 async function enviarParaFinanciamento(id){
@@ -3182,42 +3289,76 @@ async function salvarFichaFin(id){
   const camposExtras=JSON.parse(localStorage.getItem('fin_campos_extras')||'[]');
   const finExtraData={};
   camposExtras.forEach(c=>{const el=document.getElementById('fin_extra_'+c.id);if(el)finExtraData[c.id]=el.value||'';});
-  const ficha={
-    nome:document.getElementById('fin_nome')?.value||'',
-    cpf:document.getElementById('fin_cpf')?.value||'',
-    rg:document.getElementById('fin_rg')?.value||'',
-    rg_emissao:document.getElementById('fin_rg_emissao')?.value||'',
-    nascimento:document.getElementById('fin_nascimento')?.value||'',
-    naturalidade:document.getElementById('fin_naturalidade')?.value||'',
-    mae:document.getElementById('fin_mae')?.value||'',
-    pai:document.getElementById('fin_pai')?.value||'',
-    cep:document.getElementById('fin_cep')?.value||'',
-    numero:document.getElementById('fin_numero')?.value||'',
-    rua:document.getElementById('fin_rua')?.value||'',
-    bairro:document.getElementById('fin_bairro')?.value||'',
-    cidade:document.getElementById('fin_cidade')?.value||'',
-    estado:document.getElementById('fin_estado')?.value||'',
-    celular:document.getElementById('fin_celular')?.value||'',
-    email:document.getElementById('fin_email')?.value||'',
-    cnh:document.getElementById('fin_cnh')?.value||'',
-    empresa:document.getElementById('fin_empresa')?.value||'',
-    empresa_end:document.getElementById('fin_empresa_end')?.value||'',
-    empresa_tel:document.getElementById('fin_empresa_tel')?.value||'',
-    cargo:document.getElementById('fin_cargo')?.value||'',
-    renda:document.getElementById('fin_renda')?.value||'',
-    admissao:document.getElementById('fin_admissao')?.value||'',
-    ref1_nome:document.getElementById('fin_ref1_nome')?.value||'',
-    ref1_tel:document.getElementById('fin_ref1_tel')?.value||'',
-    ref2_nome:document.getElementById('fin_ref2_nome')?.value||'',
-    ref2_tel:document.getElementById('fin_ref2_tel')?.value||'',
-    renda_extra:document.getElementById('fin_renda_extra')?.value||'',
-    autonomo:document.getElementById('fin_autonomo')?.value||'',
-    veiculo_modelo:document.getElementById('fin_veiculo_modelo')?.value||'',
-    veiculo_ano:document.getElementById('fin_veiculo_ano')?.value||'',
-    veiculo_placa:document.getElementById('fin_veiculo_placa')?.value||'',
-    veiculo_valor:document.getElementById('fin_veiculo_valor')?.value||'',
+  const old=l.ficha_fin||{};
+  const tipoPessoa=finTipoUI||old.tipo_pessoa||'PF';
+  const val=(idEl)=>document.getElementById(idEl)?.value||'';
+  // Começa a partir da ficha antiga para não perder os dados do outro tipo (PF/PJ) ao trocar de aba
+  const ficha={...old,tipo_pessoa:tipoPessoa};
+  if(tipoPessoa==='PJ'){
+    Object.assign(ficha,{
+      pj_cnpj:val('fin_pj_cnpj'),
+      pj_ie:val('fin_pj_ie'),
+      pj_razao:val('fin_pj_razao'),
+      pj_fantasia:val('fin_pj_fantasia'),
+      pj_abertura:val('fin_pj_abertura'),
+      pj_faturamento:val('fin_pj_faturamento'),
+      pj_atividade:val('fin_pj_atividade'),
+      pj_cep:val('fin_pj_cep'),
+      pj_numero:val('fin_pj_numero'),
+      pj_bairro:val('fin_pj_bairro'),
+      pj_rua:val('fin_pj_rua'),
+      pj_cidade:val('fin_pj_cidade'),
+      pj_estado:val('fin_pj_estado'),
+      pj_tel:val('fin_pj_tel'),
+      pj_email:val('fin_pj_email'),
+      pj_socio_nome:val('fin_pj_socio_nome'),
+      pj_socio_cpf:val('fin_pj_socio_cpf'),
+      pj_socio_rg:val('fin_pj_socio_rg'),
+      pj_socio_nascimento:val('fin_pj_socio_nascimento'),
+      pj_socio_cargo:val('fin_pj_socio_cargo'),
+      pj_socio_celular:val('fin_pj_socio_celular'),
+      pj_socio_email:val('fin_pj_socio_email')
+    });
+  }else{
+    Object.assign(ficha,{
+      nome:val('fin_nome'),
+      cpf:val('fin_cpf'),
+      rg:val('fin_rg'),
+      rg_emissao:val('fin_rg_emissao'),
+      nascimento:val('fin_nascimento'),
+      naturalidade:val('fin_naturalidade'),
+      mae:val('fin_mae'),
+      pai:val('fin_pai'),
+      cep:val('fin_cep'),
+      numero:val('fin_numero'),
+      rua:val('fin_rua'),
+      bairro:val('fin_bairro'),
+      cidade:val('fin_cidade'),
+      estado:val('fin_estado'),
+      celular:val('fin_celular'),
+      email:val('fin_email'),
+      cnh:val('fin_cnh'),
+      empresa:val('fin_empresa'),
+      empresa_end:val('fin_empresa_end'),
+      empresa_tel:val('fin_empresa_tel'),
+      cargo:val('fin_cargo'),
+      renda:val('fin_renda'),
+      admissao:val('fin_admissao'),
+      renda_extra:val('fin_renda_extra'),
+      autonomo:val('fin_autonomo')
+    });
+  }
+  Object.assign(ficha,{
+    ref1_nome:val('fin_ref1_nome'),
+    ref1_tel:val('fin_ref1_tel'),
+    ref2_nome:val('fin_ref2_nome'),
+    ref2_tel:val('fin_ref2_tel'),
+    veiculo_modelo:val('fin_veiculo_modelo'),
+    veiculo_ano:val('fin_veiculo_ano'),
+    veiculo_placa:val('fin_veiculo_placa'),
+    veiculo_valor:val('fin_veiculo_valor'),
     atualizado_em:new Date().toISOString()
-  };
+  });
   const hist=[...(l.historico||[])];
   if(!l.ficha_fin) hist.push({msg:`${PERFIS[perfil]?.name||perfil}: Ficha de financiamento preenchida`,data:new Date().toISOString(),tipo:'teal'});
 
@@ -3256,6 +3397,48 @@ async function buscarCepFin(input){
       if(cidade&&!cidade.value)cidade.value=d.localidade||'';
       if(estado&&!estado.value)estado.value=d.uf||'';
     }
+  }catch(e){}
+}
+
+// ── BUSCAR CEP DA EMPRESA (PJ) NA FICHA ──
+async function buscarCepFinPJ(input){
+  const cep=(input.value||'').replace(/\D/g,'');
+  if(cep.length!==8)return;
+  try{
+    const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const d=await r.json();
+    if(!d.erro){
+      const rua=document.getElementById('fin_pj_rua');const bairro=document.getElementById('fin_pj_bairro');
+      const cidade=document.getElementById('fin_pj_cidade');const estado=document.getElementById('fin_pj_estado');
+      if(rua&&!rua.value)rua.value=d.logradouro||'';
+      if(bairro&&!bairro.value)bairro.value=d.bairro||'';
+      if(cidade&&!cidade.value)cidade.value=d.localidade||'';
+      if(estado&&!estado.value)estado.value=d.uf||'';
+    }
+  }catch(e){}
+}
+
+// ── BUSCAR DADOS DA EMPRESA PELO CNPJ (PJ) ──
+async function buscarCnpjFin(input){
+  const cnpj=(input.value||'').replace(/\D/g,'');
+  if(cnpj.length!==14)return;
+  try{
+    const r=await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+    if(!r.ok)return;
+    const d=await r.json();
+    const set=(id,val)=>{const el=document.getElementById(id);if(el&&!el.value&&val)el.value=val;};
+    set('fin_pj_razao',d.razao_social);
+    set('fin_pj_fantasia',d.nome_fantasia);
+    set('fin_pj_abertura',d.data_inicio_atividade);
+    set('fin_pj_atividade',d.cnae_fiscal_descricao);
+    set('fin_pj_rua',d.logradouro);
+    set('fin_pj_numero',d.numero);
+    set('fin_pj_bairro',d.bairro);
+    set('fin_pj_cidade',d.municipio);
+    set('fin_pj_estado',d.uf);
+    set('fin_pj_email',d.email);
+    if(d.cep){const el=document.getElementById('fin_pj_cep');if(el&&!el.value)el.value=String(d.cep).replace(/\D/g,'').replace(/(\d{5})(\d{3})/,'$1-$2');}
+    if(d.ddd_telefone_1){const el=document.getElementById('fin_pj_tel');if(el&&!el.value)el.value=d.ddd_telefone_1;}
   }catch(e){}
 }
 

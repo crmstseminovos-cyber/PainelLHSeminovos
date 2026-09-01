@@ -587,6 +587,7 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
 .card-tasks{font-size:var(--text-2xs);color:var(--text-3);font-weight:600}
 .card-tasks.overdue{color:var(--red)}
 .card-timer,.card-time{font-size:var(--text-2xs);color:var(--text-4);margin-top:4px;display:flex;align-items:center;gap:3px}
+.card-visita{font-size:var(--text-2xs);color:var(--blue);font-weight:700;margin-top:4px}
 .card-timer.twarn{color:var(--amber)}.card-timer.tlate{color:var(--red)}
 .card-prox{font-size:var(--text-xs);color:var(--blue);font-weight:500;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .empty-col{text-align:center;padding:28px 10px;color:var(--text-4);font-size:var(--text-sm);font-style:italic}
@@ -1098,6 +1099,8 @@ tr:last-child td{border-bottom:none}
 .cfg-col-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;cursor:pointer}
 .cfg-col-input{flex:1;border:none;background:transparent;font-size:var(--text-sm);color:var(--text);font-family:var(--font-main);outline:none;padding:2px 4px;border-radius:4px}
 .cfg-col-input:focus{background:var(--surface-3)}
+.cfg-col-stock{display:flex;align-items:center;gap:5px;font-size:var(--text-xs);color:var(--text-3);white-space:nowrap;cursor:pointer;flex-shrink:0;user-select:none}
+.cfg-col-stock input{cursor:pointer}
 .cfg-col-actions{display:flex;gap:5px;flex-shrink:0}
 .cfg-col-btn{padding:3px 8px;border-radius:var(--r-sm);border:1px solid var(--border);background:transparent;font-size:var(--text-xs);cursor:pointer;color:var(--text-3);transition:var(--t-fast);font-weight:600}
 .cfg-col-btn:hover{border-color:var(--red-border);color:var(--red)}
@@ -1380,17 +1383,17 @@ tr:last-child td{border-bottom:none}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</button>
     <button class="btn btn-sm" onclick="openImportModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importar</button>
-    <button class="btn btn-sm" onclick="abrirCfgColunas('sdr')">⚙️ Configurar colunas</button>
+    <button class="btn btn-sm" onclick="abrirCfgColunas('sdr')">Configurar colunas</button>
     <button class="btn btn-primary btn-sm" onclick="openNovoLead()">+ Novo lead</button>
   </div>
 </div><div class="kanban-wrap" id="kanbanSDR"></div></div>
       <!-- Páginas somente leitura para SDR -->
       <div id="page-vend-luis" class="page">
-        <div class="page-title"><span>👔 Luis Henrique <span style="font-size:var(--text-md);font-weight:400;color:var(--muted);background:#fef3c7;padding:2px 10px;border-radius:20px;margin-left:8px">👁 Somente leitura</span></span></div>
+        <div class="page-title"><span>Luis Henrique <span style="font-size:var(--text-md);font-weight:400;color:var(--muted);background:#fef3c7;padding:2px 10px;border-radius:20px;margin-left:8px">Somente leitura</span></span></div>
         <div class="kanban-wrap" id="kanbanLuisRO"></div>
       </div>
       <div id="page-vend-claudinei" class="page">
-        <div class="page-title"><span>👔 Claudinei <span style="font-size:var(--text-md);font-weight:400;color:var(--muted);background:#fef3c7;padding:2px 10px;border-radius:20px;margin-left:8px">👁 Somente leitura</span></span></div>
+        <div class="page-title"><span>Claudinei <span style="font-size:var(--text-md);font-weight:400;color:var(--muted);background:#fef3c7;padding:2px 10px;border-radius:20px;margin-left:8px">Somente leitura</span></span></div>
         <div class="kanban-wrap" id="kanbanClaRO"></div>
       </div>
       <div id="page-vendedor" class="page">
@@ -1437,7 +1440,7 @@ tr:last-child td{border-bottom:none}
       <div class="page-title">
   <span id="vendTitle">Meus Leads</span>
   <div class="btn-group" style="display:flex;gap:8px">
-    <button class="btn btn-sm" onclick="abrirCfgColunas('vendedor')">⚙️ Configurar colunas</button>
+    <button class="btn btn-sm" onclick="abrirCfgColunas('vendedor')">Configurar colunas</button>
     <button class="btn btn-sm" onclick="exportLeads()">Exportar</button>
     <button class="btn btn-primary btn-sm" onclick="openNovoLead()">+ Novo lead</button>
   </div>
@@ -1664,7 +1667,7 @@ tr:last-child td{border-bottom:none}
         <div class="table-wrap">
           <div class="table-top">
             <div>
-              <h3>👥 Base de Clientes</h3>
+              <h3>Base de Clientes</h3>
               <div style="font-size:var(--text-sm);color:var(--muted);margin-top:2px">Leads encerrados — sem interesse ou fechados em outra loja</div>
             </div>
             <input id="buscaBase" placeholder="Buscar nome ou telefone..." oninput="renderBaseClientes()" style="border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;font-size:var(--text-md);font-family:var(--font-main);width:240px">
@@ -1673,7 +1676,7 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div id="page-adm-colunas" class="page">
-        <div class="page-title">⚙️ Gerenciar Colunas</div>
+        <div class="page-title">Gerenciar Colunas</div>
         <div class="dept-tabs" id="deptTabs"></div>
         <div class="col-manager" id="colManager"></div>
         <div style="margin-top:14px;display:flex;gap:8px">
@@ -1682,7 +1685,7 @@ tr:last-child td{border-bottom:none}
           <button class="btn btn-primary" onclick="addColuna()">+ Adicionar</button>
         </div>
       </div>
-      <div id="page-adm-relatorios" class="page"><div class="page-title">📈 Relatórios</div><div class="metrics" id="admMetrics"></div></div>
+      <div id="page-adm-relatorios" class="page"><div class="page-title">Relatórios</div><div class="metrics" id="admMetrics"></div></div>
     </div>
   </div>
 </div>
@@ -1703,9 +1706,9 @@ const PERFIS={
   adm:{name:'ADM',role:'Administrador',avatar:'AD',color:'#0a1628',nav:[{label:'Colunas',page:'page-adm-colunas'},{label:'Relatórios',page:'page-adm-relatorios'},{label:'Base Clientes',page:'page-base-clientes'},{label:'Estoque',page:'page-estoque'},{label:'Configurações',page:'page-settings'}]}
 };
 const COLS_DEF={
-  sdr:[{id:'novo',label:'Novo',cor:'#3b82f6'},{id:'importado',label:'📥 Importado',cor:'#f97316'},{id:'tentando',label:'Tentando contato',cor:'#f59e0b'},{id:'reagendado',label:'♻️ Reagendado',cor:'#8b5cf6'},{id:'qualificado',label:'Qualificado',cor:'#00c853'},{id:'sem_interesse',label:'❌ Sem interesse',cor:'#ef4444'}],
-  vendedor:[{id:'recebido',label:'📋 Recebido',cor:'#3b82f6'},{id:'negociacao',label:'💬 Em negociação',cor:'#f59e0b'},{id:'visita',label:'Visita agendada',cor:'#8b5cf6'},{id:'financiamento',label:'Financiamento',cor:'#14b8a6'},{id:'fechado',label:'Fechado',cor:'#00c853'},{id:'perdido',label:'Perdido',cor:'#ef4444'},{id:'vendido_concluido',label:'🏁 Vendido Concluído',cor:'#00c853'}],
-  financiamento:[{id:'aguardando_docs',label:'📄 Aguard. docs',cor:'#f59e0b'},{id:'preenchimento',label:'📝 Preench. ficha',cor:'#3b82f6'},{id:'aguardando_resp',label:'⏳ Aguard. resposta',cor:'#8b5cf6'},{id:'pendencia',label:'🔄 Pendência',cor:'#f97316'},{id:'aprovado',label:'✅ Aprovado',cor:'#00c853'},{id:'aprovado_restricao',label:'⚠️ Aprov. c/ restrição',cor:'#eab308'},{id:'reprovado',label:'Reprovado',cor:'#ef4444'}]
+  sdr:[{id:'novo',label:'Novo',cor:'#3b82f6'},{id:'importado',label:'Importado',cor:'#f97316'},{id:'tentando',label:'Tentando contato',cor:'#f59e0b'},{id:'reagendado',label:'Reagendado',cor:'#8b5cf6'},{id:'qualificado',label:'Qualificado',cor:'#00c853'},{id:'sem_interesse',label:'Sem interesse',cor:'#ef4444'}],
+  vendedor:[{id:'recebido',label:'Recebido',cor:'#3b82f6'},{id:'negociacao',label:'Em negociação',cor:'#f59e0b'},{id:'visita',label:'Visita agendada',cor:'#8b5cf6'},{id:'financiamento',label:'Financiamento',cor:'#14b8a6'},{id:'fechado',label:'Fechado',cor:'#00c853'},{id:'perdido',label:'Perdido',cor:'#ef4444'},{id:'vendido_concluido',label:'Vendido Concluído',cor:'#00c853',estoqueVendido:true}],
+  financiamento:[{id:'aguardando_docs',label:'Aguard. docs',cor:'#f59e0b'},{id:'preenchimento',label:'Preench. ficha',cor:'#3b82f6'},{id:'aguardando_resp',label:'Aguard. resposta',cor:'#8b5cf6'},{id:'pendencia',label:'Pendência',cor:'#f97316'},{id:'aprovado',label:'Aprovado',cor:'#00c853'},{id:'aprovado_restricao',label:'Aprov. c/ restrição',cor:'#eab308'},{id:'reprovado',label:'Reprovado',cor:'#ef4444'}]
 };
 let perfil=null,allLeads=[],allCam=[],activeDept='sdr',modalTab='dados',finTipoUI=null;
 let camAtualCustos=null,custosDoVeiculo=[],itensNovaOS=[],catNovaOS=null,editingOsId=null;
@@ -1828,7 +1831,7 @@ function timerInfo(iso){
   if(h>0)return{txt:`${h}h`,cls:h>=8?'twarn':''};
   return{txt:`${m}min`,cls:''};
 }
-function tempBadge(t){const l=t==='hot'?'🔴 Quente':t==='warm'?'🟡 Morno':'🔵 Frio';return`<span class="temp-badge temp-${t}">${l}</span>`;}
+function tempBadge(t){const l=t==='hot'?'Quente':t==='warm'?'Morno':'Frio';return`<span class="temp-badge temp-${t}">${l}</span>`;}
 function origemTag(o){const m={'Meta Ads':'tag-meta','WhatsApp direto':'tag-wpp','Indicação':'tag-ind','Instagram':'tag-ig'};return`<span class="tag ${m[o]||''}">${o||'Meta Ads'}</span>`;}
 function fmtDate(d){return d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):''}
 function fmtBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR')}
@@ -1923,8 +1926,9 @@ function cardHTML(l){
     <div class="card-interesse">${l.interesse&&l.interesse!=='0'&&l.interesse!==0?l.interesse:'—'}</div>
     <div class="card-tags">${origemTag(l.origem)}</div>
     ${l.vendedor?`<div class="card-vendedor">→ ${l.vendedor}</div>`:''}
+    ${(l.etapa==='visita'||l.etapa_vend==='visita')&&l.visita_data?`<div class="card-visita">Visita: ${new Date(l.visita_data+'T00:00:00').toLocaleDateString('pt-BR')}${l.visita_hora?' às '+l.visita_hora:''}</div>`:''}
     ${taskAlertHtml}
-    ${timer?`<div class="card-timer ${timer.cls}">⏱ ${timer.txt} nesta etapa</div>`:''}
+    ${timer?`<div class="card-timer ${timer.cls}">${timer.txt} nesta etapa</div>`:''}
     ${(l.etapa_vend==='vendido_concluido'||l.etapa==='vendido_concluido')?fmtGarantiaBadge(l):''}
     ${l.telefone?`<a class="card-wpp-btn" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg>WhatsApp</a>`:''}
   </div>`;
@@ -1950,6 +1954,43 @@ function onColDragOver(e){
 }
 function onColDragLeave(e){
   e.currentTarget.classList.remove('drag-over');
+}
+// ── AUTOMAÇÃO DE ESTOQUE POR ETAPA ──
+function deptKeyFromCampo(campoEtapa){
+  return campoEtapa==='etapa_vend'?'vendedor':campoEtapa==='etapa'?'sdr':'financiamento';
+}
+function colDef(campoEtapa,colId){
+  const dept=deptKeyFromCampo(campoEtapa);
+  return (colunas[dept]||[]).find(c=>c.id===colId)||null;
+}
+function colunaExigeVeiculo(campoEtapa,colId){
+  return !!colDef(campoEtapa,colId)?.estoqueVendido;
+}
+async function patchCaminhaoStatus(veiculoId,status){
+  const res=await fetch(`${SB_URL}/rest/v1/caminhoes?id=eq.${veiculoId}`,{
+    method:'PATCH',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({status})
+  });
+  return res.ok;
+}
+async function sincronizarEstoquePorEtapa(l,campoEtapa,etapaAntiga,etapaNova){
+  if(!l.veiculo_id)return;
+  const antigaMarca=!!colDef(campoEtapa,etapaAntiga)?.estoqueVendido;
+  const novaMarca=!!colDef(campoEtapa,etapaNova)?.estoqueVendido;
+  if(novaMarca&&!antigaMarca){
+    if(!(await patchCaminhaoStatus(l.veiculo_id,'Vendido'))){
+      showToast('Etapa salva, mas houve erro ao atualizar o estoque.','warning');
+    }
+  } else if(antigaMarca&&!novaMarca){
+    const cam=allCam.find(c=>c.id==l.veiculo_id);
+    if(cam&&cam.status==='Vendido'){
+      const ok=confirm(`O caminhão "${cam.modelo||'vinculado'}" está marcado como Vendido nesta fase. Deseja voltar o status dele para Disponível no estoque?`);
+      if(ok&&!(await patchCaminhaoStatus(l.veiculo_id,'Disponível'))){
+        showToast('Erro ao atualizar o estoque.','warning');
+      }
+    }
+  }
 }
 async function onColDrop(e,colId){
   e.preventDefault();
@@ -1977,25 +2018,32 @@ async function onColDrop(e,colId){
   let nomeQuemMoveu;
   if(perfil==='gerente'){
     const nomeVend=gerenteViewAtual==='luis'?'Luis Henrique':gerenteViewAtual==='claudinei'?'Claudinei':'';
-    nomeQuemMoveu=nomeVend?`🔑 Gerente (visão ${nomeVend})`:'🔑 Gerente';
+    nomeQuemMoveu=nomeVend?`Gerente (visão ${nomeVend})`:'Gerente';
   } else {
     nomeQuemMoveu=PERFIS[perfil]?.name||perfil;
   }
   const colLabel=(col)=>{
     const allCols=[...colunas.sdr,...colunas.vendedor,...colunas.financiamento];
-    return allCols.find(c=>c.id===col)?.label?.replace(/[🆕📞♻️✅❌📋💬📅💰🏆📄📝⏳🔄⚠️]/gu,'').trim()||col;
+    return allCols.find(c=>c.id===col)?.label?.trim()||col;
   };
+  // Colunas marcadas para dar baixa automática no estoque exigem veículo vinculado
+  if(colunaExigeVeiculo(campoEtapa,colId)&&!l.veiculo_id){
+    showToast(`Vincule um veículo (campo "Veículo de interesse") antes de mover este lead para "${colLabel(colId)}".`,'warning');
+    return;
+  }
   // Interceptar movimentos para colunas de encerramento
   const colsEncerramento=['sem_interesse','perdido'];
   if(colsEncerramento.includes(colId)||colId==='fechado'){
-    abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLabel);
+    abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLabel,etapaAtual);
     return;
   }
-  if(colId==='vendido_concluido'){abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu);return;}
+  if(colId==='vendido_concluido'){abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu,etapaAtual);return;}
+  if(colId==='visita'){abrirModalVisita(leadId,campoEtapa,hist,nomeQuemMoveu,etapaAtual);return;}
   hist.push({msg:`${nomeQuemMoveu}: ${colLabel(etapaAtual)||'—'} → ${colLabel(colId)}`,data:new Date().toISOString(),tipo:perfil==='gerente'?'amber':'green'});
   const updateObj={[campoEtapa]:colId,historico:hist};
   const{error}=await sb.from('leads').update(updateObj).eq('id',leadId);
   if(error){showToast('Erro ao mover lead: '+error.message,'error');return;}
+  await sincronizarEstoquePorEtapa(l,campoEtapa,etapaAtual,colId);
   dragLeadId=null;
   await loadAll();
 }
@@ -2156,7 +2204,7 @@ function cardHTMLRO(l){
 
 function renderKanbanVend(){
   const nome=PERFIS[perfil].name;
-  document.getElementById('vendTitle').textContent='👔 Meus Leads — '+nome;
+  document.getElementById('vendTitle').textContent='Meus Leads — '+nome;
   // Lead está no financiamento SOMENTE se etapa = 'financiamento_enviado' (enviado intencionalmente)
   // etapa_fin sozinho não basta — pode ter sido gravado por engano em versões anteriores
   const leads=allLeads.filter(l=>
@@ -2231,7 +2279,7 @@ function renderDayTasks(){
   else if(tkFilter==='atrasadas')filtered=all.filter(t=>isTaskLate(t));
   const pend=all.filter(t=>!t.done).length;
   const ce=document.getElementById('tasksCount');if(ce)ce.textContent=pend;
-  if(!filtered.length){el.innerHTML=`<div class="no-tk">${tkFilter==='atrasadas'?'✅ Nenhuma atrasada!':tkFilter==='hoje'?'📭 Nenhuma tarefa hoje':'📭 Nenhuma tarefa'}</div>`;return;}
+  if(!filtered.length){el.innerHTML=`<div class="no-tk">${tkFilter==='atrasadas'?'Nenhuma atrasada!':tkFilter==='hoje'?'Nenhuma tarefa hoje':'Nenhuma tarefa'}</div>`;return;}
   el.innerHTML=filtered.map(t=>{
     const ov=isTaskLate(t);
     const ds=t.due?new Date(t.due+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
@@ -2241,7 +2289,7 @@ function renderDayTasks(){
       <div class="dtask-info" onclick="abrirTaskModal('${t.src}',${t.leadId||0},${t.taskIdx})">
         <div class="dtask-name ${t.done?'done':''}">${t.title}</div>
         <div class="dtask-sub ${ov?'late':''}">${t.resp||''}${ds?' · '+ds+(t.time?' às '+t.time:''):''}${ov?' · Atrasada':''}</div>
-        ${t.leadNome?`<div class="dtask-lead" onclick="event.stopPropagation();abrirLeadDaTarefa(${t.leadId})" style="cursor:pointer">📌 ${t.leadNome} <span style="color:var(--teal);font-size:10px">→ abrir</span></div>`:''}
+        ${t.leadNome?`<div class="dtask-lead" onclick="event.stopPropagation();abrirLeadDaTarefa(${t.leadId})" style="cursor:pointer">${t.leadNome} <span style="color:var(--teal);font-size:10px">→ abrir</span></div>`:''}
       </div>
     </div>`;}).join('');
 }
@@ -2278,14 +2326,14 @@ function gerarPDFFicha(id){
   <div class="header">
     <div class="header-left">
       <h1>LH Seminovos</h1>
-      <p>📝 Ficha de Cadastro para Financiamento</p>
+      <p>Ficha de Cadastro para Financiamento</p>
     </div>
     <div class="badge">Financiamento</div>
   </div>
 
   ${f.tipo_pessoa==='PJ' ? `
   <div class="section">
-    <div class="section-title">🏢 Dados da Empresa</div>
+    <div class="section-title">Dados da Empresa</div>
     <div class="grid">
       <div class="field full"><label>Razão Social</label><span>${fmt(f.pj_razao||l.nome)}</span></div>
       <div class="field"><label>Nome Fantasia</label><span>${fmt(f.pj_fantasia)}</span></div>
@@ -2298,7 +2346,7 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">📍 Endereço da Empresa</div>
+    <div class="section-title">Endereço da Empresa</div>
     <div class="grid">
       <div class="field"><label>CEP</label><span>${fmt(f.pj_cep)}</span></div>
       <div class="field"><label>Número</label><span>${fmt(f.pj_numero)}</span></div>
@@ -2312,7 +2360,7 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">👤 Sócio / Responsável Legal</div>
+    <div class="section-title">Sócio / Responsável Legal</div>
     <div class="grid">
       <div class="field full"><label>Nome completo</label><span>${fmt(f.pj_socio_nome)}</span></div>
       <div class="field"><label>CPF</label><span>${fmt(f.pj_socio_cpf)}</span></div>
@@ -2325,7 +2373,7 @@ function gerarPDFFicha(id){
   </div>
   ` : `
   <div class="section">
-    <div class="section-title">👤 Dados Pessoais</div>
+    <div class="section-title">Dados Pessoais</div>
     <div class="grid">
       <div class="field full"><label>Nome completo</label><span>${fmt(f.nome||l.nome)}</span></div>
       <div class="field"><label>CPF</label><span>${fmt(f.cpf)}</span></div>
@@ -2346,7 +2394,7 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">💼 Dados Profissionais</div>
+    <div class="section-title">Dados Profissionais</div>
     <div class="grid">
       <div class="field full"><label>Nome da empresa</label><span>${fmt(f.empresa)}</span></div>
       <div class="field full"><label>Endereço da empresa</label><span>${fmt(f.empresa_end)}</span></div>
@@ -2358,7 +2406,7 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">ℹ️ Informações Complementares</div>
+    <div class="section-title">ℹInformações Complementares</div>
     <div class="grid">
       <div class="field"><label>Tem renda extra?</label><span>${fmt(f.renda_extra)}</span></div>
       <div class="field full"><label>Autônomo / Empresário — atividade</label><span>${fmt(f.autonomo)}</span></div>
@@ -2367,7 +2415,7 @@ function gerarPDFFicha(id){
   `}
 
   <div class="section">
-    <div class="section-title">👥 ${f.tipo_pessoa==='PJ'?'Referências Comerciais':'Referências Pessoais'}</div>
+    <div class="section-title">${f.tipo_pessoa==='PJ'?'Referências Comerciais':'Referências Pessoais'}</div>
     <div class="grid">
       <div class="field"><label>Nome — Referência 1</label><span>${fmt(f.ref1_nome)}</span></div>
       <div class="field"><label>Telefone — Referência 1</label><span>${fmt(f.ref1_tel)}</span></div>
@@ -2377,7 +2425,7 @@ function gerarPDFFicha(id){
   </div>
 
   <div class="section">
-    <div class="section-title">🚛 Dados do Veículo</div>
+    <div class="section-title">Dados do Veículo</div>
     <div class="grid">
       <div class="field"><label>Marca / Modelo</label><span>${fmt(f.veiculo_modelo||l.interesse)}</span></div>
       <div class="field"><label>Ano</label><span>${fmt(f.veiculo_ano)}</span></div>
@@ -2386,7 +2434,7 @@ function gerarPDFFicha(id){
     </div>
   </div>
 
-  ${camposExtras.length ? `<div class="section"><div class="section-title">📋 Campos Personalizados</div><div class="grid">`
+  ${camposExtras.length ? `<div class="section"><div class="section-title">Campos Personalizados</div><div class="grid">`
     + camposExtras.map(c=>`<div class="field"><label>${c.label}</label><span>${fmt(f[c.id])}</span></div>`).join('')
     + `</div></div>` : ''}
 
@@ -2426,16 +2474,16 @@ function abrirTaskModal(src,leadId,idx){
   overlay.innerHTML=`
     <div class="task-action-modal" onclick="event.stopPropagation()">
       <div class="task-action-modal-title">${t.title}</div>
-      <div class="task-action-modal-sub">${t.resp||''}${t.due?' · 📅 '+new Date(t.due+'T00:00:00').toLocaleDateString('pt-BR'):''}${ov?' · <span style="color:var(--red);font-weight:700">⚠ Atrasada</span>':''}</div>
+      <div class="task-action-modal-sub">${t.resp||''}${t.due?' · '+new Date(t.due+'T00:00:00').toLocaleDateString('pt-BR'):''}${ov?' · <span style="color:var(--red);font-weight:700">Atrasada</span>':''}</div>
       <div class="task-action-btns">
-        <button class="task-action-btn ok" onclick="quickConcluir('${src}',${leadId},${idx})">✅ Concluída</button>
-        <button class="task-action-btn adiar" onclick="document.getElementById('taModal_date').classList.toggle('show')">⏰ Adiar</button>
+        <button class="task-action-btn ok" onclick="quickConcluir('${src}',${leadId},${idx})">Concluída</button>
+        <button class="task-action-btn adiar" onclick="document.getElementById('taModal_date').classList.toggle('show')">Adiar</button>
       </div>
       <input type="date" class="task-action-date" id="taModal_date" value="${t.due||''}">
       <textarea class="task-action-obs" id="taModal_obs" placeholder="Adicionar observação...">${t.obs||''}</textarea>
       <div class="task-action-footer">
         <button class="task-action-cancel" onclick="fecharTaskModal()">Cancelar</button>
-        <button class="task-action-save" onclick="salvarTaskModal('${src}',${leadId},${idx})">💾 Salvar</button>
+        <button class="task-action-save" onclick="salvarTaskModal('${src}',${leadId},${idx})">Salvar</button>
       </div>
     </div>`;
   overlay.onclick=fecharTaskModal;
@@ -2634,7 +2682,7 @@ function renderAdmColunas(){
     <div class="col-item"><div class="col-dot" style="background:${c.cor}"></div><div class="col-name">${c.label}</div><div class="col-actions">
       ${i>0?`<button class="btn btn-sm" onclick="moveCol(${i},-1)">↑</button>`:''}
       ${i<cols.length-1?`<button class="btn btn-sm" onclick="moveCol(${i},1)">↓</button>`:''}
-      <button class="btn btn-sm btn-danger" onclick="removeCol(${i})">🗑</button>
+      <button class="btn btn-sm btn-danger" onclick="removeCol(${i})">✕</button>
     </div></div>`).join('');
 }
 function setDept(d){activeDept=d;renderAdmColunas();}
@@ -2717,9 +2765,9 @@ function openNovoLead(etapa){
       </div>
       <div class="form-row"><label>Temperatura</label>
         <div class="temp-select">
-          <div class="temp-opt hot sel" onclick="selTemp(this,'hot')">🔴 Quente</div>
-          <div class="temp-opt warm" onclick="selTemp(this,'warm')">🟡 Morno</div>
-          <div class="temp-opt cold" onclick="selTemp(this,'cold')">🔵 Frio</div>
+          <div class="temp-opt hot sel" onclick="selTemp(this,'hot')">Quente</div>
+          <div class="temp-opt warm" onclick="selTemp(this,'warm')">Morno</div>
+          <div class="temp-opt cold" onclick="selTemp(this,'cold')">Frio</div>
         </div><input type="hidden" id="nl_temp" value="hot">
       </div>
       <div class="form-row"><label>Observações</label><textarea id="nl_obs" placeholder="Ex: Contato realizado às 8:15h, enviado detalhes..."></textarea></div>
@@ -2739,7 +2787,7 @@ function onVeiculoInteresseChange(sel){
   }
   const infoEl=document.getElementById('el_veiculo_info');
   if(infoEl){
-    infoEl.innerHTML=`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
+    infoEl.innerHTML=`${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
   }
 }
 function onVeiculoInteresseChangeNovo(sel){
@@ -2751,7 +2799,7 @@ function onVeiculoInteresseChangeNovo(sel){
     intInput.value=`${c.modelo||''}${c.placa?' — '+c.placa:''}`.trim();
   }
   if(infoEl){
-    infoEl.innerHTML=`📦 ${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
+    infoEl.innerHTML=`${c.modelo||''} ${c.ano?'('+c.ano+')':''} — ${c.placa||'sem placa'} ${c.valor?' · R$ '+Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${c.status||'—'}</span>`;
   }
 }
 async function saveLead(){
@@ -2765,7 +2813,7 @@ async function saveLead(){
       return lTel && lTel===telLimpo;
     });
     if(dup){
-      const conf=confirm(`⚠️ Já existe um lead com este telefone:\n\n👤 ${dup.nome}\n📱 ${dup.telefone}\n📅 Criado em: ${new Date(dup.criado_em).toLocaleDateString('pt-BR')}\n\nDeseja cadastrar mesmo assim?`);
+      const conf=confirm(`Já existe um lead com este telefone:\n\n${dup.nome}\n${dup.telefone}\nCriado em: ${new Date(dup.criado_em).toLocaleDateString('pt-BR')}\n\nDeseja cadastrar mesmo assim?`);
       if(!conf)return;
     }
   }
@@ -2803,7 +2851,7 @@ function renderLeadModal(l){
   // Tabs disponíveis por perfil
   const showFinTab = true; // todos podem ver
   const finStatus = l.etapa_fin
-    ? `<span class="fin-badge">💰 No financiamento</span>`
+    ? `<span class="fin-badge">No financiamento</span>`
     : `<span class="fin-badge none">Não enviado</span>`;
 
   const score=calcScore(l);const sClass=scoreClass(score);const sLabel=scoreLabel(score);
@@ -2830,8 +2878,8 @@ function renderLeadModal(l){
     bodyHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:var(--r-md);border:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:10px">
-          <span class="score-badge ${sClass}">⚡ Lead ${sLabel} · ${score}pts</span>
-          <span class="sla-chip ${slaStatus}">🕐 ${ultiCont||'Sem contato'} · ${slaText}</span>
+          <span class="score-badge ${sClass}">Lead ${sLabel} · ${score}pts</span>
+          <span class="sla-chip ${slaStatus}">${ultiCont||'Sem contato'} · ${slaText}</span>
         </div>
         ${l.telefone?`<a class="btn-wpp" href="#" onclick="abrirWhatsApp('${l.telefone}','${(l.nome||'').replace(/'/g,'`')}','${(l.interesse||'').replace(/'/g,'`')}',event)"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.995 0C5.372 0 0 5.373 0 12c0 2.118.554 4.107 1.523 5.832L.057 23.428a.5.5 0 0 0 .609.601l5.753-1.485A11.944 11.944 0 0 0 11.995 24C18.626 24 24 18.627 24 12S18.626 0 11.995 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.359-.213-3.714.958.992-3.6-.234-.371A9.79 9.79 0 0 1 2.182 12c0-5.418 4.402-9.818 9.813-9.818 5.41 0 9.813 4.4 9.813 9.818 0 5.417-4.403 9.818-9.813 9.818z"/></svg> WhatsApp</a>`:''}
       </div>
@@ -2855,19 +2903,20 @@ function renderLeadModal(l){
       <div class="form-grid"><div class="form-row"><label>Origem</label><select id="el_orig"><option>Meta Ads</option><option>WhatsApp direto</option><option>Instagram</option><option>Indicação</option><option>Mercado Livre</option><option>Caminhões e Carretas</option><option>OLX</option></select></div><div class="form-row"><label>Vendedor</label><select id="el_vend">${vendOpts}</select></div></div>
       <div class="form-grid3"><div class="form-row"><label>Etapa SDR</label><select id="el_etapa">${colsSDR}</select></div><div class="form-row"><label>Etapa Vendedor</label><select id="el_etapa_vend">${colsVend}</select></div><div class="form-row"><label>Etapa Fin.</label><select id="el_etapa_fin">${colsFin}</select></div></div>
       <div class="form-row"><label>Temperatura</label><div class="temp-select">
-        <div class="temp-opt hot ${l.temperatura==='hot'?'sel':''}" onclick="selTemp(this,'hot')">🔴 Quente</div>
-        <div class="temp-opt warm ${l.temperatura==='warm'?'sel':''}" onclick="selTemp(this,'warm')">🟡 Morno</div>
-        <div class="temp-opt cold ${l.temperatura==='cold'?'sel':''}" onclick="selTemp(this,'cold')">🔵 Frio</div>
+        <div class="temp-opt hot ${l.temperatura==='hot'?'sel':''}" onclick="selTemp(this,'hot')">Quente</div>
+        <div class="temp-opt warm ${l.temperatura==='warm'?'sel':''}" onclick="selTemp(this,'warm')">Morno</div>
+        <div class="temp-opt cold ${l.temperatura==='cold'?'sel':''}" onclick="selTemp(this,'cold')">Frio</div>
       </div><input type="hidden" id="el_temp" value="${l.temperatura||'cold'}"></div>
       <div class="form-row"><label>Último contato</label><input type="date" id="el_ultimo" value="${l.ultimo_contato||''}"></div>
+      <div class="form-row"><label>Visita agendada</label><div class="form-grid"><input type="date" id="el_visita_data" value="${l.visita_data||''}"><input type="time" id="el_visita_hora" value="${l.visita_hora||''}"></div></div>
       ${(l.etapa_vend==='vendido_concluido'||l.etapa==='vendido_concluido')?`
       <div class="form-row" style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-md);padding:12px">
-        <label style="color:var(--accent)">🚛 Data de entrega do veículo</label>
+        <label style="color:var(--accent)">Data de entrega do veículo</label>
         <input type="date" id="el_data_entrega" value="${l.data_entrega_veiculo||''}" max="${new Date().toISOString().split('T')[0]}">
         <div style="font-size:var(--text-xs);color:var(--text-3);margin-top:4px">Necessária para calcular os 90 dias de garantia</div>
       </div>`:''}
       <div class="form-row"><label>Veículo de interesse (estoque completo)</label><select id="el_veiculo" onchange="onVeiculoInteresseChange(this)"><option value="">—</option>${allCam.map(c=>`<option value="${c.id}" ${c.id==l.veiculo_id?'selected':''}>${c.modelo} — ${c.placa||'sem placa'} (${c.status})</option>`).join('')}</select>
-        <div id="el_veiculo_info" style="margin-top:6px;font-size:var(--text-xs);color:var(--text-3)">${veiculo?`📦 ${veiculo.modelo||''} ${veiculo.ano?'('+veiculo.ano+')':''} — ${veiculo.placa||'sem placa'}${veiculo.valor?' · R$ '+Number(veiculo.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${veiculo.status||'—'}</span>`:''}</div>
+        <div id="el_veiculo_info" style="margin-top:6px;font-size:var(--text-xs);color:var(--text-3)">${veiculo?`${veiculo.modelo||''} ${veiculo.ano?'('+veiculo.ano+')':''} — ${veiculo.placa||'sem placa'}${veiculo.valor?' · R$ '+Number(veiculo.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''} <span style="color:var(--text-3)">· status: ${veiculo.status||'—'}</span>`:''}</div>
       </div>
       <div class="form-row"><label>Observações</label><textarea id="el_obs">${l.observacoes||''}</textarea></div>`;
   }
@@ -2877,7 +2926,7 @@ function renderLeadModal(l){
       <div class="task-list">${tasks.map((t,i)=>`<div class="task-item">
         <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${l.id},${i})">${t.done?'✓':''}</div>
         <div class="task-info"><div class="task-title ${t.done?'done':''}">${t.title}</div><div class="task-meta ${isTaskLate(t)?'overdue':''}">${t.resp||''}${t.due?' · '+new Date(t.due+'T00:00:00').toLocaleDateString('pt-BR')+(t.time?' às '+t.time:''):''}</div></div>
-        <button class="task-del" onclick="deleteTask(${l.id},${i})">🗑</button></div>`).join('')||'<div style="color:var(--muted);text-align:center;padding:20px;font-size:13px">Nenhuma tarefa</div>'}</div>
+        <button class="task-del" onclick="deleteTask(${l.id},${i})">✕</button></div>`).join('')||'<div style="color:var(--muted);text-align:center;padding:20px;font-size:13px">Nenhuma tarefa</div>'}</div>
       <div class="divider"></div>
       <!-- SUGESTÕES RECOLHÍVEIS -->
       <div class="sugest-toggle" onclick="toggleSugest(this)">
@@ -2914,7 +2963,7 @@ function renderLeadModal(l){
   if(modalTab==='timeline'){
     const hist=(l.historico||[]).slice().reverse();
     const tlIcon=(tipo)=>{
-      const map={green:'✅',blue:'👤',amber:'⚡',teal:'💰',red:'❌',default:'📌'};
+      const map={green:'',blue:'',amber:'',teal:'',red:'',default:''};
       return map[tipo]||map.default;
     };
     const tlDotClass=(tipo)=>{
@@ -2929,7 +2978,7 @@ function renderLeadModal(l){
           <div class="score-track"><div class="score-fill" style="width:${score2}%"></div></div>
           <span class="score-val score-${sClass2}">${score2}</span>
         </div>
-        <span class="score-badge ${sClass2}">⚡ ${score2}pts</span>
+        <span class="score-badge ${sClass2}">${score2}pts</span>
       </div>
       <div class="timeline">
         ${hist.length?hist.map(h=>`
@@ -3018,7 +3067,7 @@ function renderLeadModal(l){
     const finExtra = l.ficha_fin_extra || {};
     const blocoPF = `
       <div class="fin-section">
-        <div class="fin-section-title">👤 Dados Pessoais</div>
+        <div class="fin-section-title">Dados Pessoais</div>
         <div class="form-grid">
           <div class="form-row"><label>Nome completo</label><input id="fin_nome" value="${fin.nome||l.nome||''}"></div>
           <div class="form-row"><label>CPF</label><input id="fin_cpf" value="${fin.cpf||''}" placeholder="000.000.000-00"></div>
@@ -3052,7 +3101,7 @@ function renderLeadModal(l){
         </div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">💼 Dados Profissionais</div>
+        <div class="fin-section-title">Dados Profissionais</div>
         <div class="form-grid">
           <div class="form-row"><label>Nome da empresa</label><input id="fin_empresa" value="${fin.empresa||''}" placeholder="Razão social ou nome fantasia"></div>
           <div class="form-row"><label>Cargo</label><input id="fin_cargo" value="${fin.cargo||''}" placeholder="Ex: Motorista, Gerente..."></div>
@@ -3067,7 +3116,7 @@ function renderLeadModal(l){
         </div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">ℹ️ Informações Complementares</div>
+        <div class="fin-section-title">ℹInformações Complementares</div>
         <div class="form-grid">
           <div class="form-row"><label>Tem renda extra?</label><select id="fin_renda_extra"><option value="">—</option><option ${fin.renda_extra==='Sim'?'selected':''}>Sim</option><option ${fin.renda_extra==='Não'?'selected':''}>Não</option></select></div>
         </div>
@@ -3075,7 +3124,7 @@ function renderLeadModal(l){
       </div>`;
     const blocoPJ = `
       <div class="fin-section">
-        <div class="fin-section-title">🏢 Dados da Empresa</div>
+        <div class="fin-section-title">Dados da Empresa</div>
         <div class="form-grid">
           <div class="form-row"><label>CNPJ</label><input id="fin_pj_cnpj" value="${fin.pj_cnpj||''}" placeholder="00.000.000/0000-00" oninput="buscarCnpjFin(this)"></div>
           <div class="form-row"><label>Inscrição Estadual</label><input id="fin_pj_ie" value="${fin.pj_ie||''}" placeholder="Isento ou nº"></div>
@@ -3091,7 +3140,7 @@ function renderLeadModal(l){
         <div class="form-row"><label>Atividade / Ramo</label><input id="fin_pj_atividade" value="${fin.pj_atividade||''}" placeholder="Ex: Transporte rodoviário de cargas"></div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">📍 Endereço da Empresa</div>
+        <div class="fin-section-title">Endereço da Empresa</div>
         <div class="form-grid">
           <div class="form-row"><label>CEP</label><input id="fin_pj_cep" value="${fin.pj_cep||''}" placeholder="00000-000" oninput="buscarCepFinPJ(this)"></div>
           <div class="form-row"><label>Número</label><input id="fin_pj_numero" value="${fin.pj_numero||''}" placeholder="Ex: 123"></div>
@@ -3110,7 +3159,7 @@ function renderLeadModal(l){
         </div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">👤 Sócio / Responsável Legal</div>
+        <div class="fin-section-title">Sócio / Responsável Legal</div>
         <div class="form-grid">
           <div class="form-row"><label>Nome completo</label><input id="fin_pj_socio_nome" value="${fin.pj_socio_nome||''}"></div>
           <div class="form-row"><label>CPF</label><input id="fin_pj_socio_cpf" value="${fin.pj_socio_cpf||''}" placeholder="000.000.000-00"></div>
@@ -3129,22 +3178,22 @@ function renderLeadModal(l){
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div>${finStatus}</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="abrirEditorCamposFicha(${l.id})">✏️ Editar campos</button>
-          ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})"><span class="btn-fin-icon">💰</span> Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">🔄 Reenviar</button>`}
+          <button class="btn btn-sm" style="border-color:var(--purple);color:var(--purple)" onclick="abrirEditorCamposFicha(${l.id})">Editar campos</button>
+          ${!isEnviado?`<button class="btn-fin" onclick="enviarParaFinanciamento(${l.id})">Enviar para Financiamento</button>`:`<button class="btn btn-sm" style="border-color:var(--teal);color:var(--teal)" onclick="enviarParaFinanciamento(${l.id})">Reenviar</button>`}
         </div>
       </div>
       <div class="fin-section" style="padding:12px 14px">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
           <div class="fin-section-title" style="margin:0">Tipo de Cliente</div>
           <div class="seg-ctrl">
-            <button type="button" class="seg-btn ${tipoPessoa==='PF'?'active':''}" onclick="setFinTipo('PF',${l.id})">👤 Pessoa Física</button>
-            <button type="button" class="seg-btn ${tipoPessoa==='PJ'?'active':''}" onclick="setFinTipo('PJ',${l.id})">🏢 Pessoa Jurídica</button>
+            <button type="button" class="seg-btn ${tipoPessoa==='PF'?'active':''}" onclick="setFinTipo('PF',${l.id})">Pessoa Física</button>
+            <button type="button" class="seg-btn ${tipoPessoa==='PJ'?'active':''}" onclick="setFinTipo('PJ',${l.id})">Pessoa Jurídica</button>
           </div>
         </div>
       </div>
       ${tipoPessoa==='PJ' ? blocoPJ : blocoPF}
       <div class="fin-section">
-        <div class="fin-section-title">👥 ${tipoPessoa==='PJ'?'Referência Comercial':'Referência Pessoal'}</div>
+        <div class="fin-section-title">${tipoPessoa==='PJ'?'Referência Comercial':'Referência Pessoal'}</div>
         <div class="form-grid">
           <div class="form-row"><label>Nome — Referência 1</label><input id="fin_ref1_nome" value="${fin.ref1_nome||''}" placeholder="Nome completo"></div>
           <div class="form-row"><label>Telefone — Referência 1</label><input id="fin_ref1_tel" value="${fin.ref1_tel||''}" placeholder="(00) 00000-0000"></div>
@@ -3155,7 +3204,7 @@ function renderLeadModal(l){
         </div>
       </div>
       <div class="fin-section">
-        <div class="fin-section-title">🚛 Dados do Veículo</div>
+        <div class="fin-section-title">Dados do Veículo</div>
         <div class="form-grid">
           <div class="form-row"><label>Marca / Modelo</label><input id="fin_veiculo_modelo" value="${fin.veiculo_modelo||veiculo?.modelo||l.interesse||''}"></div>
           <div class="form-row"><label>Ano</label><input id="fin_veiculo_ano" value="${fin.veiculo_ano||veiculo?.ano||''}"></div>
@@ -3165,7 +3214,7 @@ function renderLeadModal(l){
           <div class="form-row"><label>Valor (R$)</label><input id="fin_veiculo_valor" value="${fin.veiculo_valor||veiculo?.valor||''}" placeholder="175000"></div>
         </div>
       </div>
-      ${camposExtras.length ? `<div class="fin-section"><div class="fin-section-title">📋 Campos Personalizados</div>`
+      ${camposExtras.length ? `<div class="fin-section"><div class="fin-section-title">Campos Personalizados</div>`
         + camposExtras.map(c=>`<div class="form-row"><label>${c.label}</label><input id="fin_extra_${c.id}" value="${finExtra[c.id]||''}" placeholder="${c.placeholder||''}"></div>`).join('')
         + `</div>` : ''}
     `;
@@ -3179,7 +3228,7 @@ function renderLeadModal(l){
       'Veículo': docs.filter(d=>d.categoria==='Veículo'),
       'Outros': docs.filter(d=>!['Identificação','Comprovante Residência','Renda','Veículo'].includes(d.categoria))
     };
-    const docIcons = {pdf:'📄',jpg:'🖼',jpeg:'🖼',png:'🖼',doc:'📝',docx:'📝',default:'📎'};
+    const docIcons = {pdf:'',jpg:'',jpeg:'',png:'',doc:'',docx:'',default:''};
     const getIcon = (nome) => { const ext=(nome||'').split('.').pop().toLowerCase(); return docIcons[ext]||docIcons.default; };
     const formatBytes = (bytes) => { if(!bytes) return ''; if(bytes<1024) return bytes+'B'; if(bytes<1048576) return (bytes/1024).toFixed(1)+'KB'; return (bytes/1048576).toFixed(1)+'MB'; };
 
@@ -3192,14 +3241,14 @@ function renderLeadModal(l){
           <div class="doc-meta">${cat} · ${formatBytes(d.tamanho)} · ${d.data?new Date(d.data).toLocaleDateString('pt-BR'):''}</div>
         </div>
         <div class="doc-actions">
-          <button class="doc-btn" onclick="abrirDoc('${d.url}')">👁 Ver</button>
-          <button class="doc-btn del" onclick="deletarDoc(${l.id},${docs.indexOf(d)})">🗑</button>
+          <button class="doc-btn" onclick="abrirDoc('${d.url}')">Ver</button>
+          <button class="doc-btn del" onclick="deletarDoc(${l.id},${docs.indexOf(d)})">✕</button>
         </div>
-      </div>`).join('')}`).join('') : '<div class="no-docs">📭 Nenhum documento enviado ainda</div>';
+      </div>`).join('')}`).join('') : '<div class="no-docs">Nenhum documento enviado ainda</div>';
 
     bodyHTML = `
       <div class="docs-list">${allDocsList}</div>
-      <div class="fin-section-title">📤 Enviar novo documento</div>
+      <div class="fin-section-title">Enviar novo documento</div>
       <div class="form-row" style="margin-bottom:8px">
         <label>Categoria</label>
         <select id="doc_categoria">
@@ -3212,7 +3261,7 @@ function renderLeadModal(l){
       </div>
       <div class="upload-area" id="uploadArea" ondragover="onDocDragOver(event)" ondragleave="onDocDragLeave(event)" ondrop="onDocDrop(event,${l.id})">
         <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="uploadDocs(event,${l.id})">
-        <div class="upload-area-icon">📤</div>
+        
         <div class="upload-area-title">Clique ou arraste os arquivos aqui</div>
         <div class="upload-area-sub">PDF, JPG, PNG, DOC — até 10MB por arquivo</div>
       </div>
@@ -3224,13 +3273,13 @@ function renderLeadModal(l){
   if(modalTab==='dados'){
     // Botão enviar para financiamento disponível para SDR e Vendedor (se não enviado ainda)
     if(!l.etapa_fin && (perfil==='sdr'||perfil==='luis'||perfil==='claudinei')){
-      footerHTML += `<button class="btn" style="border-color:var(--teal);color:var(--teal);font-weight:700" onclick="enviarParaFinanciamento(${l.id})">💰 Enviar p/ Financiamento</button>`;
+      footerHTML += `<button class="btn" style="border-color:var(--teal);color:var(--teal);font-weight:700" onclick="enviarParaFinanciamento(${l.id})">Enviar p/ Financiamento</button>`;
     }
     footerHTML += `<button class="btn btn-primary" onclick="updateLead(${l.id})">Salvar</button>`;
   }
   if(modalTab==='tarefas') footerHTML += `<button class="btn btn-primary" onclick="addTask(${l.id})">+ Salvar tarefa</button>`;
   if(modalTab==='credito') footerHTML += `<button class="btn btn-primary" onclick="salvarAnaliseCredito(${l.id})">Salvar Análise</button>`;
-  if(modalTab==='financiamento') footerHTML += `<button class="btn" style="border-color:#6366f1;color:#6366f1;font-weight:700" onclick="gerarPDFFicha(${l.id})">📄 Gerar PDF</button><button class="btn btn-primary" onclick="salvarFichaFin(${l.id})">💾 Salvar ficha</button>`;
+  if(modalTab==='financiamento') footerHTML += `<button class="btn" style="border-color:#6366f1;color:#6366f1;font-weight:700" onclick="gerarPDFFicha(${l.id})">Gerar PDF</button><button class="btn btn-primary" onclick="salvarFichaFin(${l.id})">Salvar ficha</button>`;
 
   openModal(`
     <div class="modal-head">
@@ -3376,7 +3425,7 @@ async function salvarFichaFin(id){
   if(!res.ok){const t=await res.text();showToast('Erro ao salvar ficha: '+t);return;}
   // Feedback visual
   const btn=document.querySelector('.modal-footer .btn-primary');
-  if(btn){const orig=btn.textContent;btn.textContent='✅ Salvo!';btn.style.background='#00c853';setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);}
+  if(btn){const orig=btn.textContent;btn.textContent='Salvo!';btn.style.background='#00c853';setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);}
   await loadAll();
   const l2=allLeads.find(x=>x.id===id);
   if(l2){modalTab='financiamento';renderLeadModal(l2);}
@@ -3550,6 +3599,11 @@ async function updateLead(id){
   const etapaVendFinal=(!l.etapa_vend&&novoVend)?'recebido':etapaVendSelect;
   // NÃO mudar etapa SDR — o filtro do SDR já exclui leads com vendedor atribuído
   const etapaFinal = ne;
+  const novoVeiculoId=document.getElementById('el_veiculo').value||null;
+  if(colunaExigeVeiculo('etapa_vend',etapaVendFinal)&&!novoVeiculoId){
+    showToast('Vincule um veículo (campo "Veículo de interesse") antes de salvar o lead nesta etapa.','warning');
+    return;
+  }
   const obj={
     nome:document.getElementById('el_nome').value,
     telefone:document.getElementById('el_tel').value,
@@ -3561,7 +3615,9 @@ async function updateLead(id){
     etapa_fin:document.getElementById('el_etapa_fin').value,
     temperatura:document.getElementById('el_temp').value,
     ultimo_contato:document.getElementById('el_ultimo').value||null,
-    veiculo_id:document.getElementById('el_veiculo').value||null,
+    veiculo_id:novoVeiculoId,
+    visita_data:document.getElementById('el_visita_data')?.value||null,
+    visita_hora:document.getElementById('el_visita_hora')?.value||null,
     observacoes:document.getElementById('el_obs').value,
     email:document.getElementById('el_email')?.value||null,
     cpf:document.getElementById('el_cpf')?.value||null,
@@ -3571,14 +3627,9 @@ async function updateLead(id){
   };
   const{error}=await sb.from('leads').update(obj).eq('id',id);
   if(error){showToast('Erro ao salvar: '+error.message,'error');return;}
-  // Se a etapa do vendedor mudou PARA "Vendido Concluído" por aqui (edição manual, não pelo drag-and-drop), dar baixa no estoque também
-  if(etapaVendFinal==='vendido_concluido'&&l.etapa_vend!=='vendido_concluido'&&obj.veiculo_id){
-    const resCam=await fetch(`${SB_URL}/rest/v1/caminhoes?id=eq.${obj.veiculo_id}`,{
-      method:'PATCH',
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({status:'Vendido'})
-    });
-    if(!resCam.ok){showToast('Lead salvo, mas houve erro ao dar baixa no estoque.','warning');}
+  // Se a etapa do vendedor mudou por aqui (edição manual, não pelo drag-and-drop), sincroniza o estoque também
+  if(etapaVendFinal!==l.etapa_vend){
+    await sincronizarEstoquePorEtapa({...l,veiculo_id:novoVeiculoId},'etapa_vend',l.etapa_vend||'',etapaVendFinal);
   }
   closeModal();await loadAll();
 }
@@ -3647,7 +3698,7 @@ function updateTaskBadge(){
   });
   if(late===0&&today===0){badge.classList.add('hidden');return;}
   badge.classList.remove('hidden');
-  badgeLate.textContent=late>0?'⚠ '+late+' atrasada'+(late>1?'s':''):'';
+  badgeLate.textContent=late>0?''+late+' atrasada'+(late>1?'s':''):'';
   badgeLate.style.display=late>0?'inline':'none';
   badgeSep.textContent=late>0&&today>0?' · ':'';
   badgeToday.textContent=today>0?'● '+today+' hoje':'';
@@ -3679,7 +3730,7 @@ function filtrarTarefasUrgentes(){
 function showToast(msg, type='success', duration=3000){
   const container=document.getElementById('toast-container');
   if(!container)return;
-  const icons={success:'✓',error:'✕',info:'ℹ',warning:'⚠'};
+  const icons={success:'✓',error:'✕',info:'ℹ',warning:''};
   const toast=document.createElement('div');
   toast.className='toast '+type;
   toast.innerHTML=`<span class="toast-icon">${icons[type]||'✓'}</span><span class="toast-msg">${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
@@ -3713,7 +3764,7 @@ function openCaminhaoModal(id){
   openModal(`<div class="modal-head"><h3>${c?'Editar Veículo':'Novo Veículo'}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="modal-body">
       <div style="display:flex;justify-content:center;margin-bottom:14px" id="cm_plate_preview">${plateHTML(c?.placa||'')}</div>
-      <div class="form-row"><label>Placa</label><div style="display:flex;gap:8px"><input id="cm_placa" class="glow2" value="${c?.placa||''}" placeholder="ABC1D23" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();atualizarPreviewPlaca()"><button class="btn btn-primary" onclick="buscarPlaca()" id="btnBuscarPlaca">🔍 Buscar</button></div><div id="placa_status" style="font-size:12px;margin-top:5px;color:var(--muted)"></div></div>
+      <div class="form-row"><label>Placa</label><div style="display:flex;gap:8px"><input id="cm_placa" class="glow2" value="${c?.placa||''}" placeholder="ABC1D23" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();atualizarPreviewPlaca()"><button class="btn btn-primary" onclick="buscarPlaca()" id="btnBuscarPlaca">Buscar</button></div><div id="placa_status" style="font-size:12px;margin-top:5px;color:var(--muted)"></div></div>
       <div class="form-grid"><div class="form-row"><label>Modelo</label><input id="cm_modelo" class="glow2" value="${c?.modelo||''}" placeholder="Ex: Volvo FH 460"></div><div class="form-row"><label>Ano</label><input id="cm_ano" class="glow2" value="${c?.ano||''}" placeholder="2021"></div></div>
       <div class="form-grid"><div class="form-row"><label>Cor</label><input id="cm_cor" class="glow2" value="${c?.cor||''}" placeholder="Branco"></div><div class="form-row"><label>Valor de venda</label><input id="cm_valor" class="glow2" value="${c?.valor?fmtBRL(c.valor):''}" placeholder="R$ 0,00" oninput="maskMoedaCusto(this)"></div></div>
       <div id="fipe_box" style="display:${c?.fipe_valor?'block':'none'};background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border);margin-top:4px">
@@ -4163,7 +4214,7 @@ function openImportModal(){
         Leads importados receberão origem <strong>"Importado"</strong> automaticamente.
       </div>
       <div class="import-area" onclick="document.getElementById('csvInput').click()">
-        <div class="import-area-icon">📂</div>
+        
         <div class="import-area-title">Clique para selecionar o arquivo</div>
         <div class="import-area-sub">Aceita .csv, .txt ou .xlsx (Excel)</div>
         <input type="file" id="csvInput" accept=".csv,.txt,.xlsx,.xls" style="display:none" onchange="handleCSV(event)">
@@ -4172,7 +4223,7 @@ function openImportModal(){
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="btnConfirmImport" style="display:none" onclick="confirmImport()">✅ Importar leads</button>
+      <button class="btn btn-primary" id="btnConfirmImport" style="display:none" onclick="confirmImport()">Importar leads</button>
     </div>`);
 }
 
@@ -4239,7 +4290,7 @@ function renderImportPreview(){
     el.innerHTML='<div style="color:var(--red);font-size:12px;margin-top:10px">Nenhum lead encontrado no arquivo. Verifique o formato.</div>';
     if(btn)btn.style.display='none';return;
   }
-  if(btn){btn.style.display='';btn.textContent='✅ Importar '+importLeadsData.length+' leads';}
+  if(btn){btn.style.display='';btn.textContent='Importar '+importLeadsData.length+' leads';}
   el.innerHTML=`<div class="import-preview">
     <div class="import-preview-title">${importLeadsData.length} lead${importLeadsData.length>1?'s':''} encontrado${importLeadsData.length>1?'s':''}</div>
     ${importLeadsData.slice(0,8).map(l=>`<div class="import-row">
@@ -4299,7 +4350,7 @@ function gerenteView(view, btn){
   if(view==='luis'){
     document.getElementById('page-vendedor')?.classList.add('active');
     const el=document.getElementById('vendTitle');
-    if(el) el.textContent='👔 Luis Henrique — Visão Gerente';
+    if(el) el.textContent='Luis Henrique — Visão Gerente';
     const ll=allLeads.filter(l=>l.vendedor==='Luis Henrique').map(l=>({...l,etapa:l.etapa_vend||'recebido'}));
     renderKanban('kanbanVend',colunas.vendedor,ll);
     return;
@@ -4307,7 +4358,7 @@ function gerenteView(view, btn){
   if(view==='claudinei'){
     document.getElementById('page-vendedor')?.classList.add('active');
     const el=document.getElementById('vendTitle');
-    if(el) el.textContent='👔 Claudinei — Visão Gerente';
+    if(el) el.textContent='Claudinei — Visão Gerente';
     const lc=allLeads.filter(l=>l.vendedor==='Claudinei').map(l=>({...l,etapa:l.etapa_vend||'recebido'}));
     renderKanban('kanbanVend',colunas.vendedor,lc);
     return;
@@ -4321,12 +4372,12 @@ function gerenteView(view, btn){
 
 
 // ── MODAL ENCERRAMENTO ──
-function abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLabel){
+function abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLabel,etapaAtual){
   const isFechado=colId==='fechado';
   openModal(`
     <div class="modal-head">
       <div>
-        <h3>${isFechado?'🏆 Fechamento':'❌ Encerrar Lead'}</h3>
+        <h3>${isFechado?'Fechamento':'Encerrar Lead'}</h3>
         <div style="font-size:12px;color:var(--muted);margin-top:2px">${isFechado?'Parabéns! Preencha os dados do fechamento':'Preencha o motivo antes de encerrar'}</div>
       </div>
       <button class="modal-close" onclick="closeModal()">×</button>
@@ -4334,17 +4385,17 @@ function abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLa
     <div class="modal-body">
       <div class="form-row" style="margin-bottom:12px"><label>Motivo *</label></div>
       <div class="motivo-grid">
-        <div class="motivo-opt red" onclick="selMotivo(this,'comprou_outra_loja')">🏪 Comprou em outra loja</div>
-        <div class="motivo-opt" onclick="selMotivo(this,'sem_interesse')">😐 Sem interesse</div>
-        <div class="motivo-opt" onclick="selMotivo(this,'sem_credito')">💳 Sem crédito</div>
-        <div class="motivo-opt" onclick="selMotivo(this,'preco_alto')">💰 Preço alto</div>
-        <div class="motivo-opt" onclick="selMotivo(this,'nao_atendeu')">📵 Não atendeu</div>
-        ${isFechado?`<div class="motivo-opt green" onclick="selMotivo(this,'fechado_st')">✅ Fechou conosco!</div>`:''}
-        <div class="motivo-opt" onclick="selMotivo(this,'outro')">📝 Outro</div>
+        <div class="motivo-opt red" onclick="selMotivo(this,'comprou_outra_loja')">Comprou em outra loja</div>
+        <div class="motivo-opt" onclick="selMotivo(this,'sem_interesse')">Sem interesse</div>
+        <div class="motivo-opt" onclick="selMotivo(this,'sem_credito')">Sem crédito</div>
+        <div class="motivo-opt" onclick="selMotivo(this,'preco_alto')">Preço alto</div>
+        <div class="motivo-opt" onclick="selMotivo(this,'nao_atendeu')">Não atendeu</div>
+        ${isFechado?`<div class="motivo-opt green" onclick="selMotivo(this,'fechado_st')">Fechou conosco!</div>`:''}
+        <div class="motivo-opt" onclick="selMotivo(this,'outro')">Outro</div>
       </div>
       <input type="hidden" id="enc_motivo" value="">
       <div class="enc-extra" id="enc_extra_outra_loja">
-        <div class="fin-section-title">🏪 Dados da outra loja</div>
+        <div class="fin-section-title">Dados da outra loja</div>
         <div class="form-row"><label>Qual loja? *</label><input id="enc_loja" placeholder="Ex: Volvo Store SP, Dealer X..."></div>
         <div class="form-row"><label>Qual caminhão comprou?</label><input id="enc_cam_comprado" placeholder="Ex: Volvo FH 460, Scania R450..."></div>
         <div class="form-row"><label>Valor (opcional)</label><input id="enc_valor_comprado" type="number" placeholder="Ex: 380000"></div>
@@ -4353,14 +4404,14 @@ function abrirModalEncerramento(leadId,colId,campoEtapa,hist,nomeQuemMoveu,colLa
         <div class="form-row"><label>Descreva o motivo</label><input id="enc_outro_desc" placeholder="Descreva o motivo..."></div>
       </div>
       <div class="enc-extra" id="enc_extra_fechado_st">
-        <div class="fin-section-title">✅ Dados do fechamento</div>
+        <div class="fin-section-title">Dados do fechamento</div>
         <div class="form-row"><label>Caminhão vendido</label><input id="enc_cam_vendido" placeholder="Ex: Volvo VM 330"></div>
         <div class="form-row"><label>Valor da venda (opcional)</label><input id="enc_valor_vendido" type="number" placeholder="Ex: 175000"></div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarEncerramento(${leadId},'${colId}','${campoEtapa}')">Confirmar →</button>
+      <button class="btn btn-primary" onclick="confirmarEncerramento(${leadId},'${colId}','${campoEtapa}','${etapaAtual}')">Confirmar →</button>
     </div>`);
 }
 
@@ -4376,7 +4427,7 @@ function selMotivo(el,motivo){
   if(motivo==='fechado_st') document.getElementById('enc_extra_fechado_st')?.classList.add('show');
 }
 
-async function confirmarEncerramento(leadId,colId,campoEtapa){
+async function confirmarEncerramento(leadId,colId,campoEtapa,etapaAntiga){
   const motivo=document.getElementById('enc_motivo')?.value;
   if(!motivo){showToast('Selecione um motivo!','warning');return;}
   const l=allLeads.find(x=>x.id===leadId);if(!l)return;
@@ -4420,6 +4471,7 @@ async function confirmarEncerramento(leadId,colId,campoEtapa){
     body:JSON.stringify(updateObj)
   });
   if(!res.ok){const t=await res.text();showToast('Erro: '+t,'error');return;}
+  await sincronizarEstoquePorEtapa(l,campoEtapa,etapaAntiga,colId);
   closeModal();
   await loadAll();
 }
@@ -4446,13 +4498,13 @@ function renderBaseClientes(){
   const motivoBadge=(enc)=>{
     if(!enc) return '<span class="base-badge sem-interesse">—</span>';
     const m={
-      comprou_outra_loja:'<span class="base-badge outra-loja">🏪 Outra loja</span>',
-      sem_interesse:'<span class="base-badge sem-interesse">😐 Sem interesse</span>',
-      sem_credito:'<span class="base-badge outro">💳 Sem crédito</span>',
-      preco_alto:'<span class="base-badge outro">💰 Preço alto</span>',
-      nao_atendeu:'<span class="base-badge sem-interesse">📵 Não atendeu</span>',
-      fechado_st:'<span class="base-badge fechado-st">✅ Fechou aqui</span>',
-      outro:'<span class="base-badge outro">📝 Outro</span>'
+      comprou_outra_loja:'<span class="base-badge outra-loja">Outra loja</span>',
+      sem_interesse:'<span class="base-badge sem-interesse">Sem interesse</span>',
+      sem_credito:'<span class="base-badge outro">Sem crédito</span>',
+      preco_alto:'<span class="base-badge outro">Preço alto</span>',
+      nao_atendeu:'<span class="base-badge sem-interesse">Não atendeu</span>',
+      fechado_st:'<span class="base-badge fechado-st">Fechou aqui</span>',
+      outro:'<span class="base-badge outro">Outro</span>'
     };
     return m[enc.motivo]||`<span class="base-badge outro">${enc.motivo_label||enc.motivo}</span>`;
   };
@@ -4469,7 +4521,7 @@ function renderBaseClientes(){
       <td>${enc.cam_comprado||enc.cam_vendido||'—'}</td>
       <td>${fmtValor(enc.valor_comprado||enc.valor_vendido)}</td>
       <td>${dt}</td>
-      <td><button class="btn-reativar" onclick="reativarCliente(${l.id})">🔄 Reativar</button></td>
+      <td><button class="btn-reativar" onclick="reativarCliente(${l.id})">Reativar</button></td>
     </tr>`;}).join('');
 }
 
@@ -4823,30 +4875,30 @@ function updateFilterBadge(tipo){
 function fmtGarantiaBadge(l){
   const dataEntrega=l.data_entrega_veiculo;
   if(!dataEntrega){
-    return '<div class="garantia-badge garantia-pend">🚛 Aguardando data de entrega</div>';
+    return '<div class="garantia-badge garantia-pend">Aguardando data de entrega</div>';
   }
   const entrega=new Date(dataEntrega+'T00:00:00');
   const fim=new Date(entrega);fim.setDate(fim.getDate()+90);
   const hoje=new Date();hoje.setHours(0,0,0,0);
   const diasRestantes=Math.ceil((fim-hoje)/86400000);
   if(diasRestantes<=0){
-    return '<div class="garantia-badge garantia-enc">🔒 Garantia encerrada</div>';
+    return '<div class="garantia-badge garantia-enc">Garantia encerrada</div>';
   }
   const cls=diasRestantes>30?'garantia-ok':'garantia-warn';
-  return '<div class="garantia-badge '+cls+'">🛡️ Garantia: '+diasRestantes+'d restantes</div>';
+  return '<div class="garantia-badge '+cls+'">Garantia: '+diasRestantes+'d restantes</div>';
 }
 
 // ── MODAL VENDIDO CONCLUÍDO ──
-function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu){
+function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu,etapaAtual){
   const l=allLeads.find(x=>x.id===leadId);if(!l)return;
   const dataAtual=l.data_entrega_veiculo||'';
   openModal(`<div class="modal-head">
-      <div><h3>🏁 Vendido Concluído</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Informe a data de entrega do veículo ao cliente</div></div>
+      <div><h3>Vendido Concluído</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Informe a data de entrega do veículo ao cliente</div></div>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
       <div style="padding:14px;background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-lg);margin-bottom:16px">
-        <div style="font-size:var(--text-sm);color:var(--accent);font-weight:700;margin-bottom:4px">🛡️ Garantia de 90 dias</div>
+        <div style="font-size:var(--text-sm);color:var(--accent);font-weight:700;margin-bottom:4px">Garantia de 90 dias</div>
         <div style="font-size:var(--text-sm);color:var(--text-3)">A contagem da garantia começa a partir da data real de entrega do veículo.</div>
       </div>
       <div class="form-row">
@@ -4857,7 +4909,7 @@ function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu){
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarVendidoConcluido(${leadId},'${campoEtapa}')">✅ Confirmar entrega</button>
+      <button class="btn btn-primary" onclick="confirmarVendidoConcluido(${leadId},'${campoEtapa}','${etapaAtual}')">Confirmar entrega</button>
     </div>`);
   // Preview dinâmico
   setTimeout(()=>{
@@ -4868,7 +4920,7 @@ function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu){
         if(!inp.value){prev.textContent='';return;}
         const d=new Date(inp.value+'T00:00:00');
         const fim=new Date(d);fim.setDate(fim.getDate()+90);
-        prev.innerHTML='<span style="color:var(--accent);font-weight:600">🛡️ Garantia até: '+fim.toLocaleDateString('pt-BR')+'</span>';
+        prev.innerHTML='<span style="color:var(--accent);font-weight:600">Garantia até: '+fim.toLocaleDateString('pt-BR')+'</span>';
       };
       inp.addEventListener('input',atualizar);
       atualizar();
@@ -4876,7 +4928,7 @@ function abrirModalVendidoConcluido(leadId,campoEtapa,hist,nomeQuemMoveu){
   },100);
 }
 
-async function confirmarVendidoConcluido(leadId,campoEtapa){
+async function confirmarVendidoConcluido(leadId,campoEtapa,etapaAntiga){
   const dataEntrega=document.getElementById('data_entrega_input')?.value;
   if(!dataEntrega){showToast('Informe a data de entrega!','warning');return;}
   const l=allLeads.find(x=>x.id===leadId);if(!l)return;
@@ -4892,41 +4944,80 @@ async function confirmarVendidoConcluido(leadId,campoEtapa){
     body:JSON.stringify(updateObj)
   });
   if(!res.ok){const t=await res.text();showToast('Erro: '+t,'error');return;}
-  // Dar baixa no estoque: marcar o caminhão vinculado como Vendido
-  if(l.veiculo_id){
-    const resCam=await fetch(`${SB_URL}/rest/v1/caminhoes?id=eq.${l.veiculo_id}`,{
-      method:'PATCH',
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({status:'Vendido'})
-    });
-    if(!resCam.ok){const t=await resCam.text();showToast('Entrega registrada, mas houve erro ao dar baixa no estoque: '+t,'warning');}
-  }
-  closeModal();showToast(l.veiculo_id?'Entrega registrada! Garantia iniciada e estoque atualizado (baixa do caminhão).':'Entrega registrada! Garantia de 90 dias iniciada. (Nenhum veículo vinculado ao lead — estoque não foi atualizado.)','success');
+  // Dar baixa no estoque: marcar o caminhão vinculado como Vendido (e reverter se estava marcado por uma etapa anterior)
+  await sincronizarEstoquePorEtapa(l,campoEtapa,etapaAntiga,'vendido_concluido');
+  closeModal();showToast(l.veiculo_id?'Entrega registrada! Garantia iniciada e estoque atualizado.':'Entrega registrada! Garantia de 90 dias iniciada. (Nenhum veículo vinculado ao lead — estoque não foi atualizado.)','success');
+  await loadAll();
+}
+
+// ── MODAL VISITA AGENDADA ──
+function abrirModalVisita(leadId,campoEtapa,hist,nomeQuemMoveu,etapaAtual){
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  const dataAtual=l.visita_data||new Date().toISOString().split('T')[0];
+  const horaAtual=l.visita_hora||'';
+  openModal(`<div class="modal-head">
+      <div><h3>Visita Agendada</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Informe a data e o horário combinados com o cliente</div></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row"><label>Data da visita *</label><input type="date" id="visita_data_input" value="${dataAtual}"></div>
+      <div class="form-row"><label>Horário *</label><input type="time" id="visita_hora_input" value="${horaAtual}"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarVisitaAgendada(${leadId},'${campoEtapa}','${etapaAtual}')">Confirmar agendamento</button>
+    </div>`);
+}
+async function confirmarVisitaAgendada(leadId,campoEtapa,etapaAntiga){
+  const data=document.getElementById('visita_data_input')?.value;
+  const hora=document.getElementById('visita_hora_input')?.value;
+  if(!data||!hora){showToast('Informe a data e o horário da visita!','warning');return;}
+  const l=allLeads.find(x=>x.id===leadId);if(!l)return;
+  const hist=[...(l.historico||[])];
+  const dataFmt=new Date(data+'T00:00:00').toLocaleDateString('pt-BR');
+  hist.push({msg:`${PERFIS[perfil]?.name||perfil}: Visita agendada para ${dataFmt} às ${hora}`,data:new Date().toISOString(),tipo:'blue'});
+  const updateObj={};
+  updateObj[campoEtapa]='visita';
+  updateObj.visita_data=data;
+  updateObj.visita_hora=hora;
+  updateObj.historico=hist;
+  const res=await fetch(`${SB_URL}/rest/v1/leads?id=eq.${leadId}`,{
+    method:'PATCH',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(updateObj)
+  });
+  if(!res.ok){const t=await res.text();showToast('Erro: '+t,'error');return;}
+  await sincronizarEstoquePorEtapa(l,campoEtapa,etapaAntiga,'visita');
+  closeModal();showToast('Visita agendada para '+dataFmt+' às '+hora+'!','success');
   await loadAll();
 }
 
 // ── CONFIGURAR COLUNAS ──
+function cfgColRowHTML(c,i,total){
+  const dept=window.cfg_dept_atual;
+  return `<div class="cfg-col-item" data-idx="${i}">
+        <span class="cfg-col-drag">⠿</span>
+        <div class="cfg-col-dot" style="background:${c.cor}" onclick="trocarCorCol(${i},'${dept}')" title="Clique para mudar cor"></div>
+        <input class="cfg-col-input" value="${c.label}" onchange="cols_temp[${i}].label=this.value" id="cfg_col_lbl_${i}">
+        ${dept==='vendedor'?`<label class="cfg-col-stock" title="Ao mover um lead para esta coluna, marcar automaticamente o veículo vinculado como Vendido no estoque"><input type="checkbox" ${c.estoqueVendido?'checked':''} onchange="cols_temp[${i}].estoqueVendido=this.checked"> Vendido</label>`:''}
+        <div class="cfg-col-actions">
+          ${i>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i},-1)">↑</button>`:'<span style="width:30px"></span>'}
+          ${i<total-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i},1)">↓</button>`:'<span style="width:30px"></span>'}
+          <button class="cfg-col-btn" onclick="removerColCfg(${i})">✕</button>
+        </div>
+      </div>`;
+}
 function abrirCfgColunas(dept){
   const cols=JSON.parse(JSON.stringify(colunas[dept]||[]));
   const renderLista=()=>{
     const lista=document.getElementById('cfgColLista');if(!lista)return;
-    lista.innerHTML=cols.map((c,i)=>`
-      <div class="cfg-col-item" data-idx="${i}">
-        <span class="cfg-col-drag">⠿</span>
-        <div class="cfg-col-dot" style="background:${c.cor}" onclick="trocarCorCol(${i},'${dept}')" title="Clique para mudar cor"></div>
-        <input class="cfg-col-input" value="${c.label}" onchange="cols_temp[${i}].label=this.value" id="cfg_col_lbl_${i}">
-        <div class="cfg-col-actions">
-          ${i>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i},-1)">↑</button>`:'<span style="width:30px"></span>'}
-          ${i<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i},1)">↓</button>`:'<span style="width:30px"></span>'}
-          <button class="cfg-col-btn" onclick="removerColCfg(${i})">🗑</button>
-        </div>
-      </div>`).join('');
+    lista.innerHTML=cols.map((c,i)=>cfgColRowHTML(c,i,cols.length)).join('');
     window.cols_temp=cols;
   };
   window.cols_temp=cols;
   window.cfg_dept_atual=dept;
   openModal(`<div class="modal-head">
-      <div><h3>⚙️ Configurar Colunas</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Funil: ${dept==='sdr'?'SDR':dept==='vendedor'?'Vendedor':'Financiamento'}</div></div>
+      <div><h3>Configurar Colunas</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Funil: ${dept==='sdr'?'SDR':dept==='vendedor'?'Vendedor':'Financiamento'}</div></div>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
@@ -4939,7 +5030,7 @@ function abrirCfgColunas(dept){
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarCfgColunas()">💾 Salvar configuração</button>
+      <button class="btn btn-primary" onclick="salvarCfgColunas()">Salvar configuração</button>
     </div>`);
   setTimeout(renderLista,50);
 }
@@ -4954,17 +5045,7 @@ function moverColCfg(i,dir){
   const t=cols[i];cols[i]=cols[i+dir];cols[i+dir]=t;
   const renderLista=()=>{
     const lista2=document.getElementById('cfgColLista');if(!lista2)return;
-    lista2.innerHTML=cols.map((c,i2)=>`
-      <div class="cfg-col-item">
-        <span class="cfg-col-drag">⠿</span>
-        <div class="cfg-col-dot" style="background:${c.cor}"></div>
-        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
-        <div class="cfg-col-actions">
-          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
-          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
-          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
-        </div>
-      </div>`).join('');
+    lista2.innerHTML=cols.map((c,i2)=>cfgColRowHTML(c,i2,cols.length)).join('');
     window.cols_temp=cols;
   };
   renderLista();
@@ -4994,17 +5075,7 @@ function removerColCfg(i){
   moverColCfg(0,0);// re-renderizar
   const lista=document.getElementById('cfgColLista');
   if(lista){
-    lista.innerHTML=cols.map((c,i2)=>`
-      <div class="cfg-col-item">
-        <span class="cfg-col-drag">⠿</span>
-        <div class="cfg-col-dot" style="background:${c.cor}"></div>
-        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
-        <div class="cfg-col-actions">
-          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
-          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
-          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
-        </div>
-      </div>`).join('');
+    lista.innerHTML=cols.map((c,i2)=>cfgColRowHTML(c,i2,cols.length)).join('');
   }
 }
 
@@ -5020,17 +5091,7 @@ function adicionarColCfg(){
   document.getElementById('novaColNomeCfg').value='';
   moverColCfg(0,0);
   if(lista){
-    lista.innerHTML=cols.map((c,i2)=>`
-      <div class="cfg-col-item">
-        <span class="cfg-col-drag">⠿</span>
-        <div class="cfg-col-dot" style="background:${c.cor}"></div>
-        <input class="cfg-col-input" value="${c.label}" id="cfg_col_lbl_${i2}">
-        <div class="cfg-col-actions">
-          ${i2>0?`<button class="cfg-col-btn up" onclick="moverColCfg(${i2},-1)">↑</button>`:'<span style="width:30px"></span>'}
-          ${i2<cols.length-1?`<button class="cfg-col-btn down" onclick="moverColCfg(${i2},1)">↓</button>`:'<span style="width:30px"></span>'}
-          <button class="cfg-col-btn" onclick="removerColCfg(${i2})">🗑</button>
-        </div>
-      </div>`).join('');
+    lista.innerHTML=cols.map((c,i2)=>cfgColRowHTML(c,i2,cols.length)).join('');
   }
 }
 
@@ -5063,13 +5124,13 @@ function abrirEditorCamposFicha(leadId){
     lista.innerHTML=campos.length?campos.map((c,i)=>`
       <div class="fin-field-row">
         <input class="fin-field-label-input" value="${c.label}" placeholder="Nome do campo" id="fin_fld_${i}" onchange="campos_temp[${i}].label=this.value">
-        <button class="fin-field-del" onclick="removerCampoFicha(${i})">🗑</button>
+        <button class="fin-field-del" onclick="removerCampoFicha(${i})">✕</button>
       </div>`).join(''):'<div style="color:var(--text-4);font-size:var(--text-sm);padding:8px 0">Nenhum campo personalizado ainda.</div>';
     window.campos_temp=campos;
   };
   window.campos_temp=campos;
   openModal(`<div class="modal-head">
-      <div><h3>✏️ Editar Campos da Ficha</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Adicione ou remova campos personalizados</div></div>
+      <div><h3>Editar Campos da Ficha</h3><div style="font-size:12px;color:var(--muted);margin-top:2px">Adicione ou remova campos personalizados</div></div>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
@@ -5081,7 +5142,7 @@ function abrirEditorCamposFicha(leadId){
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarCamposFicha(${leadId})">💾 Salvar</button>
+      <button class="btn btn-primary" onclick="salvarCamposFicha(${leadId})">Salvar</button>
     </div>`);
   setTimeout(renderCampos,50);
 }
@@ -5097,7 +5158,7 @@ function adicionarCampoFicha(){
   if(lista2){lista2.innerHTML=campos.map((c,i)=>`
     <div class="fin-field-row">
       <input class="fin-field-label-input" value="${c.label}" placeholder="Nome do campo" id="fin_fld_${i}">
-      <button class="fin-field-del" onclick="removerCampoFicha(${i})">🗑</button>
+      <button class="fin-field-del" onclick="removerCampoFicha(${i})">✕</button>
     </div>`).join('');}
 }
 
@@ -5109,7 +5170,7 @@ function removerCampoFicha(i){
   if(lista){lista.innerHTML=campos.length?campos.map((c,i2)=>`
     <div class="fin-field-row">
       <input class="fin-field-label-input" value="${c.label}" id="fin_fld_${i2}">
-      <button class="fin-field-del" onclick="removerCampoFicha(${i2})">🗑</button>
+      <button class="fin-field-del" onclick="removerCampoFicha(${i2})">✕</button>
     </div>`).join(''):'<div style="color:var(--text-4);font-size:var(--text-sm);padding:8px 0">Nenhum campo personalizado ainda.</div>';}
 }
 

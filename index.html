@@ -3913,7 +3913,8 @@ function renderCustosModalHTML(cam){
           <input id="item_fornecedor" class="glow2" placeholder="Fornecedor (opcional)" style="flex:1.4;min-width:140px">
           <input id="item_desc" class="glow2" placeholder="Descrição (ex: para-lama)" style="flex:2;min-width:160px">
           <input id="item_valor" class="glow2" placeholder="R$ 0,00" style="flex:1;min-width:100px" oninput="maskMoedaCusto(this)">
-          <button class="btn2-primary" style="padding:0 16px" onclick="addItemCusto()">+</button>
+          <button class="btn2-primary" id="btnAddItemCusto" style="padding:0 16px" onclick="addItemCusto()">+</button>
+          <button class="btn" id="btnCancelEditItem" style="display:none;padding:0 14px" onclick="cancelarEdicaoItem()">Cancelar</button>
         </div>
         <div style="text-align:right;font-weight:700;margin-top:6px">Subtotal: <span id="subtotalCusto">R$ 0,00</span></div>
       </div>
@@ -3942,7 +3943,7 @@ function renderListaOSHTML(){
 }
 function fmtDataBR(iso){if(!iso)return'';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
 function abrirNovaOSForm(){
-  editingOsId=null;catNovaOS=null;itensNovaOS=[];
+  editingOsId=null;catNovaOS=null;itensNovaOS=[];limparCamposItem();
   document.getElementById('custo_prest').value='';
   document.getElementById('custo_obs').value='';
   CATEGORIAS_CUSTO.forEach(c=>document.getElementById('cat_'+c.n).classList.remove('sel'));
@@ -3961,6 +3962,7 @@ function abrirOSDetalhe(id){
   editingOsId=id;
   catNovaOS=o.categoria;
   itensNovaOS=(o.itens||[]).map(i=>({...i}));
+  limparCamposItem();
   document.getElementById('custo_prest').value=o.prestador||'';
   document.getElementById('custo_data').value=o.data_servico||'';
   document.getElementById('custo_obs').value=o.observacao||'';
@@ -3993,15 +3995,40 @@ function addItemCusto(){
   const valorStr=valorEl.value.replace('R$','').trim().replace(/\./g,'').replace(',','.');
   const valor=parseFloat(valorStr)||0;
   if(!desc||!valor){showToast('Preencha descrição e valor do item','warning');return;}
-  itensNovaOS.push({nota:nota||null,fornecedor:fornecedor||null,desc,valor});
-  document.getElementById('item_nota').value='';
-  document.getElementById('item_fornecedor').value='';
-  document.getElementById('item_desc').value='';
-  valorEl.value='';
+  const novo={nota:nota||null,fornecedor:fornecedor||null,desc,valor};
+  if(editingItemIdx!==null&&itensNovaOS[editingItemIdx]){
+    itensNovaOS[editingItemIdx]={...itensNovaOS[editingItemIdx],...novo};
+    showToast(editingOsId?'Item atualizado — clique em "Salvar alterações" para gravar':'Item atualizado','success');
+  }else{
+    itensNovaOS.push(novo);
+  }
+  limparCamposItem();
   renderItensNovaOS();
   validarNovaOS();
 }
+let editingItemIdx=null;
+function limparCamposItem(){
+  editingItemIdx=null;
+  ['item_nota','item_fornecedor','item_desc','item_valor'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const b=document.getElementById('btnAddItemCusto');if(b)b.textContent='+';
+  const c=document.getElementById('btnCancelEditItem');if(c)c.style.display='none';
+}
+function editarItemCusto(idx){
+  const it=itensNovaOS[idx];if(!it)return;
+  editingItemIdx=idx;
+  document.getElementById('item_nota').value=it.nota||'';
+  document.getElementById('item_fornecedor').value=it.fornecedor||'';
+  document.getElementById('item_desc').value=it.desc||'';
+  document.getElementById('item_valor').value='R$ '+Number(it.valor||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  document.getElementById('btnAddItemCusto').textContent='✓ Atualizar item';
+  document.getElementById('btnCancelEditItem').style.display='inline-flex';
+  renderItensNovaOS();
+  const d=document.getElementById('item_desc');d.focus();d.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function cancelarEdicaoItem(){limparCamposItem();renderItensNovaOS();}
 function removerItemCusto(idx){
+  if(editingItemIdx===idx)limparCamposItem();
+  else if(editingItemIdx!==null&&idx<editingItemIdx)editingItemIdx--;
   itensNovaOS.splice(idx,1);
   renderItensNovaOS();
   validarNovaOS();
@@ -4012,7 +4039,8 @@ function renderItensNovaOS(){
   el.innerHTML=itensNovaOS.map((it,idx)=>{
     sub+=it.valor;
     const extra=[it.nota?'NF '+it.nota:null,it.fornecedor].filter(Boolean).join(' · ');
-    return`<div class="item-row2"><span>${it.desc}${extra?` <span style="color:var(--text-3);font-size:12px">(${extra})</span>`:''}</span><span>${fmtBRL(it.valor)} <button class="btn btn-icon btn-sm" onclick="removerItemCusto(${idx})" style="margin-left:6px"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></span></div>`;
+    const ed=editingItemIdx===idx;
+    return`<div class="item-row2"${ed?' style="outline:2px solid var(--green,#22c55e);outline-offset:-2px"':''}><span>${it.desc}${extra?` <span style="color:var(--text-3);font-size:12px">(${extra})</span>`:''}${ed?' <span style="color:var(--green,#22c55e);font-size:12px;font-weight:700">· editando</span>':''}</span><span style="display:flex;align-items:center;white-space:nowrap">${fmtBRL(it.valor)} <button class="btn btn-icon btn-sm" title="Editar item" onclick="editarItemCusto(${idx})" style="margin-left:6px"><i data-lucide="pencil" style="width:14px;height:14px"></i></button><button class="btn btn-icon btn-sm" title="Excluir item" onclick="removerItemCusto(${idx})" style="margin-left:6px"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button></span></div>`;
   }).join('');
   if(typeof lucide!=='undefined')lucide.createIcons();
   document.getElementById('subtotalCusto').textContent=fmtBRL(sub);

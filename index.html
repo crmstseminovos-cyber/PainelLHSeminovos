@@ -789,6 +789,12 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
   background:var(--surface-3);color:var(--text-2);font-size:12px;font-weight:700;cursor:pointer;transition:.15s;
 }
 .estoque2-actions button:hover{border-color:#00e676;color:var(--text);box-shadow:0 0 8px rgba(0,230,118,.3)}
+.estoque2-actions button{white-space:nowrap}
+.cam-doc-count{display:inline-block;min-width:16px;padding:0 5px;margin-left:3px;border-radius:8px;background:rgba(0,230,118,.18);color:var(--green);font-size:10px;line-height:16px;font-weight:800}
+.camdoc-check{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.camdoc-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--text-4);background:var(--surface-2)}
+.camdoc-chip.ok{border-color:rgba(0,230,118,.45);color:var(--green);background:rgba(0,230,118,.08)}
+.camdoc-cat{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin:10px 0 2px}
 .cat-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .cat-opt2{
   display:flex;flex-direction:column;align-items:center;gap:5px;
@@ -2724,6 +2730,7 @@ function renderEstoque(){
         <button onclick="openCaminhaoModal(${c.id})"><i data-lucide="pencil" style="width:14px;height:14px;vertical-align:-2px"></i> Editar</button>
         <button onclick="mudarStatusCam(${c.id})"><i data-lucide="map-pin" style="width:14px;height:14px;vertical-align:-2px"></i> Status</button>
         <button onclick="openCustosModal(${c.id})"><i data-lucide="dollar-sign" style="width:14px;height:14px;vertical-align:-2px"></i> Custos</button>
+        <button onclick="openDocsCam(${c.id})" title="Documentação do veículo"><i data-lucide="folder-open" style="width:14px;height:14px;vertical-align:-2px"></i> Docs${(c.documentos||[]).length?`<span class="cam-doc-count">${(c.documentos||[]).length}</span>`:''}</button>
       </div>
     </div>`).join(''):`<div class="empty-state">Nenhum veículo encontrado</div>`;
   if(typeof lucide!=='undefined')lucide.createIcons();
@@ -3870,6 +3877,118 @@ const CATEGORIAS_CUSTO=[
   {n:'Elétrica',e:'zap'},{n:'Tapeçaria',e:'armchair'},{n:'Documentação',e:'file-text'},
   {n:'Lavagem',e:'droplets'},{n:'Outro',e:'more-horizontal'}
 ];
+// ── DOCUMENTAÇÃO DO VEÍCULO (estoque) ──
+const CAM_DOC_CATS=['CRLV (Documento de rodagem)','ATPV','Laudo cautelar','Laudo de vistoria','Nota fiscal','Contrato de compra','Débitos / Multas','Fotos','Outros'];
+const CAM_DOC_ESSENCIAIS=['CRLV (Documento de rodagem)','ATPV','Laudo cautelar'];
+let camDocsAtual=null;
+function camDocFmtBytes(b){if(!b)return'';if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
+function camDocEsc(t){return String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function openDocsCam(camId){
+  const cam=allCam.find(x=>x.id===camId);
+  if(!cam){showToast('Veículo não encontrado','error');return;}
+  camDocsAtual=camId;
+  openModal(renderDocsCamHTML(cam));
+  document.querySelector('.modal-box')?.classList.add('modal-lg');
+  if(typeof lucide!=='undefined')lucide.createIcons();
+}
+function renderDocsCamHTML(cam){
+  const docs=cam.documentos||[];
+  const cats=[...CAM_DOC_CATS];
+  docs.forEach(d=>{if(d.categoria&&!cats.includes(d.categoria))cats.push(d.categoria);});
+  const check=CAM_DOC_ESSENCIAIS.map(c=>{const ok=docs.some(d=>d.categoria===c);return`<span class="camdoc-chip ${ok?'ok':''}">${ok?'✓':'○'} ${c.split(' (')[0]}</span>`;}).join('');
+  const lista=docs.length?cats.filter(c=>docs.some(d=>(d.categoria||'Outros')===c)).map(c=>`
+    <div class="camdoc-cat">${camDocEsc(c)}</div>
+    ${docs.map((d,i)=>({d,i})).filter(x=>(x.d.categoria||'Outros')===c).map(({d,i})=>`<div class="doc-item">
+      <div class="doc-icon"><i data-lucide="${/\.(jpe?g|png|webp|heic)$/i.test(d.nome||'')?'image':'file-text'}" style="width:20px;height:20px"></i></div>
+      <div class="doc-info">
+        <div class="doc-name">${camDocEsc(d.nome)}</div>
+        <div class="doc-meta">${camDocFmtBytes(d.tamanho)}${d.data?' · '+new Date(d.data).toLocaleDateString('pt-BR'):''}${d.por?' · '+camDocEsc(d.por):''}</div>
+      </div>
+      <div class="doc-actions">
+        <button class="doc-btn" onclick="abrirDocCam(${cam.id},${i})">Ver</button>
+        <button class="doc-btn del" onclick="deletarDocCam(${cam.id},${i})" title="Remover">✕</button>
+      </div>
+    </div>`).join('')}`).join(''):'<div class="no-docs">Nenhum documento enviado ainda</div>';
+  return `<div class="modal-head"><h3>Documentação do Veículo</h3><div style="display:flex;gap:2px;align-items:center">
+    <button class="modal-close" onclick="closeModal()">×</button>
+  </div></div>
+  <div class="modal-body">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+      ${plateHTML(cam.placa)}
+      <div><h4 style="margin:0;font-size:16px;font-weight:800">${camDocEsc(cam.modelo)}</h4><p style="margin:2px 0 0;font-size:13px;color:var(--text-3)">${cam.ano||'ano não informado'}</p></div>
+    </div>
+    <div class="camdoc-check">${check}</div>
+    <div class="docs-list">${lista}</div>
+    <div class="fin-section-title">Enviar novo documento</div>
+    <div class="form-row" style="margin-bottom:8px">
+      <label>Tipo de documento</label>
+      <select id="camdoc_categoria">${CAM_DOC_CATS.map(c=>`<option>${c}</option>`).join('')}</select>
+    </div>
+    <div class="upload-area" id="camUploadArea" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');uploadDocsCam(Array.from(event.dataTransfer.files),${cam.id})">
+      <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" onchange="uploadDocsCam(Array.from(this.files),${cam.id})">
+      <div class="upload-area-title">Clique ou arraste os arquivos aqui</div>
+      <div class="upload-area-sub">PDF, JPG, PNG, DOC — até 10MB por arquivo</div>
+    </div>
+    <div class="upload-progress" id="camUploadProgress"></div>
+  </div>
+  <div class="modal-footer"><button class="btn" onclick="closeModal()">Fechar</button></div>`;
+}
+async function refreshDocsCam(camId){
+  const{data,error}=await sb.from('caminhoes').select('*').eq('id',camId).single();
+  if(!error&&data){const ix=allCam.findIndex(x=>x.id===camId);if(ix>=0)allCam[ix]=data;}
+  if(typeof renderEstoque==='function')renderEstoque();
+  const cam=allCam.find(x=>x.id===camId);
+  if(cam&&camDocsAtual===camId&&!document.getElementById('modalOverlay').classList.contains('hidden')){
+    document.getElementById('modalBox').innerHTML=renderDocsCamHTML(cam);
+    if(typeof lucide!=='undefined')lucide.createIcons();
+  }
+}
+async function uploadDocsCam(files,camId){
+  if(!files||!files.length)return;
+  const cam=allCam.find(x=>x.id===camId);if(!cam)return;
+  const categoria=document.getElementById('camdoc_categoria')?.value||'Outros';
+  const prog=document.getElementById('camUploadProgress');
+  if(prog){prog.style.display='block';prog.textContent='Enviando...';}
+  const docs=[...(cam.documentos||[])];
+  let ok=0,falhaStorage=null;
+  for(const file of files){
+    if(file.size>10*1024*1024){alert(`Arquivo ${file.name} excede 10MB.`);continue;}
+    const path=`caminhoes/${camId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const{error}=await sb.storage.from('documentos').upload(path,file,{cacheControl:'3600',upsert:false});
+    if(error){falhaStorage=error.message;break;}
+    const{data:{publicUrl}}=sb.storage.from('documentos').getPublicUrl(path);
+    docs.push({nome:file.name,url:publicUrl,path,categoria,tamanho:file.size,data:new Date().toISOString(),por:PERFIS?.[perfil]?.name||perfil||''});
+    ok++;
+    if(prog)prog.textContent=`Enviando... ${ok}/${files.length}`;
+  }
+  if(ok>0){
+    const{error}=await sb.from('caminhoes').update({documentos:docs}).eq('id',camId);
+    if(error){
+      if(prog)prog.style.display='none';
+      alert('Os arquivos foram enviados, mas não foi possível salvar a lista no veículo.\n\nVerifique se a migração (coluna "documentos" na tabela caminhoes) foi executada no Supabase.\n\nDetalhe: '+error.message);
+      return;
+    }
+    showToast(`${ok} documento(s) salvo(s)`,'success');
+  }
+  if(prog)prog.style.display='none';
+  if(falhaStorage)alert('Não foi possível enviar para o armazenamento (bucket "documentos").\nVerifique se a migração do Supabase foi executada.\n\nDetalhe: '+falhaStorage);
+  await refreshDocsCam(camId);
+}
+function abrirDocCam(camId,idx){
+  const cam=allCam.find(x=>x.id===camId);const d=cam?.documentos?.[idx];
+  if(d)abrirDoc(d.url);
+}
+async function deletarDocCam(camId,idx){
+  const cam=allCam.find(x=>x.id===camId);if(!cam)return;
+  const docs=[...(cam.documentos||[])];const d=docs[idx];if(!d)return;
+  if(!confirm(`Remover o documento "${d.nome}"?`))return;
+  if(d.path){try{await sb.storage.from('documentos').remove([d.path]);}catch(e){}}
+  docs.splice(idx,1);
+  const{error}=await sb.from('caminhoes').update({documentos:docs}).eq('id',camId);
+  if(error){showToast('Erro: '+error.message,'error');return;}
+  showToast('Documento removido','success');
+  await refreshDocsCam(camId);
+}
 async function openCustosModal(camId){
   camAtualCustos=camId;itensNovaOS=[];catNovaOS=null;
   const cam=allCam.find(x=>x.id===camId);

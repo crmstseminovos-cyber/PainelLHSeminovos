@@ -783,13 +783,15 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
 .estoque2-info p{margin:0;font-size:13px;color:var(--text-3);text-align:center}
 .estoque2-badges{display:flex;justify-content:center;gap:8px;margin-top:6px}
 .estoque2-valor{font-size:18px;font-weight:800;color:var(--green);text-align:center;margin-top:4px}
-.estoque2-actions{display:flex;gap:8px;margin-top:8px}
+.estoque2-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .estoque2-actions button{
   flex:1;padding:9px 6px;border-radius:9px;border:1px solid var(--border);
   background:var(--surface-3);color:var(--text-2);font-size:12px;font-weight:700;cursor:pointer;transition:.15s;
 }
 .estoque2-actions button:hover{border-color:#00e676;color:var(--text);box-shadow:0 0 8px rgba(0,230,118,.3)}
-.estoque2-actions button{white-space:nowrap}
+.estoque2-actions button{white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;justify-content:center;gap:4px}
+.camdoc-outro{display:none;margin-bottom:8px}
+.camdoc-outro.show{display:block}
 .cam-doc-count{display:inline-block;min-width:16px;padding:0 5px;margin-left:3px;border-radius:8px;background:rgba(0,230,118,.18);color:var(--green);font-size:10px;line-height:16px;font-weight:800}
 .camdoc-check{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
 .camdoc-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--text-4);background:var(--surface-2)}
@@ -3883,6 +3885,31 @@ const CAM_DOC_ESSENCIAIS=['CRLV (Documento de rodagem)','ATPV','Laudo cautelar']
 let camDocsAtual=null;
 function camDocFmtBytes(b){if(!b)return'';if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
 function camDocEsc(t){return String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function camDocOpcoes(){
+  const base=CAM_DOC_CATS.filter(c=>c!=='Outros');
+  const extras=[];
+  (allCam||[]).forEach(v=>(v.documentos||[]).forEach(d=>{const c=(d.categoria||'').trim();if(c&&c!=='Outros'&&!base.includes(c)&&!extras.includes(c))extras.push(c);}));
+  extras.sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  return[...base,...extras,'Outros'];
+}
+function toggleCamDocOutro(){
+  const v=document.getElementById('camdoc_categoria')?.value;
+  const w=document.getElementById('camdoc_outro_wrap');if(!w)return;
+  w.classList.toggle('show',v==='Outros');
+  if(v==='Outros')setTimeout(()=>document.getElementById('camdoc_outro')?.focus(),30);
+}
+async function editarTipoDocCam(camId,idx){
+  const cam=allCam.find(x=>x.id===camId);if(!cam)return;
+  const docs=[...(cam.documentos||[])];const d=docs[idx];if(!d)return;
+  const novo=prompt(`Tipo do documento "${d.nome}":\n(ex.: Consulta base, CRLV (Documento de rodagem), ATPV...)`,d.categoria||'Outros');
+  if(novo===null)return;
+  const t=novo.trim();if(!t||t===d.categoria)return;
+  docs[idx]={...d,categoria:t};
+  const{error}=await sb.from('caminhoes').update({documentos:docs}).eq('id',camId);
+  if(error){showToast('Erro: '+error.message,'error');return;}
+  showToast('Tipo do documento atualizado','success');
+  await refreshDocsCam(camId);
+}
 function openDocsCam(camId){
   const cam=allCam.find(x=>x.id===camId);
   if(!cam){showToast('Veículo não encontrado','error');return;}
@@ -3906,6 +3933,7 @@ function renderDocsCamHTML(cam){
       </div>
       <div class="doc-actions">
         <button class="doc-btn" onclick="abrirDocCam(${cam.id},${i})">Ver</button>
+        <button class="doc-btn" onclick="editarTipoDocCam(${cam.id},${i})" title="Editar tipo do documento">✎</button>
         <button class="doc-btn del" onclick="deletarDocCam(${cam.id},${i})" title="Remover">✕</button>
       </div>
     </div>`).join('')}`).join(''):'<div class="no-docs">Nenhum documento enviado ainda</div>';
@@ -3922,10 +3950,14 @@ function renderDocsCamHTML(cam){
     <div class="fin-section-title">Enviar novo documento</div>
     <div class="form-row" style="margin-bottom:8px">
       <label>Tipo de documento</label>
-      <select id="camdoc_categoria">${CAM_DOC_CATS.map(c=>`<option>${c}</option>`).join('')}</select>
+      <select id="camdoc_categoria" onchange="toggleCamDocOutro()">${camDocOpcoes().map(c=>`<option value="${camDocEsc(c)}">${camDocEsc(c)}</option>`).join('')}</select>
+    </div>
+    <div class="form-row camdoc-outro" id="camdoc_outro_wrap">
+      <label>Qual documento? (digite o tipo)</label>
+      <input type="text" id="camdoc_outro" placeholder="Ex.: Consulta base, Procuração, Recibo..." maxlength="60">
     </div>
     <div class="upload-area" id="camUploadArea" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="event.preventDefault();this.classList.remove('dragover');uploadDocsCam(Array.from(event.dataTransfer.files),${cam.id})">
-      <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" onchange="uploadDocsCam(Array.from(this.files),${cam.id})">
+      <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" onchange="uploadDocsCam(Array.from(this.files),${cam.id});this.value=''">
       <div class="upload-area-title">Clique ou arraste os arquivos aqui</div>
       <div class="upload-area-sub">PDF, JPG, PNG, DOC — até 10MB por arquivo</div>
     </div>
@@ -3946,7 +3978,12 @@ async function refreshDocsCam(camId){
 async function uploadDocsCam(files,camId){
   if(!files||!files.length)return;
   const cam=allCam.find(x=>x.id===camId);if(!cam)return;
-  const categoria=document.getElementById('camdoc_categoria')?.value||'Outros';
+  let categoria=document.getElementById('camdoc_categoria')?.value||'Outros';
+  if(categoria==='Outros'){
+    const outro=(document.getElementById('camdoc_outro')?.value||'').trim();
+    if(!outro){alert('Você escolheu "Outros": digite qual é o documento (ex.: Consulta base) antes de enviar.');document.getElementById('camdoc_outro')?.focus();return;}
+    categoria=outro;
+  }
   const prog=document.getElementById('camUploadProgress');
   if(prog){prog.style.display='block';prog.textContent='Enviando...';}
   const docs=[...(cam.documentos||[])];

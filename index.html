@@ -4008,7 +4008,7 @@ function abrirVendaCam(id){
     <div class="form-row"><label>Cliente</label><input id="neg_v_cli" class="glow2" value="${camDocEsc(v.cliente||r.cliente||'')}" placeholder="Nome do cliente"></div>
     <div class="form-grid">
       <div class="form-row"><label>Valor da venda</label><input id="neg_v_val" class="glow2" inputmode="numeric" placeholder="R$ 0,00" value="${moedaVal(v.valor||c.valor)}" oninput="maskMoedaCusto(this)"></div>
-      <div class="form-row"><label>Sinal recebido</label><input class="glow2" value="${r.sinal?moedaFmt(r.valor_sinal):'Nenhum'}" disabled></div>
+      <div class="form-row"><label>Sinal recebido</label><input id="neg_v_sinal" class="glow2" inputmode="numeric" placeholder="R$ 0,00 (sem sinal)" value="${moedaVal(v.valor_sinal??(r.sinal?r.valor_sinal:0))}" oninput="maskMoedaCusto(this)"></div>
     </div>
     <div class="form-row"><label>Forma de pagamento</label>${negSegHTML('forma_v','avista','parcelado','À vista','Parcelado',negTmp.forma_v)}</div>
     <div id="neg_parc_wrap" class="neg-reveal" style="display:${negTmp.forma_v==='parcelado'?'block':'none'}">
@@ -4066,7 +4066,10 @@ async function salvarVendaCam(id){
     if(!v.primeira){showToast('Informe o vencimento da 1ª parcela','warning');return;}
   }
   const btn=document.getElementById('btnConcluirVenda');if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+  v.valor_sinal=moedaNum(document.getElementById('neg_v_sinal')?.value);
   const neg={...negDe(c),venda:v};
+  if(v.valor_sinal){const r0=neg.reserva||{};neg.reserva={...r0,cliente:r0.cliente||v.cliente,forma:r0.forma||v.forma,sinal:true,valor_sinal:v.valor_sinal,data_sinal:r0.data_sinal||hojeISO()};}
+  else if(neg.reserva?.sinal){neg.reserva={...neg.reserva,sinal:false,valor_sinal:0};}
   if(negTmp.files.length)neg.docs=[...(neg.docs||[]),...(await negUpload(id,negTmp.files))];
   if(!(await salvarNegCam(id,{status:'Vendido',negociacao:neg}))){if(btn){btn.disabled=false;btn.textContent='Concluir venda';}return;}
   closeModal();renderEstoque();renderDayTasks();
@@ -4101,7 +4104,8 @@ function abrirVendidoCam(id){
   if(!v)resumo=`<b>Sem dados da venda</b><br>Este caminhão foi marcado como Vendido pelo funil. Registre a venda para acompanhar documentos e parcelas.`;
   else if(v.forma!=='parcelado')resumo=`<b>${moedaFmt(v.valor)}</b><br>Venda à vista${v.data?' em '+fmtDataBR(v.data):''}`;
   else{const p=v.pagas||0;resumo=`<b>${p>=v.n?'Quitado':(p+1)+'/'+v.n+' · '+moedaFmt(v.vp)}</b><br>${p>=v.n?'':'Vencimento '+fmtDataBR(vencAtual(v))+' · '+situVenda(v).t+'<br>'}Pagas ${p} de ${v.n} · recebido ${moedaFmt(p*v.vp)} · falta ${moedaFmt((v.n-p)*v.vp)}<br>Valor da venda ${moedaFmt(v.valor)}`;}
-  const sinal=r?.sinal?`<div style="font-size:13px;color:var(--text-3);margin-top:8px">Sinal de ${moedaFmt(r.valor_sinal)} em ${fmtDataBR(r.data_sinal)}</div>`:'';
+  const vSinal=v?.valor_sinal??(r?.sinal?r.valor_sinal:0);
+  const sinal=vSinal?`<div style="font-size:13px;color:var(--text-3);margin-top:8px">Sinal de ${moedaFmt(vSinal)}${r?.data_sinal?' em '+fmtDataBR(r.data_sinal):''}</div>`:'';
   const hist=v?.forma==='parcelado'?`<div class="fin-section-title">Parcelas pagas</div>${(v.pagamentos||[]).length?[...v.pagamentos].reverse().map(h=>`<div class="vd-hist"><span>${h.p}/${v.n} · venc. ${fmtDataBR(h.venc)}</span><span>paga em ${fmtDataBR(h.pago_em)}</span></div>`).join(''):'<div class="no-docs">Nenhuma parcela paga ainda</div>'}`:'';
   openModal(`<div class="modal-head"><h3>${camDocEsc(c.modelo)}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
   <div class="modal-body">${negCabecalho(c)}

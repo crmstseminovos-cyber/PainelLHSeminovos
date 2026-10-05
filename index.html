@@ -4095,7 +4095,14 @@ function renderVendidos(){
       ${plateHTML(c.placa)}
       <div class="estoque2-info"><h4>${camDocEsc(c.modelo)}</h4><p>${camDocEsc(v?.cliente||'Cliente não informado')}</p>
         <div class="estoque2-badges"><span class="vd-tag ${s.c}">${s.t}</span></div></div>
-      ${linha}</div>`;}).join(''):`<div class="empty-state">Nenhum veículo vendido ainda</div>`}</div>`;
+      ${linha}
+      <div class="estoque2-actions" onclick="event.stopPropagation()">
+        <button onclick="abrirVendidoCam(${c.id})"><i data-lucide="handshake" style="width:14px;height:14px;vertical-align:-2px"></i> Venda</button>
+        <button onclick="openCaminhaoModal(${c.id})"><i data-lucide="pencil" style="width:14px;height:14px;vertical-align:-2px"></i> Editar</button>
+        <button onclick="openCustosModal(${c.id})"><i data-lucide="dollar-sign" style="width:14px;height:14px;vertical-align:-2px"></i> Custos</button>
+        <button onclick="openDocsCam(${c.id})"><i data-lucide="folder-open" style="width:14px;height:14px;vertical-align:-2px"></i> Docs${(c.documentos||[]).length?`<span class="cam-doc-count">${(c.documentos||[]).length}</span>`:''}</button>
+      </div></div>`;}).join(''):`<div class="empty-state">Nenhum veículo vendido ainda</div>`}</div>`;
+  if(typeof lucide!=='undefined')lucide.createIcons();
 }
 function abrirVendidoCam(id){
   const c=allCam.find(x=>x.id===id);if(!c)return;
@@ -4117,6 +4124,8 @@ function abrirVendidoCam(id){
     ${hist}
     <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn" onclick="abrirVendaCam(${id})">${v?'Editar dados da venda':'Registrar venda'}</button>
+      <button class="btn" onclick="openCustosModal(${id})">Custos do veículo</button>
+      <button class="btn" onclick="openDocsCam(${id})">Docs do veículo${(c.documentos||[]).length?' ('+(c.documentos||[]).length+')':''}</button>
       <button class="btn" style="border-color:var(--red);color:var(--red)" onclick="desfazerVendaCam(${id})">Voltar para o estoque</button>
     </div>
   </div>

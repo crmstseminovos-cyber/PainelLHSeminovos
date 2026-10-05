@@ -761,6 +761,31 @@ h1,h2,h3,h4,h5,.modal-head h3,.page-title,.page-header-title,.tk-title,.table-to
   box-shadow:0 0 0 3px rgba(0,230,118,.2),0 0 14px rgba(0,230,118,.35);
 }
 #buscaCam.glow2{flex:1}
+.estq-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.estq-tabs .seg-btn{padding:7px 14px;font-size:var(--text-md)}
+.st-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer}
+.st-opt:hover{border-color:var(--green)}
+.st-opt.atual{border-color:var(--green);background:var(--green-dim)}
+.st-atual{font-size:12px;font-weight:700;color:var(--green)}
+.st-dica{margin-left:auto;font-size:11px;font-weight:600;color:var(--text-3)}
+.neg-seg{display:inline-flex;width:100%}
+.neg-seg .seg-btn{flex:1;padding:9px 12px;font-size:var(--text-md)}
+.neg-reveal{border-left:3px solid var(--green);padding-left:12px;margin:4px 0 8px}
+.neg-prev{background:var(--surface-3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:8px;font-size:14px;line-height:1.55}
+.neg-prev b{font-size:20px;font-weight:800}
+.vd-tot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:16px}
+.vd-tot div{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text-3)}
+.vd-tot b{display:block;font-size:22px;font-weight:800;color:var(--text);margin-top:2px}
+.vd-card{cursor:pointer}
+.vd-tag{font-size:11px;font-weight:700;border-radius:99px;padding:3px 9px}
+.vd-ok{background:rgba(34,197,94,.15);color:#22c55e}.vd-am{background:var(--amber-bg);color:var(--amber)}.vd-at{background:var(--red-bg);color:var(--red)}.vd-fim{background:var(--surface-3);color:var(--text-3)}.vd-sem{background:var(--amber-bg);color:var(--amber)}
+.vd-linha{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:6px;font-size:13px;color:var(--text-3)}
+.vd-linha b{font-size:17px;font-weight:800;color:var(--text)}
+.vd-bar{height:6px;background:var(--surface-3);border-radius:99px;overflow:hidden;margin-top:6px}
+.vd-bar i{display:block;height:100%;background:var(--green)}
+.vd-tot b{word-break:break-word}
+@media(max-width:520px){.vd-tot b{font-size:17px}}
+.vd-hist{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)}
 .estoque2-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .estoque2-card{
   background:var(--surface-2);border:1px solid var(--border);border-radius:16px;
@@ -1661,14 +1686,16 @@ tr:last-child td{border-bottom:none}
       <div id="page-estoque" class="page">
         <div class="estoque2-wrap">
           <div class="estoque2-top">
-            <h3><i data-lucide="truck" style="width:20px;height:20px;vertical-align:-4px;margin-right:6px"></i>Estoque de Veículos</h3>
+            <div class="estq-head"><h3><i data-lucide="truck" style="width:20px;height:20px;vertical-align:-4px;margin-right:6px"></i>Estoque de Veículos</h3>
+            <div class="seg-ctrl estq-tabs"><button class="seg-btn active" id="estqTabE" onclick="setEstqTab('E')">Estoque</button><button class="seg-btn" id="estqTabV" onclick="setEstqTab('V')">Vendidos</button></div></div>
             <button class="btn2-primary" onclick="openCaminhaoModal(0)">+ Novo Veículo</button>
           </div>
           <div class="estoque2-filters">
-            <select id="filtroStatus" class="glow2" onchange="renderEstoque()"><option value="">Todos os status</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option><option>Vendido</option></select>
+            <select id="filtroStatus" class="glow2" onchange="renderEstoque()"><option value="">Todos os status</option><option>Disponível</option><option>Funilaria</option><option>Tapeçaria</option><option>Mecânica</option><option>Lavagem</option><option>Reservado</option></select>
             <input id="buscaCam" class="glow2" placeholder="Buscar modelo ou placa..." oninput="renderEstoque()">
           </div>
           <div id="estoqueBody" class="estoque2-grid"></div>
+          <div id="vendidosBody" style="display:none"></div>
         </div>
       </div>
       <div id="page-base-clientes" class="page">
@@ -1813,7 +1840,7 @@ async function loadAll(){
   console.log('loadAll: total leads=',allLeads.length,'com vendedor=',allLeads.filter(l=>l.vendedor).length);
   const info=PERFIS[perfil];navTo(info.nav[0].page,null);
   document.querySelector('.nav-item')?.classList.add('active');
-  renderDayTasks();renderCalendar();renderPlacar();updateTaskBadge();
+  renderDayTasks();renderCalendar();renderPlacar();updateTaskBadge();avisarParcelas();
 }
 
 function renderPlacar(){
@@ -2287,8 +2314,11 @@ function renderDayTasks(){
   else if(tkFilter==='atrasadas')filtered=all.filter(t=>isTaskLate(t));
   const pend=all.filter(t=>!t.done).length;
   const ce=document.getElementById('tasksCount');if(ce)ce.textContent=pend;
+  const parcHTML=typeof parcelasAlertaHTML==='function'?parcelasAlertaHTML():'';
+  if(ce&&parcHTML)ce.textContent=pend+parcelasAlerta().length;
+  if(!filtered.length&&parcHTML){el.innerHTML=parcHTML;return;}
   if(!filtered.length){el.innerHTML=`<div class="no-tk">${tkFilter==='atrasadas'?'Nenhuma atrasada!':tkFilter==='hoje'?'Nenhuma tarefa hoje':'Nenhuma tarefa'}</div>`;return;}
-  el.innerHTML=filtered.map(t=>{
+  el.innerHTML=parcHTML+filtered.map(t=>{
     const ov=isTaskLate(t);
     const ds=t.due?new Date(t.due+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
     const tid=`task_${t.src}_${t.leadId||0}_${t.taskIdx}`;
@@ -2715,9 +2745,16 @@ function plateHTML(placa){
   return`<div class="plate2"><div class="plate2-top"><span>BRASIL</span></div><div class="plate2-body"><span>${placa}</span></div></div>`;
 }
 function renderEstoque(){
+  const nVend=allCam.filter(c=>c.status==='Vendido').length;
+  const tE=document.getElementById('estqTabE'),tV=document.getElementById('estqTabV');
+  if(tE){tE.classList.toggle('active',estqTab==='E');tV.classList.toggle('active',estqTab==='V');tE.textContent='Estoque ('+allCam.filter(c=>c.status!=='Vendido').length+')';tV.textContent='Vendidos ('+nVend+')';}
+  const fs=document.getElementById('filtroStatus');if(fs)fs.style.display=estqTab==='V'?'none':'';
+  document.getElementById('estoqueBody').style.display=estqTab==='V'?'none':'';
+  const vb=document.getElementById('vendidosBody');if(vb)vb.style.display=estqTab==='V'?'block':'none';
+  if(estqTab==='V'){renderVendidos();return;}
   const filtro=document.getElementById('filtroStatus')?.value||'';
   const busca=(document.getElementById('buscaCam')?.value||'').toLowerCase();
-  const list=allCam.filter(c=>(!filtro||c.status===filtro)&&(!busca||c.modelo?.toLowerCase().includes(busca)||c.placa?.toLowerCase().includes(busca)));
+  const list=allCam.filter(c=>c.status!=='Vendido'&&(!filtro||c.status===filtro)&&(!busca||c.modelo?.toLowerCase().includes(busca)||c.placa?.toLowerCase().includes(busca)));
   const sb2={'Disponível':'b-disp','Funilaria':'b-fun','Tapeçaria':'b-tap','Mecânica':'b-mec','Lavagem':'b-lav','Reservado':'b-res','Vendido':'b-vend'};
   document.getElementById('estoqueBody').innerHTML=list.length?list.map(c=>`
     <div class="estoque2-card">
@@ -3858,19 +3895,286 @@ async function saveCaminhao(id){
   if(error){showToast('Erro ao salvar: '+error.message,'error');return;}
   closeModal();await loadAll();renderEstoque();
 }
+// ── STATUS COM AUTOMAÇÕES + NEGOCIAÇÃO / VENDIDOS ──
+const STATUS_OFICINA=['Funilaria','Tapeçaria','Mecânica','Lavagem'];
+let estqTab='E';
+let negTmp={};
+function hojeISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function addMesISO(iso,n){const[a,m,d]=iso.split('-').map(Number);const x=new Date(a,m-1+n,1);const ult=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(d,ult));return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
+function diasAte(iso){const[a,m,d]=iso.split('-').map(Number);const h=new Date();h.setHours(0,0,0,0);return Math.round((new Date(a,m-1,d)-h)/864e5);}
+function moedaNum(s){return parseFloat(String(s||'').replace(/[^\d,]/g,'').replace(',','.'))||0;}
+function moedaFmt(n){return Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function moedaVal(n){return n?moedaFmt(n).replace(/\u00a0/g,' '):'';}
+function negDe(c){return c?.negociacao&&typeof c.negociacao==='object'?c.negociacao:{};}
+function vencAtual(v){return addMesISO(v.primeira,v.pagas||0);}
+function situVenda(v){
+  if(!v)return{t:'Sem dados da venda',c:'vd-sem'};
+  if(v.forma!=='parcelado')return{t:'À vista',c:'vd-fim'};
+  if((v.pagas||0)>=v.n)return{t:'Quitado',c:'vd-fim'};
+  const d=diasAte(vencAtual(v));
+  if(d<0)return{t:'Atrasada '+(-d)+'d',c:'vd-at'};
+  if(d===0)return{t:'Vence hoje',c:'vd-am'};
+  if(d===1)return{t:'Vence amanhã',c:'vd-am'};
+  if(d===2)return{t:'Vence em 2 dias',c:'vd-am'};
+  return{t:'Em dia',c:'vd-ok'};
+}
+async function salvarNegCam(id,campos){
+  const{error}=await sb.from('caminhoes').update(campos).eq('id',id);
+  if(error){
+    const msg=/negociacao/i.test(error.message)?'Rode a migração (coluna "negociacao" na tabela caminhoes) no Supabase.\n\nDetalhe: ':'Erro ao salvar: ';
+    alert(msg+error.message);return false;
+  }
+  const ix=allCam.findIndex(x=>x.id===id);if(ix>=0)allCam[ix]={...allCam[ix],...campos};
+  return true;
+}
+function negSeg(grupo,val,el){negTmp[grupo]=val;el.parentNode.querySelectorAll('.seg-btn').forEach(b=>b.classList.toggle('active',b===el));
+  if(grupo==='sinal'){const w=document.getElementById('neg_sinal_wrap');if(w)w.style.display=val==='com'?'block':'none';}
+  if(grupo==='forma_v'){const w=document.getElementById('neg_parc_wrap');if(w)w.style.display=val==='parcelado'?'block':'none';negPrevParc();}
+}
+function negSegHTML(grupo,a,b,la,lb,val){return`<div class="seg-ctrl neg-seg"><button type="button" class="seg-btn ${val===a?'active':''}" onclick="negSeg('${grupo}','${a}',this)">${la}</button><button type="button" class="seg-btn ${val===b?'active':''}" onclick="negSeg('${grupo}','${b}',this)">${lb}</button></div>`;}
+function negCabecalho(c){return`<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">${plateHTML(c.placa)}<div><h4 style="margin:0;font-size:16px;font-weight:800">${camDocEsc(c.modelo)}</h4><p style="margin:2px 0 0;font-size:13px;color:var(--text-3)">${c.ano||'ano não informado'}</p></div></div>`;}
+
+// ── Modal de status ──
 async function mudarStatusCam(id){
   const c=allCam.find(x=>x.id===id);if(!c)return;
   const opts=['Disponível','Funilaria','Tapeçaria','Mecânica','Lavagem','Reservado','Vendido'];
   const sb2={'Disponível':'b-disp','Funilaria':'b-fun','Tapeçaria':'b-tap','Mecânica':'b-mec','Lavagem':'b-lav','Reservado':'b-res','Vendido':'b-vend'};
-  openModal(`<div class="modal-head"><h3>${c.modelo}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  const dica=s=>STATUS_OFICINA.includes(s)?'abre lançamento de custo':s==='Reservado'?'forma da negociação e sinal':s==='Vendido'?'contratos e parcelas':'';
+  openModal(`<div class="modal-head"><h3>${camDocEsc(c.modelo)}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
     <div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px">
-      ${opts.map(s=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid ${s===c.status?'var(--green)':'var(--border)'};background:${s===c.status?'#f0fdf4':'#fff'};cursor:pointer" onclick="setStatusCam(${id},'${s}')">
-        <span class="badge ${sb2[s]}">${s}</span>${s===c.status?' ← atual':''}</div>`).join('')}
+      ${opts.map(s=>`<div class="st-opt ${s===c.status?'atual':''}" onclick="setStatusCam(${id},'${s}')">
+        <span class="badge ${sb2[s]}">${s}</span>${s===c.status?'<span class="st-atual">atual</span>':(dica(s)?`<span class="st-dica">${dica(s)}</span>`:'')}</div>`).join('')}
     </div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Fechar</button></div>`);
 }
 async function setStatusCam(id,status){
-  await sb.from('caminhoes').update({status}).eq('id',id);
-  closeModal();await loadAll();renderEstoque();
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  if(status===c.status){closeModal();return;}
+  if(c.status==='Vendido'&&negDe(c).venda){
+    if(!confirm(`Este caminhão está como Vendido com dados da venda registrados.\n\nMudar para "${status}" desfaz a venda (os dados da venda e as parcelas serão apagados; os documentos da negociação ficam guardados). Continuar?`))return;
+    const neg={...negDe(c)};delete neg.venda;
+    if(!(await salvarNegCam(id,{negociacao:neg})))return;
+  }
+  if(status==='Reservado'){abrirReservaCam(id);return;}
+  if(status==='Vendido'){abrirVendaCam(id);return;}
+  const{error}=await sb.from('caminhoes').update({status}).eq('id',id);
+  if(error){showToast('Erro: '+error.message,'error');return;}
+  const ix=allCam.findIndex(x=>x.id===id);if(ix>=0)allCam[ix].status=status;
+  renderEstoque();
+  if(STATUS_OFICINA.includes(status)){
+    await openCustosModal(id);
+    abrirNovaOSForm();selecionarCategoriaCusto(status);
+    showToast(`Status: ${status}. Lance o custo do serviço (ou feche para lançar depois).`,'success',4000);
+  }else closeModal();
+}
+
+// ── Reservado ──
+function abrirReservaCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  const r=negDe(c).reserva||{};
+  negTmp={forma_r:r.forma||'avista',sinal:r.sinal?'com':'sem'};
+  openModal(`<div class="modal-head"><h3>Reservar veículo</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">${negCabecalho(c)}
+    <div class="form-row"><label>Cliente</label><input id="neg_r_cli" class="glow2" value="${camDocEsc(r.cliente||'')}" placeholder="Nome do cliente"></div>
+    <div class="form-row"><label>Forma da negociação</label>${negSegHTML('forma_r','avista','parcelado','À vista','Parcelado',negTmp.forma_r)}</div>
+    <div class="form-row"><label>Sinal</label>${negSegHTML('sinal','sem','com','Sem sinal','Com sinal',negTmp.sinal)}</div>
+    <div id="neg_sinal_wrap" class="neg-reveal" style="display:${negTmp.sinal==='com'?'block':'none'}">
+      <div class="form-grid">
+        <div class="form-row"><label>Valor do sinal</label><input id="neg_r_val" class="glow2" inputmode="numeric" placeholder="R$ 0,00" value="${moedaVal(r.valor_sinal)}" oninput="maskMoedaCusto(this)"></div>
+        <div class="form-row"><label>Data do sinal</label><input id="neg_r_data" class="glow2" type="date" value="${r.data_sinal||hojeISO()}"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="salvarReservaCam(${id})">Confirmar reserva</button></div>`);
+}
+async function salvarReservaCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  const r={cliente:document.getElementById('neg_r_cli').value.trim(),forma:negTmp.forma_r,sinal:negTmp.sinal==='com',data:hojeISO()};
+  if(r.sinal){r.valor_sinal=moedaNum(document.getElementById('neg_r_val').value);r.data_sinal=document.getElementById('neg_r_data').value;
+    if(!r.valor_sinal){showToast('Informe o valor do sinal','warning');return;}}
+  const neg={...negDe(c),reserva:r};
+  if(!(await salvarNegCam(id,{status:'Reservado',negociacao:neg})))return;
+  closeModal();renderEstoque();showToast('Veículo reservado','success');
+}
+
+// ── Vendido ──
+function abrirVendaCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  const neg=negDe(c),r=neg.reserva||{},v=neg.venda||{};
+  const dA=new Date();dA.setDate(dA.getDate()+30);
+  const prim=v.primeira||(dA.getFullYear()+'-'+String(dA.getMonth()+1).padStart(2,'0')+'-'+String(dA.getDate()).padStart(2,'0'));
+  negTmp={forma_v:v.forma||r.forma||'avista',files:[]};
+  openModal(`<div class="modal-head"><h3>Concluir venda</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">${negCabecalho(c)}
+    <div class="form-row"><label>Cliente</label><input id="neg_v_cli" class="glow2" value="${camDocEsc(v.cliente||r.cliente||'')}" placeholder="Nome do cliente"></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Valor da venda</label><input id="neg_v_val" class="glow2" inputmode="numeric" placeholder="R$ 0,00" value="${moedaVal(v.valor||c.valor)}" oninput="maskMoedaCusto(this)"></div>
+      <div class="form-row"><label>Sinal recebido</label><input class="glow2" value="${r.sinal?moedaFmt(r.valor_sinal):'Nenhum'}" disabled></div>
+    </div>
+    <div class="form-row"><label>Forma de pagamento</label>${negSegHTML('forma_v','avista','parcelado','À vista','Parcelado',negTmp.forma_v)}</div>
+    <div id="neg_parc_wrap" class="neg-reveal" style="display:${negTmp.forma_v==='parcelado'?'block':'none'}">
+      <div class="form-grid">
+        <div class="form-row"><label>Nº de parcelas</label><input id="neg_p_n" class="glow2" type="number" min="1" max="120" value="${v.n||48}" oninput="negPrevParc()"></div>
+        <div class="form-row"><label>Valor da parcela</label><input id="neg_p_v" class="glow2" inputmode="numeric" placeholder="R$ 0,00" value="${moedaVal(v.vp)}" oninput="maskMoedaCusto(this);negPrevParc()"></div>
+      </div>
+      <div class="form-row"><label>Vencimento da 1ª parcela</label><input id="neg_p_1" class="glow2" type="date" value="${prim}" oninput="negPrevParc()"></div>
+      <div class="neg-prev" id="neg_prev"></div>
+    </div>
+    <div class="fin-section-title">Documentos da negociação</div>
+    <div class="upload-area"><input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" onchange="negAddFiles(this)">
+      <div class="upload-area-title">Contrato assinado, recibo do sinal, promissórias...</div>
+      <div class="upload-area-sub">PDF, JPG, PNG, DOC — até 10MB por arquivo</div></div>
+    <div id="neg_files"></div>
+    <div style="font-size:12px;color:var(--text-3);margin-top:6px">Ficam separados da documentação do veículo (CRLV, ATPV, laudos). Dá para anexar depois também, na aba Vendidos.</div>
+  </div>
+  <div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" id="btnConcluirVenda" onclick="salvarVendaCam(${id})">Concluir venda</button></div>`);
+  negPrevParc();
+}
+function negPrevParc(){
+  const e=document.getElementById('neg_prev');if(!e)return;
+  const n=Math.max(1,parseInt(document.getElementById('neg_p_n').value)||1),vp=moedaNum(document.getElementById('neg_p_v').value),d=document.getElementById('neg_p_1').value;
+  e.innerHTML=`<b>1/${n} · ${vp?moedaFmt(vp):'R$ —'}</b><br>1ª parcela em ${d?fmtDataBR(d):'—'}${d?' · todo dia '+d.slice(8):''}<br>Última (${n}/${n}) em ${d?fmtDataBR(addMesISO(d,n-1)):'—'}${vp?' · total '+moedaFmt(vp*n):''}`;
+}
+function negAddFiles(inp){
+  [...inp.files].forEach(f=>{if(f.size>10*1024*1024){alert(`Arquivo ${f.name} excede 10MB.`);return;}negTmp.files.push(f);});inp.value='';negRenderFiles();
+}
+function negRenderFiles(){
+  const el=document.getElementById('neg_files');if(!el)return;
+  el.innerHTML=negTmp.files.map((f,i)=>`<div class="doc-item"><div class="doc-info"><div class="doc-name">${camDocEsc(f.name)}</div><div class="doc-meta">${camDocFmtBytes(f.size)}</div></div><div class="doc-actions"><button class="doc-btn del" onclick="negTmp.files.splice(${i},1);negRenderFiles()">✕</button></div></div>`).join('');
+}
+async function negUpload(id,files){
+  const out=[];
+  for(const file of files){
+    const path=`caminhoes/${id}/negociacao/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const{error}=await sb.storage.from('documentos').upload(path,file,{cacheControl:'3600',upsert:false});
+    if(error){alert('Não foi possível enviar '+file.name+'.\n\nDetalhe: '+error.message);continue;}
+    const{data:{publicUrl}}=sb.storage.from('documentos').getPublicUrl(path);
+    out.push({nome:file.name,url:publicUrl,path,tamanho:file.size,data:new Date().toISOString(),por:PERFIS?.[perfil]?.name||perfil||''});
+  }
+  return out;
+}
+async function salvarVendaCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  const valor=moedaNum(document.getElementById('neg_v_val').value);
+  if(!valor){showToast('Informe o valor da venda','warning');return;}
+  const v={cliente:document.getElementById('neg_v_cli').value.trim(),valor,forma:negTmp.forma_v,data:hojeISO()};
+  if(v.forma==='parcelado'){
+    v.n=Math.max(1,parseInt(document.getElementById('neg_p_n').value)||1);
+    v.vp=moedaNum(document.getElementById('neg_p_v').value);
+    v.primeira=document.getElementById('neg_p_1').value;
+    v.pagas=0;v.pagamentos=[];
+    if(!v.vp){showToast('Informe o valor da parcela','warning');return;}
+    if(!v.primeira){showToast('Informe o vencimento da 1ª parcela','warning');return;}
+  }
+  const btn=document.getElementById('btnConcluirVenda');if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+  const neg={...negDe(c),venda:v};
+  if(negTmp.files.length)neg.docs=[...(neg.docs||[]),...(await negUpload(id,negTmp.files))];
+  if(!(await salvarNegCam(id,{status:'Vendido',negociacao:neg}))){if(btn){btn.disabled=false;btn.textContent='Concluir venda';}return;}
+  closeModal();renderEstoque();renderDayTasks();
+  showToast(`${c.modelo} saiu do estoque e foi para Vendidos`,'success',4000);
+}
+
+// ── Aba Vendidos ──
+function setEstqTab(t){estqTab=t;renderEstoque();}
+function renderVendidos(){
+  const el=document.getElementById('vendidosBody');if(!el)return;
+  const busca=(document.getElementById('buscaCam')?.value||'').toLowerCase();
+  const L=allCam.filter(c=>c.status==='Vendido'&&(!busca||c.modelo?.toLowerCase().includes(busca)||c.placa?.toLowerCase().includes(busca)||(negDe(c).venda?.cliente||'').toLowerCase().includes(busca)));
+  const P=allCam.filter(c=>c.status==='Vendido'&&negDe(c).venda?.forma==='parcelado').map(c=>negDe(c).venda);
+  const mes=hojeISO().slice(0,7);
+  const doMes=P.filter(v=>(v.pagas||0)<v.n&&vencAtual(v).slice(0,7)<=mes).reduce((s,v)=>s+v.vp,0);
+  const falta=P.reduce((s,v)=>s+(v.n-(v.pagas||0))*v.vp,0);
+  el.innerHTML=`<div class="vd-tot"><div>A receber este mês<b>${moedaFmt(doMes)}</b></div><div>Saldo total a receber<b>${moedaFmt(falta)}</b></div></div>
+  <div class="estoque2-grid">${L.length?L.map(c=>{const v=negDe(c).venda;const s=situVenda(v);
+    const linha=!v?`<div class="vd-linha"><span>Registre os dados da venda</span></div>`
+      :v.forma!=='parcelado'?`<div class="vd-linha"><b>${moedaFmt(v.valor)}</b><span>pago à vista</span></div>`
+      :`<div class="vd-linha"><b>${(v.pagas||0)>=v.n?v.n+'/'+v.n:((v.pagas||0)+1)+'/'+v.n} · ${moedaFmt(v.vp)}</b><span>${(v.pagas||0)>=v.n?'quitado':'vence '+fmtDataBR(vencAtual(v))}</span></div><div class="vd-bar"><i style="width:${(v.pagas||0)/v.n*100}%"></i></div>`;
+    return`<div class="estoque2-card vd-card" onclick="abrirVendidoCam(${c.id})">
+      ${plateHTML(c.placa)}
+      <div class="estoque2-info"><h4>${camDocEsc(c.modelo)}</h4><p>${camDocEsc(v?.cliente||'Cliente não informado')}</p>
+        <div class="estoque2-badges"><span class="vd-tag ${s.c}">${s.t}</span></div></div>
+      ${linha}</div>`;}).join(''):`<div class="empty-state">Nenhum veículo vendido ainda</div>`}</div>`;
+}
+function abrirVendidoCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  const neg=negDe(c),v=neg.venda,r=neg.reserva,docs=neg.docs||[];
+  let resumo;
+  if(!v)resumo=`<b>Sem dados da venda</b><br>Este caminhão foi marcado como Vendido pelo funil. Registre a venda para acompanhar documentos e parcelas.`;
+  else if(v.forma!=='parcelado')resumo=`<b>${moedaFmt(v.valor)}</b><br>Venda à vista${v.data?' em '+fmtDataBR(v.data):''}`;
+  else{const p=v.pagas||0;resumo=`<b>${p>=v.n?'Quitado':(p+1)+'/'+v.n+' · '+moedaFmt(v.vp)}</b><br>${p>=v.n?'':'Vencimento '+fmtDataBR(vencAtual(v))+' · '+situVenda(v).t+'<br>'}Pagas ${p} de ${v.n} · recebido ${moedaFmt(p*v.vp)} · falta ${moedaFmt((v.n-p)*v.vp)}<br>Valor da venda ${moedaFmt(v.valor)}`;}
+  const sinal=r?.sinal?`<div style="font-size:13px;color:var(--text-3);margin-top:8px">Sinal de ${moedaFmt(r.valor_sinal)} em ${fmtDataBR(r.data_sinal)}</div>`:'';
+  const hist=v?.forma==='parcelado'?`<div class="fin-section-title">Parcelas pagas</div>${(v.pagamentos||[]).length?[...v.pagamentos].reverse().map(h=>`<div class="vd-hist"><span>${h.p}/${v.n} · venc. ${fmtDataBR(h.venc)}</span><span>paga em ${fmtDataBR(h.pago_em)}</span></div>`).join(''):'<div class="no-docs">Nenhuma parcela paga ainda</div>'}`:'';
+  openModal(`<div class="modal-head"><h3>${camDocEsc(c.modelo)}</h3><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body">${negCabecalho(c)}
+    <div style="font-weight:700;margin-bottom:8px">${camDocEsc(v?.cliente||r?.cliente||'Cliente não informado')}</div>
+    <div class="neg-prev" style="margin-top:0">${resumo}</div>${sinal}
+    <div class="fin-section-title">Documentos da negociação</div>
+    <div class="docs-list">${docs.length?docs.map((d,i)=>`<div class="doc-item"><div class="doc-info"><div class="doc-name">${camDocEsc(d.nome)}</div><div class="doc-meta">${camDocFmtBytes(d.tamanho)}${d.data?' · '+new Date(d.data).toLocaleDateString('pt-BR'):''}</div></div><div class="doc-actions"><button class="doc-btn" onclick="abrirDoc('${d.url}')">Ver</button><button class="doc-btn del" onclick="removerDocNeg(${id},${i})">✕</button></div></div>`).join(''):'<div class="no-docs">Nenhum documento anexado</div>'}</div>
+    <div class="upload-area" style="margin-top:8px"><input type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" onchange="anexarDocNeg(${id},Array.from(this.files));this.value=''"><div class="upload-area-title">Anexar documento da negociação</div><div class="upload-area-sub">PDF, JPG, PNG, DOC — até 10MB</div></div>
+    ${hist}
+    <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="abrirVendaCam(${id})">${v?'Editar dados da venda':'Registrar venda'}</button>
+      <button class="btn" style="border-color:var(--red);color:var(--red)" onclick="desfazerVendaCam(${id})">Voltar para o estoque</button>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn" onclick="closeModal()">Fechar</button>${v?.forma==='parcelado'&&(v.pagas||0)<v.n?`<button class="btn btn-primary" onclick="pagarParcelaCam(${id})">Marcar ${(v.pagas||0)+1}/${v.n} como paga</button>`:''}</div>`);
+}
+async function anexarDocNeg(id,files){
+  const c=allCam.find(x=>x.id===id);if(!c||!files.length)return;
+  const ok=files.filter(f=>{if(f.size>10*1024*1024){alert(`Arquivo ${f.name} excede 10MB.`);return false;}return true;});
+  showToast('Enviando...','success',1500);
+  const novos=await negUpload(id,ok);if(!novos.length)return;
+  const neg={...negDe(c),docs:[...(negDe(c).docs||[]),...novos]};
+  if(await salvarNegCam(id,{negociacao:neg})){showToast(`${novos.length} documento(s) salvo(s)`,'success');abrirVendidoCam(id);}
+}
+async function removerDocNeg(id,i){
+  const c=allCam.find(x=>x.id===id);const docs=[...(negDe(c).docs||[])];const d=docs[i];if(!d)return;
+  if(!confirm(`Remover o documento "${d.nome}"?`))return;
+  if(d.path){try{await sb.storage.from('documentos').remove([d.path]);}catch(e){}}
+  docs.splice(i,1);
+  if(await salvarNegCam(id,{negociacao:{...negDe(c),docs}})){showToast('Documento removido','success');abrirVendidoCam(id);}
+}
+async function pagarParcelaCam(id,daTarefa){
+  const c=allCam.find(x=>x.id===id);const v=negDe(c).venda;if(!v||v.forma!=='parcelado'||(v.pagas||0)>=v.n)return;
+  const p=(v.pagas||0)+1;
+  if(daTarefa&&!confirm(`Marcar a parcela ${p}/${v.n} (${moedaFmt(v.vp)}) de ${c.modelo} como paga?`))return;
+  const nv={...v,pagamentos:[...(v.pagamentos||[]),{p,venc:vencAtual(v),pago_em:hojeISO()}],pagas:p};
+  if(!(await salvarNegCam(id,{negociacao:{...negDe(c),venda:nv}})))return;
+  showToast(p>=v.n?'Contrato quitado':`Parcela ${p}/${v.n} paga. Próxima: ${p+1}/${v.n} em ${fmtDataBR(vencAtual(nv))}`,'success',4000);
+  renderDayTasks();renderEstoque();
+  if(!daTarefa)abrirVendidoCam(id);
+}
+async function desfazerVendaCam(id){
+  const c=allCam.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Voltar ${c.modelo} para o estoque como Disponível?\n\nOs dados da venda e das parcelas serão apagados. Os documentos da negociação ficam guardados.`))return;
+  const neg={...negDe(c)};delete neg.venda;delete neg.reserva;
+  if(!(await salvarNegCam(id,{status:'Disponível',negociacao:neg})))return;
+  closeModal();estqTab='E';renderEstoque();renderDayTasks();showToast('Voltou para o estoque','success');
+}
+
+// ── Avisos de parcelas (2 dias antes) ──
+function parcelasAlerta(){
+  return allCam.filter(c=>c.status==='Vendido').map(c=>({c,v:negDe(c).venda})).filter(x=>x.v?.forma==='parcelado'&&(x.v.pagas||0)<x.v.n&&diasAte(vencAtual(x.v))<=2)
+    .sort((a,b)=>vencAtual(a.v).localeCompare(vencAtual(b.v)));
+}
+function parcelasAlertaHTML(){
+  if(perfil==='sdr')return'';
+  return parcelasAlerta().map(({c,v})=>{const d=diasAte(vencAtual(v));const late=d<0;
+    const quando=d<0?'Atrasada há '+(-d)+' dia(s)':d===0?'Vence hoje':d===1?'Vence amanhã':'Vence em 2 dias';
+    return`<div class="dtask ${late?'is-late':''}">
+      <div class="dtask-chk" title="Marcar como paga" onclick="event.stopPropagation();pagarParcelaCam(${c.id},true)"></div>
+      <div class="dtask-info" onclick="abrirParcelaDaTarefa(${c.id})">
+        <div class="dtask-name">Parcela ${(v.pagas||0)+1}/${v.n} · ${moedaFmt(v.vp)}</div>
+        <div class="dtask-sub ${late?'late':''}">${quando} · ${fmtDataBR(vencAtual(v))}</div>
+        <div class="dtask-lead">${camDocEsc(c.modelo)} ${c.placa?'· '+camDocEsc(c.placa):''}${v.cliente?' · '+camDocEsc(v.cliente):''}</div>
+      </div></div>`;}).join('');
+}
+function abrirParcelaDaTarefa(id){
+  const btn=document.querySelector('.nav-item[onclick*="page-estoque"]');
+  estqTab='V';navTo('page-estoque',btn);abrirVendidoCam(id);
+}
+function avisarParcelas(){
+  if(perfil==='sdr')return;const n=parcelasAlerta().length;
+  if(n)setTimeout(()=>showToast(`${n} parcela(s) vencendo em até 2 dias — veja em Tarefas do dia`,'warning',6000),800);
 }
 
 // ── CENTRAL DE CUSTOS ──
